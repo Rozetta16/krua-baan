@@ -246,6 +246,10 @@ select{
 .wn-meta{font-size:11px !important; opacity:.7}
 .wn-btns{display:flex; gap:8px; flex-shrink:0}
 #wnStatus{margin:0; padding:10px 16px 12px; font-size:11px; opacity:.65}
+.view-tabs{display:flex; gap:8px; margin:2px 0 12px}
+.view-tabs .tab{flex:1; border:2px solid var(--ink); background:var(--paper); border-radius:999px; padding:10px; font-weight:700; font-size:14px; cursor:pointer; box-shadow:3px 3px 0 var(--ink)}
+.view-tabs .tab[aria-selected="true"]{background:var(--ink); color:var(--wash)}
+.byline{font-family:var(--font-mono); font-size:11px; opacity:.65; margin:-4px 0 0}
 @media (max-width:640px){ .wn-row{flex-direction:column; align-items:stretch} .wn-btns{justify-content:flex-end} .wn-thumb{width:52px; height:52px; font-size:22px} }
 .grid{display:grid; grid-template-columns:repeat(3,1fr); gap:18px}
 .card{
@@ -559,6 +563,10 @@ footer{background:var(--ink); color:var(--wash); border-top:2px solid var(--ink)
 </div>
 
 <main class="main">
+  <div class="view-tabs" role="tablist" aria-label="เลือกสมุด">
+    <button class="tab" id="tabMine" role="tab" aria-selected="true">📖 สมุดฉัน</button>
+    <button class="tab" id="tabWorld" role="tab" aria-selected="false">🌍 ของทุกคน <span id="sharedCount"></span></button>
+  </div>
   <div class="toolbar">
     <div class="cat-row" id="catRow" role="group" aria-label="กรองตามประเภท">
       <button class="cat" data-cat="all" aria-pressed="true">ทั้งหมด</button>
@@ -596,7 +604,7 @@ footer{background:var(--ink); color:var(--wash); border-top:2px solid var(--ink)
   <div class="foot-inner">
     <p><b style="font-family:var(--font-display);font-weight:400">ครัวบ้านๆ</b> — MVP สมุดสูตรอาหารไทย เก็บสูตรโปรดไว้ในเครื่อง (localStorage) เพิ่มสูตรของบ้านตัวเองได้ ไม่ต้องสมัครอะไรทั้งนั้น กับข้าวบ้านๆ แต่ตั้งใจทำ<br><span style="opacity:.65">สูตรที่เซฟจากเว็บอื่นเก็บไว้ดูส่วนตัวในเครื่องนี้เท่านั้น กรุณาแปะลิงก์ที่มาเสมอ</span></p>
     <div class="foot-btns">
-      <span class="mono" style="font-size:12px;opacity:.7;align-self:center">รสเผ็ด · รสเปรี้ยว · รสมือแม่ — v0.3</span>
+      <span class="mono" style="font-size:12px;opacity:.7;align-self:center">รสเผ็ด · รสเปรี้ยว · รสมือแม่ — v0.4</span>
       <button class="btn" id="exportBtn" type="button">↓ สำรองสูตร</button>
       <label class="btn" for="importFile" style="cursor:pointer">↑ นำเข้า</label>
       <input id="importFile" type="file" accept="application/json" hidden>
@@ -691,6 +699,7 @@ footer{background:var(--ink); color:var(--wash); border-top:2px solid var(--ink)
         <button class="btn" id="dPrint">⎙ พิมพ์สูตร</button>
         <button class="btn" id="dEdit" hidden>✎ แก้ไข</button>
         <button class="btn btn-danger" id="dDelete" hidden>ลบสูตรนี้</button>
+        <button class="btn btn-gold" id="dShare" hidden>🌍 แชร์</button>
       </div>
       <p class="mono" id="dSourceWrap" style="font-size:12px;margin:0" hidden>ที่มา: <a class="source-link" id="dSource" href="#" target="_blank" rel="noopener">ดูต้นฉบับ ↗</a> <span style="opacity:.6">(เก็บไว้ดูส่วนตัว)</span></p>
     </div>
@@ -927,7 +936,195 @@ function matches(r){
   }
   return true;
 }
+/* social: เมนูจากทุกคน — อ่าน/แชร์/ถูกใจ/เก็บ ผ่าน Worker ตัวเดียวกับ relay */
+let view = "mine";
+let sharedCache = [];
+const sharedMine = (()=>{ try{ return JSON.parse(localStorage.getItem("krua-shared-mine") || "{}"); }catch(e){ return {}; } })();
+function saveSharedMine(){ try{ localStorage.setItem("krua-shared-mine", JSON.stringify(sharedMine)); }catch(e){} }
+const likedSet = new Set((()=>{ try{ return JSON.parse(localStorage.getItem("krua-liked") || "[]"); }catch(e){ return []; } })());
+function saveLiked(){ try{ localStorage.setItem("krua-liked", JSON.stringify([...likedSet])); }catch(e){} }
+function socialBase(){ return (cloud.url || DEFAULT_RELAY || "").replace(/\/+$/, ""); }
+function sharedMatches(r){
+  if(state.cat !== "all" && r.cat !== state.cat) return false;
+  if(state.q && !(r.title + " " + (r.desc || "")).toLowerCase().includes(state.q.toLowerCase())) return false;
+  return true;
+}
+function sharedCardHtml(r, i){
+  const liked = likedSet.has(r.id);
+  const mine = Object.values(sharedMine).some(m=>m && m.sharedId === r.id);
+  return `
+    <article class="card" style="animation-delay:${Math.min(i*60,420)}ms">
+      <div class="card-visual ${r.theme||"theme-leaf"} ${r.img?"has-img":""}">
+        ${r.img?`<img class="cover" src="${esc(r.img)}" alt="" loading="lazy">`:""}
+        <div class="card-top-row">
+          <span class="card-cat">${esc(r.cat || "")}${r.time ? ` · ${r.time} นาที` : ""}</span>
+          <button class="fav-btn${liked?" active":""}" data-like="${r.id}" aria-label="ถูกใจ${esc(r.title)}" aria-pressed="${liked}">👍</button>
+        </div>
+        <span class="big-letter" aria-hidden="true">${esc((r.title || "ส")[0] || "ส")}</span>
+        <span class="mono" style="position:relative;z-index:1;font-size:11px;opacity:.85">จากทุกคน</span>
+      </div>
+      <div class="card-body">
+        <h3>${esc(r.title)}</h3>
+        <p class="byline">โดย ${esc(r.by || "ไม่ประสงค์ออกนาม")} · 👍 ${r.likes || 0}${mine ? " · ของฉัน" : ""}</p>
+        <p class="card-desc">${esc(r.desc || "")}</p>
+        <div class="card-stats">
+          ${r.time ? `<span class="mini-meter">⏱ ${r.time} นาที</span>` : ""}
+          <span class="mini-meter chili-dots">🌶 ${r.spicy || 0}/3</span>
+        </div>
+        <div class="taste-strip">${tasteStrip(r.taste || {})}</div>
+        <div class="card-foot">
+          <button class="btn btn-leaf" data-sopen="${r.id}">เปิดสูตร</button>
+          <button class="btn" data-keep="${r.id}">＋ เก็บ</button>
+        </div>
+      </div>
+    </article>`;
+}
+function renderShared(){
+  $("#favCount").textContent = store.favs.length;
+  const list = sharedCache.filter(sharedMatches);
+  $("#sharedCount").textContent = sharedCache.length ? `(${sharedCache.length})` : "";
+  resultLine.textContent = list.length
+    ? `เมนูจากทุกคน ${list.length} สูตร — กด 👍 ให้กำลังใจ หรือ＋เก็บเข้าสมุดได้เลย`
+    : `ยังไม่มีสูตรที่ตรง — ลองเปลี่ยนคำค้น/หมวด หรือเป็นคนแรกที่แชร์!`;
+  $("#webBox").innerHTML = "";
+  grid.innerHTML = list.length ? list.map(sharedCardHtml).join("")
+    : `<div class="empty"><h3>ยังว่างอยู่</h3><p>ยังไม่มีใครแชร์สูตรที่ตรง — เปิดสูตรของตัวเองแล้วกด 🌍 แชร์เป็นคนแรกได้เลย</p></div>`;
+}
+async function fetchShared(){
+  const base = socialBase();
+  if(!base){ toast("ต่อเน็ตก่อนถึงจะดูของทุกคนได้"); return; }
+  const tab = $("#tabWorld"); tab.disabled = true;
+  try{
+    const r = await fetch(base + "/api/shared", {signal:sig12()});
+    if(!r.ok) throw 0;
+    const o = await r.json();
+    sharedCache = Array.isArray(o.items) ? o.items : [];
+    render();
+  }catch(e){ toast("ดึงเมนูทุกคนไม่ได้ — ลองใหม่ภายหลัง"); }
+  finally{ tab.disabled = false; }
+}
+function setView(v){
+  view = v;
+  $("#tabMine").setAttribute("aria-selected", String(v === "mine"));
+  $("#tabWorld").setAttribute("aria-selected", String(v === "world"));
+  if(v === "world") fetchShared();
+  render();
+}
+function openSharedDetail(id){
+  const r = sharedCache.find(x=>x.id === id); if(!r) return;
+  state.current = r; state.serves = r.serves || 2; state.sharedView = true;
+  $("#dTitle").textContent = r.title;
+  $("#dSub").textContent = `${r.cat || ""} · ${r.time || "?"} นาที · โดย ${r.by || "ไม่ประสงค์ออกนาม"} · 👍 ${r.likes || 0}`;
+  const dImg = $("#dImg");
+  if(r.img){ dImg.src = r.img; dImg.hidden = false; } else { dImg.removeAttribute("src"); dImg.hidden = true; }
+  const sw = $("#dSourceWrap"), sl = $("#dSource");
+  if(r.source){ sw.hidden = false; sl.href = r.source; sl.textContent = shortHost(r.source) + " ↗"; }
+  else sw.hidden = true;
+  $("#dDelete").hidden = true; $("#dEdit").hidden = true; $("#dShare").hidden = true;
+  paintDetail(); paintSharedFav();
+  dOverlay.classList.add("open"); $("#closeDetail").focus();
+}
+function paintSharedFav(){
+  const r = state.current;
+  const kept = r && sharedMine[r.id] && state.recipes.some(x=>x.id === sharedMine[r.id].recipeId);
+  $("#dFav").textContent = kept ? "เก็บไว้แล้ว ✓" : "＋ เก็บเข้าสมุดฉัน";
+}
+function keepShared(id){
+  const r = sharedCache.find(x=>x.id === id); if(!r) return;
+  const ex = sharedMine[id];
+  if(ex && state.recipes.some(x=>x.id === ex.recipeId)){ toast("สูตรนี้อยู่ในสมุดแล้ว"); openDetail(ex.recipeId); return; }
+  const themes = ["theme-leaf","theme-chili","theme-gold","theme-ink"];
+  const c = {
+    id:"my-" + Date.now(), title:r.title, latin:"SAVED · ส่วนตัว",
+    cat:CATS.includes(r.cat) ? r.cat : "ต้ม", time:r.time || 20, diff:r.diff || "ง่าย",
+    serves:r.serves || 2, serveLabel:r.serveLabel || "", spicy:r.spicy || 0,
+    desc:r.desc || "", theme:r.theme || themes[state.recipes.length % 4], letter:(r.title || "ส")[0],
+    taste:{...(r.taste || {})}, ings:[...(r.ings || [])], steps:[...(r.steps || [])],
+    mine:true, source:r.source || "", img:r.img || "", author:r.author || "", updatedAt:Date.now()
+  };
+  state.recipes.unshift(c);
+  const all = store.custom; all.unshift(c); store.custom = all;
+  sharedMine[id] = {recipeId:c.id}; saveSharedMine();
+  scheduleSync(); render(); toast("เก็บเข้าสมุดแล้ว");
+  openDetail(c.id);
+}
+async function toggleLike(id, btn){
+  const r = sharedCache.find(x=>x.id === id); if(!r) return;
+  if(likedSet.has(id)){ toast("ให้กำลังใจไปแล้ว ❤️"); return; }
+  if(btn) btn.disabled = true;
+  try{
+    const res = await fetch(socialBase() + "/api/shared/" + encodeURIComponent(id) + "/like", {method:"POST", signal:sig12()});
+    if(!res.ok) throw 0;
+    const o = await res.json();
+    r.likes = (o && typeof o.likes === "number") ? o.likes : ((r.likes || 0) + 1);
+    likedSet.add(id); saveLiked();
+    render();
+  }catch(e){ toast("กดไม่ได้ตอนนี้ — ลองใหม่ภายหลัง"); if(btn) btn.disabled = false; }
+}
+async function shareRecipe(r, by){
+  const base = socialBase();
+  if(!base) throw new Error("no base");
+  const res = await fetch(base + "/api/shared", {method:"POST", headers:{"content-type":"application/json"}, body:JSON.stringify({title:r.title, desc:r.desc, cat:r.cat, time:r.time, diff:r.diff, serves:r.serves, serveLabel:r.serveLabel, spicy:r.spicy, taste:r.taste, ings:r.ings, steps:r.steps, img:r.img, author:r.author, source:r.source, by}), signal:sig12()});
+  if(res.status === 429) throw new Error("rate");
+  if(!res.ok) throw new Error("http " + res.status);
+  const o = await res.json();
+  if(!o.ok) throw new Error("bad");
+  return o;
+}
+async function unshareRecipe(r){
+  const sid = r.sharedId;
+  const m = sid && sharedMine[sid];
+  if(!sid || !m){ r.sharedId = null; paintShareBtn(); return; }
+  if(!confirm("เลิกแชร์สูตรนี้? คนอื่นจะไม่เห็นแล้ว")) return;
+  try{
+    await fetch(socialBase() + "/api/shared/" + encodeURIComponent(sid), {method:"DELETE", headers:{"content-type":"application/json"}, body:JSON.stringify({delToken:m.delToken}), signal:sig12()});
+  }catch(e){}
+  delete sharedMine[sid]; saveSharedMine();
+  r.sharedId = null;
+  const all = store.custom; const ix = all.findIndex(x=>x.id === r.id); if(ix > -1){ all[ix] = r; store.custom = all; }
+  scheduleSync(); paintShareBtn(); render(); toast("เลิกแชร์แล้ว");
+}
+function paintShareBtn(){
+  const b = $("#dShare"); if(!b) return;
+  const r = state.current;
+  if(!r || !r.mine || state.sharedView){ b.hidden = true; return; }
+  b.hidden = false;
+  b.textContent = r.sharedId ? "✓ แชร์อยู่ · เลิกแชร์" : "🌍 แชร์ให้ทุกคน";
+}
+function openAny(id){
+  if(view === "world"){
+    const r = sharedCache.find(x=>x.id === id);
+    if(r){ openSharedDetail(id); return; }
+  }
+  openDetail(id);
+}
+$("#tabMine").onclick = ()=>setView("mine");
+$("#tabWorld").onclick = ()=>setView("world");
+$("#dShare").onclick = async ()=>{
+  const r = state.current;
+  if(!r || !r.mine) return;
+  if(r.sharedId){ unshareRecipe(r); return; }
+  let nick = "";
+  try{ nick = localStorage.getItem("krua-nick") || ""; }catch(e){}
+  const by = prompt("โชว์ชื่ออะไรข้างสูตร?", nick || "แม่ครัวไม่ประสงค์ออกนาม");
+  if(by === null) return;
+  const name = by.trim().slice(0, 24) || "ไม่ประสงค์ออกนาม";
+  try{ localStorage.setItem("krua-nick", name); }catch(e){}
+  const b = $("#dShare"); b.disabled = true;
+  try{
+    const o = await shareRecipe(r, name);
+    r.sharedId = o.item.id;
+    sharedMine[o.item.id] = {recipeId:r.id, delToken:o.delToken};
+    saveSharedMine();
+    const all = store.custom; const ix = all.findIndex(x=>x.id === r.id); if(ix > -1){ all[ix] = r; store.custom = all; }
+    scheduleSync();
+    paintShareBtn(); render();
+    toast("แชร์ให้ทุกคนแล้ว 🎉");
+  }catch(e){ toast(e && e.message === "rate" ? "แชร์ได้วันละ 5 สูตร — พรุ่งนี้ค่อยมาใหม่" : "แชร์ไม่ได้ตอนนี้ — ลองใหม่ภายหลัง"); }
+  finally{ b.disabled = false; }
+};
 function render(){
+  if(view === "world"){ renderShared(); return; }
   let list = state.recipes.filter(matches);
   if(state.sort==="fast") list = [...list].sort((a,b)=>a.time-b.time);
   if(state.sort==="spicy") list = [...list].sort((a,b)=>b.spicy-a.spicy);
@@ -1013,11 +1210,11 @@ $("#fridgeInput").addEventListener("keydown", e=>{ if(e.key === "Enter"){ e.prev
 let shuffling = false;
 $("#shuffleBtn").onclick = ()=>{
   if(shuffling) return;
-  const pool = state.recipes.filter(matches);
+  const pool = (view === "world" ? sharedCache.filter(sharedMatches) : state.recipes.filter(matches));
   if(!pool.length){ toast("ไม่มีสูตรให้สุ่ม — ลองล้างตัวกรองก่อน"); return; }
   const pick = pool[Math.floor(Math.random()*pool.length)];
   const slot = $("#shuffleSlot");
-  if(matchMedia("(prefers-reduced-motion: reduce)").matches){ toast(`คืนนี้กิน “${pick.title}”!`); openDetail(pick.id); return; }
+  if(matchMedia("(prefers-reduced-motion: reduce)").matches){ toast(`คืนนี้กิน “${pick.title}”!`); openAny(pick.id); return; }
   shuffling = true; $("#shuffleBtn").disabled = true;
   let ticks = 0; const total = 14;
   const step = ()=>{
@@ -1027,7 +1224,7 @@ $("#shuffleBtn").onclick = ()=>{
       shuffling = false; $("#shuffleBtn").disabled = false;
       slot.textContent = `🎰 ตกที่ “${pick.title}”!`;
       toast(`คืนนี้กิน “${pick.title}”!`);
-      setTimeout(()=>openDetail(pick.id), 650);
+      setTimeout(()=>openAny(pick.id), 650);
     } else setTimeout(step, 60 + ticks*22);
   };
   step();
@@ -1244,6 +1441,12 @@ $("#favToggle").onclick = (e)=>{
   if(state.favOnly && !store.favs.length) toast("ยังไม่มีสูตรที่บันทึก — กด ♡ ที่การ์ดไหนก็ได้");
 };
 grid.addEventListener("click", e=>{
+  const lk = e.target.closest("[data-like]");
+  if(lk){ toggleLike(lk.dataset.like, lk); return }
+  const so = e.target.closest("[data-sopen]");
+  if(so){ openSharedDetail(so.dataset.sopen); return }
+  const kp = e.target.closest("[data-keep]");
+  if(kp){ keepShared(kp.dataset.keep); return }
   const f = e.target.closest("[data-fav]");
   if(f){ toggleFav(f.dataset.fav); return }
   const o = e.target.closest("[data-open]");
@@ -1267,7 +1470,7 @@ function scaleIng(text, base, next){
 }
 function openDetail(id){
   const r = state.recipes.find(x=>x.id===id); if(!r) return;
-  state.current = r; state.serves = r.serves||2;
+  state.current = r; state.serves = r.serves||2; state.sharedView = false;
   $("#dTitle").textContent = r.title;
   $("#dSub").textContent = `${r.latin||""} · ${r.cat} · ${r.time} นาที · ${r.diff||"ง่าย"} · เผ็ด ${r.spicy||0}/3${r.author?" · โดย "+r.author:""}`;
   const dImg = $("#dImg");
@@ -1278,7 +1481,7 @@ function openDetail(id){
   else{ sw.hidden = true }
   $("#dDelete").hidden = !r.mine;
   $("#dEdit").hidden = !r.mine;
-  paintDetail(); paintFavBtn();
+  paintDetail(); paintFavBtn(); paintShareBtn();
   dOverlay.classList.add("open"); $("#closeDetail").focus();
 }
 function shortHost(u){ try{ return new URL(u).hostname.replace(/^www\./,"") }catch{ return "ดูต้นฉบับ" } }
@@ -1493,7 +1696,7 @@ function paintTips(r){
   $("#dTips").innerHTML = tipsFor(r).map(t=>`<li>${esc(t)}</li>`).join("");
 }
 function paintFavBtn(){ $("#dFav").textContent = isFav(state.current.id) ? "♥ บันทึกไว้แล้ว" : "♡ บันทึกสูตรนี้" }
-$("#dFav").onclick = ()=>toggleFav(state.current.id);
+$("#dFav").onclick = ()=>{ if(state.sharedView && state.current){ keepShared(state.current.id); return; } toggleFav(state.current.id); };
 $("#dPrint").onclick = ()=>window.print();
 $("#dEdit").onclick = ()=>{
   if(!state.current?.mine) return;
