@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#16432E">
 <title>ครัวบ้านๆ — สมุดสูตรอาหารไทย</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -40,6 +41,12 @@ body{
 a{color:inherit}
 button{font-family:inherit}
 :focus-visible{outline:3px solid var(--turmeric); outline-offset:3px; border-radius:8px}
+html{-webkit-text-size-adjust:100%}
+html, body{overflow-x:clip}
+button, a, input, select, textarea, label{touch-action:manipulation}
+button, a{-webkit-tap-highlight-color:transparent}
+.card-body h3, .featured-visual h2, .sheet-head h2, .wn-info b, .toast, .hero h1{overflow-wrap:anywhere}
+.search input, .fridge input, .form-grid input, .form-grid select, .form-grid textarea, .timer-custom input, .link-row input, select{font-size:16px}
 
 /* ---------- top bar ---------- */
 .topbar{
@@ -223,6 +230,20 @@ select{
 .result-line{font-family:var(--font-mono); font-size:12px; margin:0 0 12px; opacity:.7}
 #webBox{display:flex; gap:8px; align-items:center; flex-wrap:wrap; margin:0 0 14px}
 #webBox:empty{display:none}
+#wnBox{margin:18px 0 4px; background:var(--paper); border:2px solid var(--ink); border-radius:var(--radius); box-shadow:4px 4px 0 var(--ink); overflow:hidden}
+#wnBox[hidden]{display:none}
+.wn-head{padding:12px 16px; background:var(--leaf); color:#F2F4E6; font-size:14px; font-weight:700; display:flex; gap:10px; align-items:center; flex-wrap:wrap}
+.wn-head .mono{font-weight:400; opacity:.75; font-size:11px}
+#wnList{display:grid}
+.wn-row{display:flex; gap:12px; align-items:center; justify-content:space-between; padding:12px 16px; border-top:1.5px dashed var(--line)}
+.wn-row:first-child{border-top:0}
+.wn-info{display:grid; gap:3px; min-width:0}
+.wn-info b{font-size:15px}
+.wn-info span{font-size:13px; color:rgba(23,33,28,.72); line-height:1.55}
+.wn-meta{font-size:11px !important; opacity:.7}
+.wn-btns{display:flex; gap:8px; flex-shrink:0}
+#wnStatus{margin:0; padding:10px 16px 12px; font-size:11px; opacity:.65}
+@media (max-width:640px){ .wn-row{flex-direction:column; align-items:stretch} .wn-btns{justify-content:flex-end} }
 .grid{display:grid; grid-template-columns:repeat(3,1fr); gap:18px}
 .card{
   background:var(--paper); border:2px solid var(--ink); border-radius:var(--radius);
@@ -400,13 +421,40 @@ footer{background:var(--ink); color:var(--wash); border-top:2px solid var(--ink)
   .two-col{grid-template-columns:1fr}
 }
 @media (max-width:640px){
-  .topbar-inner{flex-wrap:wrap}
+  .topbar-inner{flex-wrap:wrap; gap:8px; padding:10px 12px}
+  .logo-mark{width:36px; height:36px; font-size:18px}
+  .logo-text b{font-size:16px}
+  .logo-text span{display:none}
   .search-wrap{order:3; flex-basis:100%}
-  .grid{grid-template-columns:1fr}
-  .hero-copy{padding:22px 20px}
+  .hero{padding:16px 12px 6px; gap:14px}
+  .hero-copy{padding:22px 18px}
+  #shuffleBtn{flex:1}
+  .fridge{flex:1 1 100%}
+  .main{padding:14px 12px 32px}
+  .grid{grid-template-columns:1fr; gap:14px}
+  .cat-row{flex-wrap:nowrap; overflow-x:auto; margin:0 -12px; padding:4px 12px 8px; scrollbar-width:thin}
+  .cat{flex-shrink:0}
+  .overlay{padding:12px 8px}
+  .sheet{border-radius:16px; box-shadow:4px 4px 0 var(--ink)}
+  .sheet-head{padding:16px 16px 12px}
+  .sheet-head h2{font-size:23px}
+  .sheet-body{padding:14px 14px 18px; gap:14px}
+  .x{width:44px; height:44px}
   .form-2{grid-template-columns:1fr}
   .taste-grid{grid-template-columns:repeat(2,1fr)}
+  .featured-visual{min-height:180px; padding:18px}
   .featured-visual::before{font-size:130px}
+  .featured-body{padding:14px 16px 16px}
+  #dock{left:12px; right:12px; bottom:12px; width:auto}
+  .toast{bottom:auto; top:64px}
+  .foot-inner{padding:22px 14px}
+  .empty{padding:30px 16px}
+}
+@media (pointer:coarse){
+  .btn, .tag, .cat, .tchip, .tbtn, .step-timer{padding-top:12px; padding-bottom:12px; min-height:44px}
+  .fav-btn{width:44px; height:44px}
+  .x{width:44px; height:44px}
+  .card-foot .btn{padding:12px}
 }
 @media (prefers-reduced-motion: reduce){
   *,*::before,*::after{animation:none !important; transition:none !important}
@@ -515,6 +563,11 @@ footer{background:var(--ink); color:var(--wash); border-top:2px solid var(--ink)
   <p class="result-line" id="resultLine"></p>
   <div id="webBox"></div>
   <div class="grid" id="grid"></div>
+  <section id="wnBox" hidden aria-live="polite" aria-label="ผลค้นจาก Wongnai">
+    <div class="wn-head">🔎 ผลจาก Wongnai <span class="mono" id="wnQ"></span><span class="mono">กดดึงเพื่อเอามาตรวจก่อนจด · ที่มายังอยู่ครบ</span></div>
+    <div id="wnList"></div>
+    <p class="mono" id="wnStatus"></p>
+  </section>
 </main>
 
 <footer>
@@ -921,7 +974,96 @@ document.querySelectorAll("[data-dots]").forEach(el=>{
 });
 
 /* events */
-$("#search").addEventListener("input", e=>{ state.q = e.target.value.trim(); render() });
+$("#search").addEventListener("input", e=>{ state.q = e.target.value.trim(); render(); queueWnSearch(); });
+/* wongnai search: ในสมุดไม่เจอ → ไปค้นรายการจาก wongnai มาให้เลือกดึง */
+let wnSeq = 0, wnTimer = null, wnItems = [];
+function wnSearchResults(html){
+  try{
+    const root = parseWnStore(html);
+    const arr = root && root.store && root.store.recipes && root.store.recipes.value && root.store.recipes.value.data;
+    if(!Array.isArray(arr)) return [];
+    return arr.filter(r=>r && r.id && r.title && (!r.state || r.state === "Published")).slice(0, 8).map(r=>({
+      id:String(r.id),
+      url:"https://www.wongnai.com/" + String(r.url || ("recipes/ugc/" + r.id)).replace(/^\//, ""),
+      title:String(r.title), desc:String(r.description || ""),
+      mins:((+r.prepTimeH||0)*60 + (+r.prepTimeM||0)) + ((+r.cookTimeH||0)*60 + (+r.cookTimeM||0)),
+      serves:String(r.yield || "")
+    }));
+  }catch(e){ return []; }
+}
+function setWnStatus(t){ const el = $("#wnStatus"); if(el) el.textContent = t; }
+async function fetchHtmlBoth(url){
+  const sig = (typeof AbortSignal !== "undefined" && AbortSignal.timeout) ? AbortSignal.timeout(20000) : undefined;
+  try{
+    const r = await fetch(url, {signal:sig});
+    if(!r.ok) throw 0;
+    return await r.text();
+  }catch(e){
+    const r2 = await fetch("https://api.allorigins.win/raw?url=" + encodeURIComponent(url), {signal:sig});
+    if(!r2.ok) throw new Error("fetch failed");
+    const h2 = await r2.text();
+    if(!/<\s*html|ld\+json|window\._wn/i.test(h2)) throw new Error("bad html");
+    return h2;
+  }
+}
+function queueWnSearch(){
+  clearTimeout(wnTimer);
+  const q = state.q.trim();
+  if(q.length < 2){ wnSeq++; $("#wnBox").hidden = true; $("#wnList").innerHTML = ""; wnItems = []; return; }
+  wnTimer = setTimeout(()=>{ fetchWnSearch(q, ++wnSeq); }, 650);
+}
+async function fetchWnSearch(query, seq){
+  const box = $("#wnBox"), list = $("#wnList");
+  box.hidden = false;
+  $("#wnQ").textContent = "“" + query + "”";
+  list.innerHTML = ""; wnItems = [];
+  setWnStatus("กำลังค้น Wongnai …");
+  const target = "https://www.wongnai.com/recipes?q=" + encodeURIComponent(query);
+  let html = "";
+  try{ html = await fetchHtmlBoth(target); }
+  catch(e){
+    if(seq !== wnSeq) return;
+    setWnStatus("ค้นอัตโนมัติไม่ได้ — กดเปิดผลค้นแล้วก็อปซอร์สโค้ดมาวางก็ได้");
+    list.innerHTML = `<a class="btn btn-ghost" style="padding:8px 14px" target="_blank" rel="noopener" href="${target}">เปิดผลค้นใน Wongnai ↗</a>`;
+    return;
+  }
+  if(seq !== wnSeq) return;
+  const items = wnSearchResults(html);
+  if(!items.length){ setWnStatus("ไม่เจอสูตรที่ตรงใน Wongnai — ลองคำอื่น หรือจดสูตรเองได้เลย"); return; }
+  wnItems = items;
+  setWnStatus(`เจอ ${items.length} สูตร — กดดึงเพื่อเอามาตรวจก่อนจดลงสมุด (ที่มายังอยู่ครบ)`);
+  list.innerHTML = items.map((r,i)=>`
+    <div class="wn-row">
+      <div class="wn-info">
+        <b>${esc(r.title)}</b>
+        ${r.desc ? `<span>${esc(r.desc.slice(0,110))}${r.desc.length > 110 ? "…" : ""}</span>` : ""}
+        <span class="mono wn-meta">${r.mins ? ("⏱ " + r.mins + " นาที") : ""}${r.mins && r.serves ? " · " : ""}${r.serves ? ("สำหรับ " + esc(r.serves)) : ""}</span>
+      </div>
+      <div class="wn-btns">
+        <button class="btn btn-leaf" data-wn="${i}" style="padding:8px 14px">↓ ดึง</button>
+        <a class="btn btn-ghost" style="padding:8px 14px" target="_blank" rel="noopener" href="${esc(r.url)}">ต้นฉบับ ↗</a>
+      </div>
+    </div>`).join("");
+}
+$("#wnList").addEventListener("click", async e=>{
+  const b = e.target.closest("[data-wn]"); if(!b) return;
+  const r = wnItems[+b.dataset.wn]; if(!r) return;
+  b.disabled = true;
+  const old = b.textContent; b.textContent = "กำลังดึง…";
+  try{
+    const html = await fetchHtmlBoth(r.url);
+    const d = extractRecipeFromHtml(html, r.url);
+    if(!d.title && !d.ings.length && !d.steps.length) throw 0;
+    openAdd();
+    fillRecipeForm(d, r.url);
+    if(!tasteTouched) applyAutoTaste();
+    toast("ดึงสูตรมาให้ตรวจแล้ว — ถูกใจค่อยกดจดลงสมุด");
+  }catch(err){
+    toast("ดึงสูตรนี้ไม่ได้ — เปิดต้นฉบับแล้วก็อปซอร์สโค้ดมาวางแทนได้");
+  }finally{
+    b.disabled = false; b.textContent = old;
+  }
+});
 $("#catRow").addEventListener("click", e=>{
   const b = e.target.closest(".cat"); if(!b) return;
   state.cat = b.dataset.cat;
@@ -938,6 +1080,7 @@ $("#craveRow").addEventListener("click", e=>{
 $("#sort").addEventListener("change", e=>{ state.sort = e.target.value; render() });
 $("#clearFilters").onclick = ()=>{
   state.q=""; $("#search").value=""; state.cat="all"; state.crave.clear(); state.sort="default"; $("#sort").value="default"; state.favOnly=false; state.fridge=[]; $("#fridgeInput").value=""; $("#shuffleSlot").textContent="";
+  clearTimeout(wnTimer); wnSeq++; $("#wnBox").hidden = true; $("#wnList").innerHTML = ""; wnItems = [];
   document.querySelectorAll(".cat").forEach((x,i)=>x.setAttribute("aria-pressed", i===0?"true":"false"));
   document.querySelectorAll(".tag").forEach(x=>x.setAttribute("aria-pressed","false"));
   const ft=$("#favToggle"); ft.setAttribute("aria-pressed","false");
