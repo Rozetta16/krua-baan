@@ -137,6 +137,14 @@ button{font-family:inherit}
 .tag:hover{transform:rotate(0deg) translateY(-2px)}
 .tag[aria-pressed="true"]{background:var(--turmeric); box-shadow:3px 3px 0 rgba(0,0,0,.5)}
 .hero-meta{display:flex; gap:18px; margin-top:18px; font-family:var(--font-mono); font-size:12px; opacity:.9}
+.hero-tools{display:flex; gap:10px; flex-wrap:wrap; align-items:stretch; margin-top:16px; position:relative; z-index:1}
+.fridge{flex:1; min-width:220px; display:flex; gap:8px; align-items:center; background:rgba(255,255,255,.12); border:1.5px dashed rgba(255,255,255,.45); border-radius:14px; padding:6px 6px 6px 12px; font-size:13px; font-weight:700}
+.fridge input{flex:1; min-width:0; border:0; outline:0; background:transparent; color:#F2F4E6; font-family:inherit; font-size:14px}
+.fridge input::placeholder{color:rgba(242,244,230,.55)}
+.fridge .btn{box-shadow:none; padding:8px 14px}
+#shuffleSlot{font-family:var(--font-mono); font-size:12px; margin:10px 0 0; min-height:18px; color:var(--turmeric-soft); position:relative; z-index:1}
+#shuffleSlot:empty{display:none}
+.btn:disabled{opacity:.55; cursor:wait; transform:none}
 .hero-meta b{font-size:18px; display:block}
 
 /* featured */
@@ -428,7 +436,7 @@ footer{background:var(--ink); color:var(--wash); border-top:2px solid var(--ink)
 <section class="hero" aria-label="ตัวช่วยเลือกเมนูเย็นนี้">
   <div class="hero-copy">
     <span class="hero-eyebrow"><i></i> สมุดสูตรฉบับคนทำกินเอง · พร้อมทำทุกเมนู</span>
-    <h1>เย็นนี้<br>อยากกินรส<em>ไหน?</em></h1>
+    <h1><span id="mealWord">เย็นนี้</span><br>อยากกินรส<em>ไหน?</em></h1>
     <p class="hero-sub">ไม่ต้องเปิดดูทีละสูตร — จิ้มรสที่อยากกิน แล้วสมุดจะเหลือแต่เมนูที่ตรงปากคืนนี้ ทำได้จริงจากของในตลาดหน้าปากซอย</p>
     <p class="crave-label">— เลือกรสที่อยากกินวันนี้ —</p>
     <div class="crave-row" id="craveRow" role="group" aria-label="เลือกรสที่อยากกิน">
@@ -438,6 +446,14 @@ footer{background:var(--ink); color:var(--wash); border-top:2px solid var(--ink)
       <button class="tag" style="--tilt:2deg" data-crave="fast" aria-pressed="false">ทำไว 20 นาที<small>รีบแต่ต้องอร่อย</small></button>
       <button class="tag" style="--tilt:-1.5deg" data-crave="easy" aria-pressed="false">มือใหม่<small>พลาดยาก ล้างน้อย</small></button>
     </div>
+    <div class="hero-tools">
+      <button class="btn btn-gold" id="shuffleBtn">🎲 ขี้เกียจคิด สุ่มเลย</button>
+      <label class="fridge">🧺 มีของในตู้:
+        <input id="fridgeInput" placeholder="พิมพ์ของที่มี เช่น ไข่, หมู, กะเพรา" autocomplete="off">
+        <button class="btn btn-leaf" id="fridgeGo" type="button">หา</button>
+      </label>
+    </div>
+    <p class="mono" id="shuffleSlot" aria-live="polite"></p>
     <div class="hero-meta">
       <div><b id="statCount">9</b>สูตรในสมุด</div>
       <div><b id="statTime">≤45</b>นานสุดในสมุด</div>
@@ -748,7 +764,7 @@ const store = {
 };
 
 let state = {
-  q:"", cat:"all", crave:new Set(), sort:"default", favOnly:false,
+  q:"", cat:"all", crave:new Set(), sort:"default", favOnly:false, fridge:[],
   recipes:[...store.custom, ...BASE_RECIPES],
   current:null, serves:2, timerId:null, timerLeft:0,
 };
@@ -777,6 +793,7 @@ function tasteStrip(t){
 function matches(r){
   if(state.favOnly && !isFav(r.id)) return false;
   if(state.cat!=="all" && r.cat!==state.cat) return false;
+  if(state.fridge.length && recipeScore(r) === 0) return false;
   if(state.q){
     const q = state.q.toLowerCase();
     const hay = (r.title+" "+(r.desc||"")+" "+r.ings.join(" ")+" "+(r.source||"")+" "+(r.author||"")).toLowerCase();
@@ -796,6 +813,7 @@ function render(){
   if(state.sort==="fast") list = [...list].sort((a,b)=>a.time-b.time);
   if(state.sort==="spicy") list = [...list].sort((a,b)=>b.spicy-a.spicy);
   if(state.sort==="easy"){ const w={ง่าย:0,"ปานกลาง":1,"ท้าทาย":2}; list=[...list].sort((a,b)=>(w[a.diff]??9)-(w[b.diff]??9)) }
+  if(state.fridge.length && state.sort === "default") list = [...list].sort((a,b)=>recipeScore(b)-recipeScore(a));
   $("#favCount").textContent = store.favs.length;
   $("#statCount").textContent = state.recipes.length;
   $("#statTime").textContent = "≤" + Math.max(0, ...state.recipes.map(r=>+r.time||0));
@@ -803,6 +821,7 @@ function render(){
     ? `เจอ ${list.length} สูตร ${state.cat!=="all"?"· หมวด"+state.cat+" ":""}${state.q?`· “${state.q}”`:""} — จิ้มเปิดสูตรแล้วทำตามได้เลย`
     : `ไม่เจอสูตรที่ตรง — ลองล้างตัวกรอง หรือจดสูตรใหม่ลงสมุดเองเลย`;
   const wq = state.q.trim();
+  if(state.fridge.length) resultLine.textContent = `ของที่มี ${state.fridge.join(" · ")} → เจอ ${list.length} สูตรที่เข้ากัน (เรียงจากตรงที่สุด)${state.cat!=="all" ? ` · หมวด${state.cat}` : ""}`;
   $("#webBox").innerHTML = wq
     ? `<span class="mono" style="font-size:12px;opacity:.7">อยากค้นต่อนอกสมุด? เอาลิงก์ที่เจอมาดึงเข้าสมุดได้เลย →</span>
        <a class="btn btn-ghost" style="padding:7px 13px" target="_blank" rel="noopener" href="https://www.google.com/search?q=${encodeURIComponent(wq + " สูตรอาหาร วิธีทำ")}">Google ↗</a>
@@ -826,6 +845,7 @@ function render(){
           <span class="mini-meter">⏱ ${r.time} นาที</span>
           <span class="mini-meter">· ${esc(r.diff||"ง่าย")}</span>
           <span class="mini-meter chili-dots" title="ความเผ็ด ${r.spicy}/3">${chili(r.spicy||0)}</span>
+          ${state.fridge.length?`<span class="mini-meter">🧺 ตรง ${recipeScore(r)}/${state.fridge.length}</span>`:""}
           ${r.source?'<span class="badge-src">📎 มีต้นฉบับ</span>':""}
         </div>
         <div class="taste-strip" aria-label="รสชาติ">${tasteStrip(r.taste||{})}</div>
@@ -842,6 +862,57 @@ function render(){
 /* ticker: เกร็ดครัวสั้นๆ วิ่งวน */
 const TICKER_TIPS = ["ทริกครัว <b>ข้าวค้างคืน</b> ผัดถึงจะร่วน","มะนาวต้อง <b>บีบนอกเตา</b> โดนร้อนจัดแล้วขม","ของไม่ติดกระทะ ถ้า <b>กระทะร้อนก่อนน้ำมัน</b>","น้ำซุปใสๆ <b>ช้อนฟองทิ้ง</b> บ่อยๆ","เกลือให้ <b>ทีละนิด</b> แก้เค็มยากกว่าแก้จืด","ทอดกรอบไม่อมน้ำมัน <b>อย่าใส่แน่นกระทะ</b>","เนื้อย่างพัก <b>5 นาที</b> ก่อนหั่น น้ำฉ่ำกว่า","กะทิเอาแค่ <b>เดือดขอบหม้อ</b> พล่านแล้วแตกมัน","ยำแล้ว <b>เสิร์ฟทันที</b> ทิ้งไว้น้ำออก รสจืด","ลวกผักเสร็จ <b>น็อกน้ำเย็น</b> สีเขียวไม่ดำ"];
 $("#ticker").innerHTML = [...TICKER_TIPS, ...TICKER_TIPS].map(t=>`<span>${t}</span>·`).join("");
+
+/* hero tools: ทักตามเวลา + สุ่มเมนู + หาจากของในตู้ */
+(function(){
+  const hr = new Date().getHours();
+  $("#mealWord").textContent = hr >= 5 && hr < 11 ? "เช้านี้" : hr < 16 ? "เที่ยงนี้" : hr < 22 ? "เย็นนี้" : "ดึกแล้ว";
+})();
+const FRIDGE_UNITS = /^(ฟอง|ตัว|ช้อน|ช้อนโต๊ะ|ช้อนชา|ถ้วย|ถ้วยตวง|กำ|กรัม|กิโล|ขีด|ลูก|ใบ|ต้น|เม็ด|กลีบ|หัว|ก้อน|ถุง|ซอง|ห่อ|ขวด|มล|ลิตร|แผ่น|ชิ้น|แท่ง|เส้น|ไม้|จาน|แพ็ค|ครึ่ง|ประมาณ)$/;
+function parseFridge(raw){
+  return [...new Set(
+    String(raw||"").split(/[,，、\/+|]/).map(s=>s.trim()).filter(Boolean)
+      .flatMap(s=>s.split(/\s+/)).map(s=>s.toLowerCase().trim())
+      .filter(s=>s && s.length > 1 && !/^[\d.\/\-]+$/.test(s) && !FRIDGE_UNITS.test(s))
+  )].slice(0, 12);
+}
+function recipeScore(r){
+  if(!state.fridge.length) return 0;
+  const hay = (r.ings||[]).join(" ").toLowerCase();
+  let n = 0;
+  for(const t of state.fridge) if(t && hay.includes(t)) n++;
+  return n;
+}
+function applyFridge(){
+  state.fridge = parseFridge($("#fridgeInput").value);
+  if(!state.fridge.length){ toast("พิมพ์ของที่มีก่อน เช่น ไข่, หมู, กะเพรา"); return; }
+  $("#shuffleSlot").textContent = "";
+  render();
+}
+$("#fridgeGo").onclick = applyFridge;
+$("#fridgeInput").addEventListener("keydown", e=>{ if(e.key === "Enter"){ e.preventDefault(); applyFridge(); } });
+let shuffling = false;
+$("#shuffleBtn").onclick = ()=>{
+  if(shuffling) return;
+  const pool = state.recipes.filter(matches);
+  if(!pool.length){ toast("ไม่มีสูตรให้สุ่ม — ลองล้างตัวกรองก่อน"); return; }
+  const pick = pool[Math.floor(Math.random()*pool.length)];
+  const slot = $("#shuffleSlot");
+  if(matchMedia("(prefers-reduced-motion: reduce)").matches){ toast(`คืนนี้กิน “${pick.title}”!`); openDetail(pick.id); return; }
+  shuffling = true; $("#shuffleBtn").disabled = true;
+  let ticks = 0; const total = 14;
+  const step = ()=>{
+    ticks++;
+    slot.textContent = "🎰 " + pool[Math.floor(Math.random()*pool.length)].title + (ticks >= total ? "" : " …");
+    if(ticks >= total){
+      shuffling = false; $("#shuffleBtn").disabled = false;
+      slot.textContent = `🎰 ตกที่ “${pick.title}”!`;
+      toast(`คืนนี้กิน “${pick.title}”!`);
+      setTimeout(()=>openDetail(pick.id), 650);
+    } else setTimeout(step, 60 + ticks*22);
+  };
+  step();
+};
 
 /* paint dots in hero */
 document.querySelectorAll("[data-dots]").forEach(el=>{
@@ -866,7 +937,7 @@ $("#craveRow").addEventListener("click", e=>{
 });
 $("#sort").addEventListener("change", e=>{ state.sort = e.target.value; render() });
 $("#clearFilters").onclick = ()=>{
-  state.q=""; $("#search").value=""; state.cat="all"; state.crave.clear(); state.sort="default"; $("#sort").value="default"; state.favOnly=false;
+  state.q=""; $("#search").value=""; state.cat="all"; state.crave.clear(); state.sort="default"; $("#sort").value="default"; state.favOnly=false; state.fridge=[]; $("#fridgeInput").value=""; $("#shuffleSlot").textContent="";
   document.querySelectorAll(".cat").forEach((x,i)=>x.setAttribute("aria-pressed", i===0?"true":"false"));
   document.querySelectorAll(".tag").forEach(x=>x.setAttribute("aria-pressed","false"));
   const ft=$("#favToggle"); ft.setAttribute("aria-pressed","false");
