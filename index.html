@@ -1087,6 +1087,39 @@ function wnSearchResults(html){
     }));
   }catch(e){ return []; }
 }
+/* wnSearchViaJina: ช่องสำรอง — อ่านรายการผลค้นจากข้อความ (ไม่ต้องใช้ HTML) */
+async function wnSearchViaJina(query){
+  const ju = "https://r.jina.ai/" + encodeURI("https://www.wongnai.com/recipes?q=" + query);
+  let t = "";
+  try{
+    const r = await fetch(ju, {signal:sig12()});
+    if(r.ok) t = await r.text();
+  }catch(e){}
+  if(!t || t.length < 500){
+    try{
+      const r2 = await fetch("https://api.allorigins.win/raw?url=" + encodeURIComponent(ju), {signal:sig12()});
+      if(r2.ok) t = await r2.text();
+    }catch(e){}
+  }
+  if(!t || t.length < 500) throw new Error("jina failed");
+  const seen = new Set(); const out = [];
+  const re = /\[([^\]\n]{2,80})\]\((https:\/\/www\.wongnai\.com\/recipes\/[A-Za-z0-9\/\-_]+)(?:\s+"[^"]*")?\)/g;
+  let m;
+  while((m = re.exec(t))){
+    let u = m[2];
+    if(/\/tags\/|\/drafts|\?q=|food-tips|cooking\/users/.test(u)) continue;
+    if(!/\/recipes\/(ugc\/[a-f0-9]+|[^\/\?]+)/.test(u)) continue;
+    u = u.split("?")[0];
+    if(seen.has(u)) continue;
+    seen.add(u);
+    const title = m[1].replace(/^[!\s]+/, "").trim();
+    if(title.length < 2 || /^(อ่าน|ดูทั้งหมด|สูตรอาหาร|หน้าแรก|เขียนสูตร)/.test(title)) continue;
+    out.push({id:u, url:u, title, desc:"", mins:0, serves:""});
+    if(out.length >= 8) break;
+  }
+  if(!out.length) throw new Error("no links");
+  return out;
+}
 function setWnStatus(t){ const el = $("#wnStatus"); if(el) el.textContent = t; }
 async function fetchHtmlBoth(url){
   return (await fetchHtmlChain(url, {allowText:false})).body;
@@ -1108,7 +1141,29 @@ async function fetchWnSearch(query, seq){
   try{ html = await fetchHtmlBoth(target); }
   catch(e){
     if(seq !== wnSeq) return;
-    setWnStatus("ค้นอัตโนมัติไม่ได้ — กดเปิดผลค้นแล้วก็อปซอร์สโค้ดมาวางก็ได้");
+    setWnStatus("ช่องทางหลักไม่ได้ ลองช่องข้อความ …");
+    try{
+      const items2 = await wnSearchViaJina(query);
+      if(seq !== wnSeq) return;
+      wnItems = items2;
+      setWnStatus(`เจอ ${items2.length} สูตร (ช่องข้อความ) — กดดึงเพื่อเอามาตรวจก่อนจด`);
+      list.innerHTML = items2.map((r,i)=>`
+        <div class="wn-row">
+          <div class="wn-main">
+            <span class="wn-thumb ${THEME_CLS[i%4]}" data-thumb="${i}">${esc((r.title || "ส").trim()[0] || "ส")}</span>
+            <div class="wn-info"><b>${esc(r.title)}</b></div>
+          </div>
+          <div class="wn-btns">
+            <button class="btn btn-leaf" data-wn="${i}" style="padding:8px 14px">↓ ดึง</button>
+            <a class="btn btn-ghost" style="padding:8px 14px" target="_blank" rel="noopener" href="${esc(r.url)}">ต้นฉบับ ↗</a>
+          </div>
+        </div>`).join("");
+      fillThumbs(items2, seq);
+      return;
+    }catch(ej){ /* fall through */ }
+    if(seq !== wnSeq) return;
+    const tr = (e && e.trace && e.trace.length) ? " [" + e.trace.join(" · ") + "]" : "";
+    setWnStatus("ค้นอัตโนมัติไม่ได้" + tr + " — กดเปิดผลค้นแล้วก็อปซอร์สโค้ดมาวางก็ได้");
     list.innerHTML = `<a class="btn btn-ghost" style="padding:8px 14px" target="_blank" rel="noopener" href="${target}">เปิดผลค้นใน Wongnai ↗</a>`;
     return;
   }
@@ -1167,6 +1222,11 @@ $("#craveRow").addEventListener("click", e=>{
   render();
 });
 $("#sort").addEventListener("change", e=>{ state.sort = e.target.value; render() });
+document.querySelector(".logo").addEventListener("click", e=>{
+  e.preventDefault();
+  $("#clearFilters").click();
+  window.scrollTo({top:0, behavior:matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth"});
+});
 $("#clearFilters").onclick = ()=>{
   state.q=""; $("#search").value=""; state.cat="all"; state.crave.clear(); state.sort="default"; $("#sort").value="default"; state.favOnly=false; state.fridge=[]; $("#fridgeInput").value=""; $("#shuffleSlot").textContent="";
   clearTimeout(wnTimer); wnSeq++; $("#wnBox").hidden = true; $("#wnList").innerHTML = ""; wnItems = [];
@@ -1707,15 +1767,18 @@ function relayBase(){
   }catch(e){ return ""; }
 }
 function sig12(){ return (typeof AbortSignal !== "undefined" && AbortSignal.timeout) ? AbortSignal.timeout(12000) : undefined; }
-async function runChain(attempts){
+function errShort(e){ return String((e && e.message) || e || "fail").slice(0, 50); }
+async function runChain(attempts, trace){
   let lastErr = null;
   for(const a of attempts){
     try{
       const v = await a.run();
       return {via:a.name, ...v};
-    }catch(e){ lastErr = e; }
+    }catch(e){ lastErr = e; if(trace) trace.push(a.name + " ✗ " + errShort(e)); }
   }
-  throw lastErr || new Error("all failed");
+  const err = lastErr || new Error("all failed");
+  err.trace = trace;
+  throw err;
 }
 async function fetchHtmlChain(url, opts){
   opts = opts || {};
@@ -1733,14 +1796,18 @@ async function fetchHtmlChain(url, opts){
   if(!skip.includes("relay")) A.push({name:"relay หลัก", run:async()=>need(await getText(DEFAULT_RELAY + "/relay?url=" + enc))});
   if(!skip.includes("direct")) A.push({name:"ตรง", run:async()=>need(await getText(url))});
   if(!skip.includes("allorigins")) A.push({name:"สำรอง 1", run:async()=>need(await getText("https://api.allorigins.win/raw?url=" + enc))});
-  if(!skip.includes("codetabs")) A.push({name:"สำรอง 2", run:async()=>need(await getText("https://api.codetabs.com/v1/proxy?quest=" + enc))});
-  if(!skip.includes("corsproxy")) A.push({name:"สำรอง 3", run:async()=>need(await getText("https://corsproxy.io/?url=" + enc))});
   if(opts.allowText) A.push({name:"ข้อความ", run:async()=>{
-    const t = await getText("https://r.jina.ai/" + encodeURI(url));
+    const sig = (typeof AbortSignal !== "undefined" && AbortSignal.timeout) ? AbortSignal.timeout(30000) : undefined;
+    const r = await fetch("https://r.jina.ai/" + encodeURI(url), {signal:sig});
+    if(!r.ok) throw new Error("HTTP " + r.status);
+    const t = await r.text();
     if(t.length < 300 || /^\s*(error|failed|captcha)/i.test(t)) throw new Error("bad text");
     return {kind:"text", body:t};
   }});
-  return runChain(A);
+  if(!skip.includes("codetabs")) A.push({name:"สำรอง 2", run:async()=>need(await getText("https://api.codetabs.com/v1/proxy?quest=" + enc))});
+  if(!skip.includes("corsproxy")) A.push({name:"สำรอง 3", run:async()=>need(await getText("https://corsproxy.io/?url=" + enc))});
+  const trace = [];
+  return runChain(A, trace);
 }
 /* applyTextParse: เอาข้อความดิบ (ก็อปทั้งหน้า / markdown) แยกใส่ฟอร์ม คืน true ถ้าได้ของ */
 function applyTextParse(raw){
