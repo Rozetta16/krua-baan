@@ -1,0 +1,1735 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ครัวบ้านๆ — สมุดสูตรอาหารไทย</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anuphan:wght@400;500;600;700&family=Chonburi&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#17211C;
+  --leaf:#16432E;
+  --leaf-2:#1E6B43;
+  --wash:#EDF0E2;
+  --paper:#FBFCF4;
+  --chili:#B91C0E;
+  --chili-deep:#8F150A;
+  --turmeric:#D99A00;
+  --turmeric-soft:#F4C542;
+  --stone:#8A938A;
+  --line:rgba(23,33,28,.16);
+  --line-strong:#17211C;
+  --radius:18px;
+  --shadow:0 10px 30px rgba(23,33,28,.14);
+  --font-display:"Chonburi", "Anuphan", serif;
+  --font-body:"Anuphan", system-ui, sans-serif;
+  --font-mono:"Space Mono", "Anuphan", monospace;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0; font-family:var(--font-body); background:var(--wash); color:var(--ink);
+  -webkit-font-smoothing:antialiased;
+  background-image:
+    radial-gradient(rgba(22,67,46,.07) 1px, transparent 1px);
+  background-size:22px 22px;
+}
+::selection{background:var(--turmeric); color:var(--ink)}
+a{color:inherit}
+button{font-family:inherit}
+:focus-visible{outline:3px solid var(--turmeric); outline-offset:3px; border-radius:8px}
+
+/* ---------- top bar ---------- */
+.topbar{
+  position:sticky; top:0; z-index:50;
+  background:rgba(237,240,226,.92); backdrop-filter:blur(12px);
+  border-bottom:2px solid var(--ink);
+}
+.topbar-inner{
+  max-width:1180px; margin:0 auto; padding:12px 20px;
+  display:flex; align-items:center; gap:14px;
+}
+.logo{
+  display:flex; align-items:center; gap:10px; text-decoration:none; flex-shrink:0;
+}
+.logo-mark{
+  width:42px; height:42px; background:var(--leaf); color:var(--wash);
+  border:2px solid var(--ink); border-radius:12px;
+  display:grid; place-items:center;
+  font-family:var(--font-display); font-size:22px; line-height:1;
+  box-shadow:3px 3px 0 var(--ink);
+  transform:rotate(-4deg);
+}
+.logo-text{line-height:1.05}
+.logo-text b{font-family:var(--font-display); font-weight:400; font-size:18px; display:block}
+.logo-text span{font-size:12px; letter-spacing:.02em; color:rgba(23,33,28,.7)}
+.search-wrap{flex:1; display:flex; gap:10px; align-items:center}
+.search{
+  flex:1; display:flex; align-items:center; gap:8px;
+  background:var(--paper); border:2px solid var(--ink); border-radius:999px;
+  padding:9px 16px; box-shadow:3px 3px 0 rgba(23,33,28,.15);
+}
+.search input{border:0; outline:0; background:transparent; width:100%; font-size:15px; font-family:inherit; color:inherit}
+.search input::placeholder{color:rgba(23,33,28,.45)}
+.btn{
+  border:2px solid var(--ink); border-radius:999px; padding:9px 18px;
+  font-weight:700; font-size:14px; cursor:pointer;
+  background:var(--paper); color:var(--ink);
+  box-shadow:3px 3px 0 var(--ink);
+  transition:transform .15s ease, box-shadow .15s ease;
+  white-space:nowrap;
+}
+.btn:hover{transform:translate(-1px,-1px); box-shadow:4px 4px 0 var(--ink)}
+.btn:active{transform:translate(2px,2px); box-shadow:0 0 0 var(--ink)}
+.btn-primary{background:var(--chili); color:#fff}
+.btn-leaf{background:var(--leaf); color:#fff}
+.btn-gold{background:var(--turmeric)}
+.btn-ghost{box-shadow:none}
+.fav-count{
+  font-family:var(--font-mono); font-size:12px; background:var(--ink); color:#fff;
+  border-radius:999px; padding:2px 8px; margin-left:6px; vertical-align:middle;
+}
+
+/* ---------- hero ---------- */
+.hero{
+  max-width:1180px; margin:0 auto; padding:28px 20px 10px;
+  display:grid; grid-template-columns:1.05fr .95fr; gap:22px; align-items:stretch;
+}
+.hero-copy{
+  background:var(--leaf); color:#F2F4E6;
+  border:2px solid var(--ink); border-radius:24px;
+  padding:30px 28px 24px; position:relative; overflow:hidden;
+  box-shadow:6px 6px 0 var(--ink);
+}
+.hero-copy::after{
+  content:""; position:absolute; inset:0; pointer-events:none; opacity:.18;
+  background-image:repeating-linear-gradient(115deg, transparent 0 14px, rgba(255,255,255,.6) 14px 15px);
+}
+.hero-eyebrow{
+  display:inline-flex; align-items:center; gap:8px;
+  font-family:var(--font-mono); font-size:12px; letter-spacing:.06em;
+  background:rgba(255,255,255,.14); border:1px solid rgba(255,255,255,.35);
+  padding:6px 12px; border-radius:999px; margin-bottom:14px;
+}
+.hero-eyebrow i{width:8px; height:8px; background:var(--turmeric-soft); border-radius:50%; display:inline-block; animation:blink 1.6s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+.hero h1{
+  font-family:var(--font-display); font-weight:400;
+  font-size:clamp(34px, 5vw, 56px); line-height:1.05; margin:0 0 12px;
+}
+.hero h1 em{font-style:normal; color:var(--turmeric-soft); position:relative}
+.hero-sub{margin:0 0 18px; font-size:16px; line-height:1.7; color:rgba(242,244,230,.9); max-width:46ch}
+.crave-label{font-family:var(--font-mono); font-size:12px; letter-spacing:.04em; opacity:.85; margin:0 0 10px}
+.crave-row{display:flex; flex-wrap:wrap; gap:10px; position:relative; z-index:1}
+.tag{
+  position:relative; border:2px solid var(--ink); background:var(--paper); color:var(--ink);
+  border-radius:12px; padding:10px 14px 10px 30px; font-weight:700; font-size:14px; cursor:pointer;
+  transform:rotate(var(--tilt,0deg));
+  transition:transform .15s ease, background .15s ease;
+}
+.tag::before{
+  content:""; position:absolute; left:10px; top:50%; translate:0 -50%;
+  width:10px; height:10px; background:var(--wash); border:2px solid var(--ink); border-radius:50%;
+}
+.tag small{display:block; font-weight:500; font-size:11px; opacity:.65}
+.tag:hover{transform:rotate(0deg) translateY(-2px)}
+.tag[aria-pressed="true"]{background:var(--turmeric); box-shadow:3px 3px 0 rgba(0,0,0,.5)}
+.hero-meta{display:flex; gap:18px; margin-top:18px; font-family:var(--font-mono); font-size:12px; opacity:.9}
+.hero-meta b{font-size:18px; display:block}
+
+/* featured */
+.featured{
+  background:var(--paper); border:2px solid var(--ink); border-radius:24px;
+  overflow:hidden; box-shadow:6px 6px 0 var(--ink); display:flex; flex-direction:column;
+}
+.featured-visual{
+  min-height:220px; padding:22px; color:#fff; position:relative; overflow:hidden;
+  background:linear-gradient(135deg, var(--chili) 0%, var(--chili-deep) 55%, #4A0E08 100%);
+  display:flex; flex-direction:column; justify-content:flex-end;
+}
+.featured-visual::before{
+  content:"ต้ม"; font-family:var(--font-display);
+  position:absolute; right:-10px; top:-30px; font-size:190px; line-height:1;
+  color:rgba(255,255,255,.14);
+}
+.featured-visual::after{
+  content:""; position:absolute; inset:0;
+  background-image:radial-gradient(rgba(255,255,255,.22) 1.5px, transparent 1.5px);
+  background-size:18px 18px; opacity:.5; pointer-events:none;
+}
+.ribbon{
+  align-self:flex-start; background:var(--turmeric); color:var(--ink);
+  font-family:var(--font-mono); font-size:12px; font-weight:700;
+  padding:6px 12px; border:2px solid var(--ink); border-radius:999px; margin-bottom:auto;
+  position:relative; z-index:1;
+}
+.featured-visual h2{font-family:var(--font-display); font-weight:400; font-size:32px; margin:14px 0 6px; position:relative; z-index:1}
+.featured-visual p{margin:0; font-size:14px; opacity:.9; position:relative; z-index:1; max-width:36ch; line-height:1.6}
+.featured-body{padding:18px 20px 20px}
+.flavor-grid{display:grid; gap:8px; margin:0 0 14px}
+.flavor-row{display:grid; grid-template-columns:52px 1fr 28px; align-items:center; gap:10px; font-size:13px}
+.flavor-row .dot-track{display:flex; gap:5px}
+.dot{width:14px; height:14px; border-radius:50%; border:2px solid var(--ink); background:transparent}
+.dot.on{background:var(--chili)}
+.dot.on.sweet{background:var(--turmeric)}
+.featured-actions{display:flex; gap:10px; flex-wrap:wrap}
+.mono{font-family:var(--font-mono); font-size:12px}
+.pill{
+  display:inline-flex; align-items:center; gap:6px;
+  border:1.5px solid var(--ink); border-radius:999px; padding:5px 11px;
+  font-family:var(--font-mono); font-size:12px; background:#fff;
+}
+
+/* ticker */
+.ticker{
+  margin:18px 0 4px; background:var(--ink); color:var(--wash);
+  border-top:2px solid var(--ink); border-bottom:2px solid var(--ink);
+  overflow:hidden; white-space:nowrap;
+}
+.ticker-inner{display:inline-block; padding:10px 0; animation:slide 28s linear infinite; font-family:var(--font-mono); font-size:13px}
+.ticker-inner span{margin:0 14px}
+.ticker-inner b{color:var(--turmeric-soft)}
+@keyframes slide{to{transform:translateX(-50%)}}
+
+/* toolbar + grid */
+.main{max-width:1180px; margin:0 auto; padding:18px 20px 40px}
+.toolbar{
+  display:flex; flex-wrap:wrap; gap:10px; align-items:center; justify-content:space-between;
+  margin:8px 0 16px;
+}
+.cat-row{display:flex; flex-wrap:wrap; gap:8px}
+.cat{
+  border:2px solid var(--ink); background:var(--paper); border-radius:999px;
+  padding:8px 15px; font-size:14px; font-weight:600; cursor:pointer;
+}
+.cat[aria-pressed="true"]{background:var(--ink); color:var(--wash)}
+.toolbar-right{display:flex; gap:8px; align-items:center; flex-wrap:wrap}
+select{
+  font-family:inherit; font-size:14px; font-weight:600;
+  border:2px solid var(--ink); border-radius:999px; padding:8px 12px; background:var(--paper); cursor:pointer;
+}
+.switch{display:inline-flex; align-items:center; gap:8px; font-size:14px; font-weight:600; cursor:pointer; background:var(--paper); border:2px solid var(--ink); border-radius:999px; padding:8px 14px}
+.switch input{accent-color:var(--chili); width:16px; height:16px}
+.result-line{font-family:var(--font-mono); font-size:12px; margin:0 0 12px; opacity:.7}
+#webBox{display:flex; gap:8px; align-items:center; flex-wrap:wrap; margin:0 0 14px}
+#webBox:empty{display:none}
+.grid{display:grid; grid-template-columns:repeat(3,1fr); gap:18px}
+.card{
+  background:var(--paper); border:2px solid var(--ink); border-radius:var(--radius);
+  overflow:hidden; box-shadow:4px 4px 0 var(--ink);
+  display:flex; flex-direction:column;
+  transition:transform .18s ease, box-shadow .18s ease;
+  animation:rise .5s ease both;
+}
+.card:hover{transform:translate(-2px,-3px); box-shadow:7px 8px 0 var(--ink)}
+@keyframes rise{from{opacity:0; translate:0 12px}to{opacity:1; translate:0 0}}
+.card-visual{height:150px; padding:14px; position:relative; overflow:hidden; display:flex; flex-direction:column; justify-content:space-between; color:#fff}
+.card-visual .big-letter{
+  position:absolute; right:6px; bottom:-26px; font-family:var(--font-display);
+  font-size:140px; line-height:1; opacity:.22;
+}
+.card-visual::after{content:""; position:absolute; inset:0; background-image:radial-gradient(rgba(255,255,255,.25) 1.2px, transparent 1.2px); background-size:14px 14px; opacity:.45; pointer-events:none}
+.theme-leaf{background:linear-gradient(135deg,#1E6B43,#0F2E1F)}
+.theme-chili{background:linear-gradient(135deg,#C62E1C,#5E0F07)}
+.theme-gold{background:linear-gradient(135deg,#C58F00,#6B4A00)}
+.theme-ink{background:linear-gradient(135deg,#2B3A35,#101915)}
+.card-top-row{display:flex; justify-content:space-between; align-items:flex-start; position:relative; z-index:1}
+.fav-btn{
+  width:36px; height:36px; border-radius:50%; border:2px solid var(--ink);
+  background:#fff; cursor:pointer; font-size:17px; line-height:1;
+  display:grid; place-items:center; transition:transform .15s ease;
+}
+.fav-btn:hover{transform:scale(1.1) rotate(-8deg)}
+.fav-btn.active{background:var(--chili); color:#fff}
+.card-cat{font-family:var(--font-mono); font-size:11px; background:rgba(255,255,255,.92); color:var(--ink); border:2px solid var(--ink); padding:4px 10px; border-radius:999px; font-weight:700}
+.card-body{padding:15px 16px 16px; display:flex; flex-direction:column; gap:10px; flex:1}
+.card-body h3{font-family:var(--font-display); font-weight:400; font-size:21px; margin:0; line-height:1.25}
+.card-body .latin{font-family:var(--font-mono); font-size:11px; opacity:.55; margin-top:-7px}
+.card-desc{font-size:14px; line-height:1.65; color:rgba(23,33,28,.8); margin:0}
+.card-stats{display:flex; gap:8px; flex-wrap:wrap}
+.mini-meter{display:flex; align-items:center; gap:6px; font-family:var(--font-mono); font-size:11px}
+.chili-dots{letter-spacing:1px}
+.taste-strip{
+  display:grid; grid-template-columns:repeat(4,1fr); gap:6px;
+  background:var(--wash); border:1.5px dashed rgba(23,33,28,.35); border-radius:12px; padding:9px 10px;
+}
+.taste-strip div{text-align:center}
+.taste-strip b{display:block; font-size:11px}
+.taste-strip span{font-family:var(--font-mono); font-size:11px}
+.taste-bar{height:5px; background:rgba(23,33,28,.15); border-radius:99px; margin-top:5px; overflow:hidden}
+.taste-bar i{display:block; height:100%; background:var(--leaf); border-radius:99px}
+.card-foot{margin-top:auto; display:flex; gap:8px}
+.card-foot .btn{flex:1; text-align:center; padding:10px}
+.empty{
+  grid-column:1/-1; text-align:center; background:var(--paper);
+  border:2px dashed var(--ink); border-radius:var(--radius); padding:40px 20px;
+}
+.empty h3{font-family:var(--font-display); font-weight:400; font-size:24px; margin:0 0 8px}
+.empty p{margin:0 0 16px; color:rgba(23,33,28,.7)}
+
+/* footer */
+footer{background:var(--ink); color:var(--wash); border-top:2px solid var(--ink); margin-top:10px}
+.foot-inner{max-width:1180px; margin:0 auto; padding:26px 20px; display:flex; gap:18px; flex-wrap:wrap; align-items:center; justify-content:space-between}
+.foot-inner p{margin:0; font-size:13px; opacity:.8; max-width:60ch; line-height:1.7}
+
+/* modal */
+.overlay{
+  position:fixed; inset:0; background:rgba(23,33,28,.55); z-index:100;
+  display:none; align-items:flex-start; justify-content:center; padding:22px 14px; overflow:auto;
+}
+.overlay.open{display:flex}
+.sheet{
+  background:var(--paper); border:2px solid var(--ink); border-radius:22px;
+  max-width:760px; width:100%; box-shadow:8px 8px 0 var(--ink);
+  overflow:hidden; animation:pop .22s ease;
+}
+@keyframes pop{from{opacity:0; transform:translateY(14px) scale(.98)}to{opacity:1; transform:none}}
+.sheet-head{padding:20px 22px 16px; border-bottom:2px solid var(--ink); display:flex; gap:14px; align-items:flex-start; justify-content:space-between}
+.sheet-head h2{font-family:var(--font-display); font-weight:400; font-size:28px; margin:0; line-height:1.2}
+.sheet-head .sub{font-family:var(--font-mono); font-size:12px; opacity:.6; margin-top:4px}
+.x{flex-shrink:0; width:40px; height:40px; border-radius:50%; border:2px solid var(--ink); background:#fff; font-size:18px; cursor:pointer; box-shadow:2px 2px 0 var(--ink)}
+.sheet-body{padding:18px 22px 22px; display:grid; gap:18px}
+.two-col{display:grid; grid-template-columns:1fr 1fr; gap:18px}
+.box{border:2px solid var(--ink); border-radius:16px; padding:14px 15px; background:#fff}
+.box h4{margin:0 0 10px; font-size:14px; display:flex; justify-content:space-between; align-items:center}
+.box h4 .mono{background:var(--wash); border:1px solid var(--line); padding:2px 8px; border-radius:99px}
+.ing{display:flex; gap:10px; align-items:flex-start; padding:8px 0; border-bottom:1px dashed var(--line); font-size:14px; cursor:pointer; line-height:1.55}
+.ing:last-child{border-bottom:0}
+.ing input{margin-top:3px; width:17px; height:17px; accent-color:var(--leaf); flex-shrink:0}
+.ing.done span{text-decoration:line-through; opacity:.5}
+.progress{height:8px; background:var(--wash); border:1px solid var(--ink); border-radius:99px; overflow:hidden; margin-top:10px}
+.progress i{display:block; height:100%; width:0; background:var(--leaf); transition:width .25s ease}
+.step{display:flex; gap:12px; padding:11px 0; border-bottom:1px dashed var(--line); font-size:14px; line-height:1.7}
+.step:last-child{border:0}
+.step-num{
+  flex-shrink:0; width:30px; height:30px; border-radius:50%; background:var(--ink); color:#fff;
+  display:grid; place-items:center; font-family:var(--font-mono); font-size:13px; font-weight:700;
+}
+.step.done{opacity:.55}
+.step.done .step-num{background:var(--leaf)}
+.step label{display:flex; gap:12px; cursor:pointer}
+.timer-panel{border-top:1px dashed var(--line); padding-top:10px; margin-top:4px}
+.timer-presets{display:flex; flex-wrap:wrap; gap:6px; align-items:center; margin-bottom:8px}
+.timer-presets .mono{font-size:11px; opacity:.6}
+.tchip{border:2px solid var(--ink); background:var(--paper); border-radius:999px; padding:5px 11px; font-family:var(--font-mono); font-size:12px; font-weight:700; cursor:pointer}
+.tchip:hover{background:var(--turmeric)}
+.timer-custom{display:flex; gap:6px; align-items:center; flex-wrap:wrap}
+.timer-custom input{font-family:inherit; font-size:14px; border:2px solid var(--ink); border-radius:10px; padding:7px 10px; background:#fff; color:inherit}
+#timerMin{width:64px}
+#timerLabel{flex:1; min-width:100px}
+#dock{position:fixed; right:14px; bottom:14px; z-index:150; display:flex; flex-direction:column; gap:8px; width:min(320px, calc(100vw - 28px))}
+#dock:empty{display:none}
+.tcard{background:var(--paper); border:2px solid var(--ink); border-radius:14px; box-shadow:4px 4px 0 var(--ink); padding:10px 12px; display:grid; gap:8px}
+.tcard.done{border-color:var(--chili); box-shadow:4px 4px 0 var(--chili-deep); background:#FFF6F0}
+.t-top{display:flex; justify-content:space-between; align-items:baseline; gap:8px}
+.t-top b{font-size:14px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+.t-left{font-family:var(--font-mono); font-size:15px; font-weight:700; flex-shrink:0}
+.tcard.done .t-left{color:var(--chili)}
+.tbar{height:7px; background:rgba(23,33,28,.14); border:1px solid var(--ink); border-radius:99px; overflow:hidden}
+.tbar i{display:block; height:100%; background:var(--leaf); border-radius:99px}
+.tcard.done .tbar i{background:var(--chili); width:100% !important}
+.t-btns{display:flex; gap:6px; align-items:center}
+.tbtn{border:2px solid var(--ink); background:#fff; border-radius:999px; padding:5px 12px; font-size:12px; font-weight:700; cursor:pointer}
+.tbtn:hover{background:var(--wash)}
+.tbtn.danger{color:var(--chili-deep)}
+.tbtn.ok{background:var(--chili); color:#fff}
+.step-timer{margin-left:auto; align-self:flex-start; flex-shrink:0; border:2px solid var(--ink); background:var(--turmeric-soft); border-radius:999px; padding:3px 10px; font-family:var(--font-mono); font-size:11px; font-weight:700; cursor:pointer}
+.step-timer:hover{background:var(--turmeric)}
+.serving-row{display:flex; gap:8px; align-items:center}
+.stepper{display:inline-flex; border:2px solid var(--ink); border-radius:999px; overflow:hidden; background:#fff}
+.stepper button{border:0; background:transparent; padding:7px 13px; font-weight:800; cursor:pointer; font-size:15px}
+.stepper button:hover{background:var(--wash)}
+.form-grid{display:grid; gap:12px}
+.form-grid label{font-size:13px; font-weight:700; display:grid; gap:6px}
+.form-grid input, .form-grid select, .form-grid textarea{
+  font-family:inherit; font-size:14px; border:2px solid var(--ink); border-radius:12px; padding:10px 12px; background:#fff; color:inherit; width:100%;
+}
+.form-grid textarea{min-height:90px; resize:vertical; line-height:1.6}
+.form-2{display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px}
+.clip-box{border:2px dashed rgba(23,33,28,.4); border-radius:14px; padding:12px; background:var(--wash); display:grid; gap:8px}
+.clip-box textarea{min-height:110px}
+.note-private{font-size:12px; line-height:1.65; color:rgba(23,33,28,.72); background:#fff; border:1.5px solid var(--line); border-radius:10px; padding:8px 11px; margin:0}
+.taste-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.taste-grid label{font-size:12px}
+.note-private b{color:var(--chili-deep)}
+.source-link{display:inline-flex; align-items:center; gap:6px; font-size:13px; font-weight:700; color:var(--leaf-2)}
+.badge-mine{font-family:var(--font-mono); font-size:10px; font-weight:700; background:var(--ink); color:var(--turmeric-soft); padding:3px 9px; border-radius:999px; letter-spacing:.03em}
+.badge-src{font-family:var(--font-mono); font-size:10px; font-weight:700; background:#fff; border:1.5px solid var(--ink); padding:2px 9px; border-radius:999px}
+.btn-danger{background:#fff; color:var(--chili-deep); border-color:var(--chili-deep); box-shadow:3px 3px 0 var(--chili-deep)}
+.foot-btns{display:flex; gap:8px; flex-wrap:wrap}
+.foot-btns .btn{padding:7px 14px; font-size:12px; box-shadow:none; background:transparent; color:var(--wash); border-color:rgba(255,255,255,.4)}
+.foot-btns .btn:hover{border-color:#fff; box-shadow:none; transform:none}
+.link-box{border:2px solid var(--ink); border-radius:14px; padding:12px; background:#fff; display:grid; gap:8px; box-shadow:3px 3px 0 rgba(23,33,28,.2)}
+.link-row{display:flex; gap:8px}
+.link-row input{flex:1; font-family:inherit; font-size:14px; border:2px solid var(--ink); border-radius:12px; padding:10px 12px; background:var(--paper); color:inherit; min-width:0}
+.link-status{font-family:var(--font-mono); font-size:11px; opacity:.7; margin:0; line-height:1.6}
+.card-visual.has-img{color:#fff}
+.card-visual .cover{position:absolute; inset:0; width:100%; height:100%; object-fit:cover}
+.card-visual.has-img::before{content:""; position:absolute; inset:0; background:linear-gradient(180deg, rgba(0,0,0,.05) 0%, rgba(0,0,0,.62) 100%)}
+.card-visual.has-img .big-letter{opacity:.3}
+#dImg{width:100%; max-height:230px; object-fit:cover; border:2px solid var(--ink); border-radius:14px; display:block}
+#dTips{margin:0; padding-left:20px; display:grid; gap:8px; font-size:14px; line-height:1.65}
+.toast{
+  position:fixed; bottom:22px; left:50%; translate:-50% 0; z-index:200;
+  background:var(--ink); color:#fff; padding:12px 20px; border-radius:999px;
+  font-size:14px; font-weight:600; border:2px solid #000;
+  opacity:0; pointer-events:none; transition:opacity .25s ease, translate .25s ease;
+  max-width:min(92vw,480px); text-align:center;
+}
+.toast.show{opacity:1; translate:-50% -6px}
+
+/* vertical rail decoration on wide screens */
+.rail{
+  writing-mode:vertical-rl; font-family:var(--font-mono); font-size:11px; letter-spacing:.3em;
+  opacity:.5; user-select:none;
+}
+
+@media (max-width:960px){
+  .hero{grid-template-columns:1fr}
+  .grid{grid-template-columns:repeat(2,1fr)}
+  .two-col{grid-template-columns:1fr}
+}
+@media (max-width:640px){
+  .topbar-inner{flex-wrap:wrap}
+  .search-wrap{order:3; flex-basis:100%}
+  .grid{grid-template-columns:1fr}
+  .hero-copy{padding:22px 20px}
+  .form-2{grid-template-columns:1fr}
+  .taste-grid{grid-template-columns:repeat(2,1fr)}
+  .featured-visual::before{font-size:130px}
+}
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{animation:none !important; transition:none !important}
+  html{scroll-behavior:auto}
+}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="topbar-inner">
+    <a class="logo" href="#" aria-label="ครัวบ้านๆ หน้าแรก">
+      <span class="logo-mark">ครัว</span>
+      <span class="logo-text"><b>ครัวบ้านๆ</b><span>สมุดสูตรอาหารไทย · MVP</span></span>
+    </a>
+    <div class="search-wrap">
+      <label class="search" aria-label="ค้นหาสูตร">
+        <span aria-hidden="true">⌕</span>
+        <input id="search" type="search" placeholder="ค้นหา… ลองพิมพ์ “กะเพรา” “กะทิ” “ต้มยำ”" autocomplete="off">
+      </label>
+      <button class="btn btn-ghost" id="favToggle" aria-pressed="false" title="ดูเฉพาะสูตรที่บันทึกไว้">♥ บันทึก<span class="fav-count" id="favCount">0</span></button>
+      <button class="btn btn-primary" id="openAdd">+ เพิ่มสูตร</button>
+    </div>
+  </div>
+</header>
+
+<section class="hero" aria-label="ตัวช่วยเลือกเมนูเย็นนี้">
+  <div class="hero-copy">
+    <span class="hero-eyebrow"><i></i> สมุดสูตรฉบับคนทำกินเอง · พร้อมทำทุกเมนู</span>
+    <h1>เย็นนี้<br>อยากกินรส<em>ไหน?</em></h1>
+    <p class="hero-sub">ไม่ต้องเปิดดูทีละสูตร — จิ้มรสที่อยากกิน แล้วสมุดจะเหลือแต่เมนูที่ตรงปากคืนนี้ ทำได้จริงจากของในตลาดหน้าปากซอย</p>
+    <p class="crave-label">— เลือกรสที่อยากกินวันนี้ —</p>
+    <div class="crave-row" id="craveRow" role="group" aria-label="เลือกรสที่อยากกิน">
+      <button class="tag" style="--tilt:-2deg" data-crave="spicy" aria-pressed="false">เผ็ดนำ<small>พริกขี้หนูขึ้นก่อน</small></button>
+      <button class="tag" style="--tilt:1.5deg" data-crave="sour" aria-pressed="false">เปรี้ยวนำ<small>มะนาว · มะขาม</small></button>
+      <button class="tag" style="--tilt:-1deg" data-crave="creamy" aria-pressed="false">กะทิมันๆ<small>แกง · ต้มข่า</small></button>
+      <button class="tag" style="--tilt:2deg" data-crave="fast" aria-pressed="false">ทำไว 20 นาที<small>รีบแต่ต้องอร่อย</small></button>
+      <button class="tag" style="--tilt:-1.5deg" data-crave="easy" aria-pressed="false">มือใหม่<small>พลาดยาก ล้างน้อย</small></button>
+    </div>
+    <div class="hero-meta">
+      <div><b id="statCount">9</b>สูตรในสมุด</div>
+      <div><b id="statTime">≤45</b>นานสุดในสมุด</div>
+      <div><b>100%</b>ของตลาดไทย</div>
+    </div>
+  </div>
+
+  <article class="featured" aria-label="เมนูแนะนำวันนี้">
+    <div class="featured-visual">
+      <span class="ribbon">★ เมนูแนะนำวันนี้ · ทำได้ชัวร์</span>
+      <h2>ต้มยำกุ้งน้ำข้น</h2>
+      <p>เปรี้ยวนำ เค็มตาม เผ็ดปิดท้าย — สูตรร้านข้าวต้มรอบดึก หอมตะไคร้ใบมะกรูด ซดร้อนๆ โล่งทั้งตัว</p>
+    </div>
+    <div class="featured-body">
+      <div class="flavor-grid" aria-label="แผนที่รสชาติ">
+        <div class="flavor-row"><span>เผ็ด</span><span class="dot-track" data-dots="3"></span><span class="mono">3/5</span></div>
+        <div class="flavor-row"><span>เปรี้ยว</span><span class="dot-track" data-dots="5"></span><span class="mono">5/5</span></div>
+        <div class="flavor-row"><span>เค็ม</span><span class="dot-track" data-dots="3"></span><span class="mono">3/5</span></div>
+        <div class="flavor-row"><span>หวาน</span><span class="dot-track sweet" data-dots="1"></span><span class="mono">1/5</span></div>
+      </div>
+      <div class="featured-actions">
+        <span class="pill">⏱ 25 นาที</span>
+        <span class="pill">ปานกลาง</span>
+        <span class="pill">สำหรับ 2 ที่</span>
+        <button class="btn btn-leaf" data-open="tomyum" style="margin-left:auto">เปิดสูตร →</button>
+      </div>
+    </div>
+  </article>
+</section>
+
+<div class="ticker" aria-hidden="true">
+  <div class="ticker-inner" id="ticker"></div>
+</div>
+
+<main class="main">
+  <div class="toolbar">
+    <div class="cat-row" id="catRow" role="group" aria-label="กรองตามประเภท">
+      <button class="cat" data-cat="all" aria-pressed="true">ทั้งหมด</button>
+      <button class="cat" data-cat="ต้ม" aria-pressed="false">ต้ม</button>
+      <button class="cat" data-cat="ผัด" aria-pressed="false">ผัด</button>
+      <button class="cat" data-cat="แกง" aria-pressed="false">แกง</button>
+      <button class="cat" data-cat="ยำ" aria-pressed="false">ยำ</button>
+      <button class="cat" data-cat="ทอด" aria-pressed="false">ทอด</button>
+      <button class="cat" data-cat="ย่าง" aria-pressed="false">ย่าง</button>
+      <button class="cat" data-cat="นึ่ง" aria-pressed="false">นึ่ง</button>
+      <button class="cat" data-cat="อบ" aria-pressed="false">อบ</button>
+    </div>
+    <div class="toolbar-right">
+      <label class="mono" for="sort" style="font-size:12px">เรียง:</label>
+      <select id="sort">
+        <option value="default">แนะนำ</option>
+        <option value="fast">ทำไวสุดก่อน</option>
+        <option value="spicy">เผ็ดสุดก่อน</option>
+        <option value="easy">ง่ายสุดก่อน</option>
+      </select>
+      <button class="btn btn-ghost" id="clearFilters" style="padding:8px 14px">ล้างตัวกรอง</button>
+    </div>
+  </div>
+  <p class="result-line" id="resultLine"></p>
+  <div id="webBox"></div>
+  <div class="grid" id="grid"></div>
+</main>
+
+<footer>
+  <div class="foot-inner">
+    <p><b style="font-family:var(--font-display);font-weight:400">ครัวบ้านๆ</b> — MVP สมุดสูตรอาหารไทย เก็บสูตรโปรดไว้ในเครื่อง (localStorage) เพิ่มสูตรของบ้านตัวเองได้ ไม่ต้องสมัครอะไรทั้งนั้น กับข้าวบ้านๆ แต่ตั้งใจทำ<br><span style="opacity:.65">สูตรที่เซฟจากเว็บอื่นเก็บไว้ดูส่วนตัวในเครื่องนี้เท่านั้น กรุณาแปะลิงก์ที่มาเสมอ</span></p>
+    <div class="foot-btns">
+      <span class="mono" style="font-size:12px;opacity:.7;align-self:center">รสเผ็ด · รสเปรี้ยว · รสมือแม่ — v0.3</span>
+      <button class="btn" id="exportBtn" type="button">↓ สำรองสูตร</button>
+      <label class="btn" for="importFile" style="cursor:pointer">↑ นำเข้า</label>
+      <input id="importFile" type="file" accept="application/json" hidden>
+    </div>
+  </div>
+</footer>
+
+<!-- detail modal -->
+<div class="overlay" id="detailOverlay" role="dialog" aria-modal="true" aria-labelledby="dTitle">
+  <div class="sheet">
+    <div class="sheet-head">
+      <div>
+        <h2 id="dTitle"></h2>
+        <div class="sub" id="dSub"></div>
+      </div>
+      <button class="x" id="closeDetail" aria-label="ปิดสูตร">✕</button>
+    </div>
+    <div class="sheet-body">
+      <img id="dImg" alt="" hidden>
+      <div class="two-col">
+        <div class="box">
+          <h4>วัตถุดิบ <span class="mono" id="ingCount"></span></h4>
+          <div class="serving-row" style="margin-bottom:8px">
+            <span class="mono" style="font-size:12px">สำหรับ</span>
+            <span class="stepper">
+              <button id="servMinus" aria-label="ลดจำนวนที่">−</button>
+              <span id="servVal" class="mono" style="padding:7px 10px;font-weight:700">2 ที่</span>
+              <button id="servPlus" aria-label="เพิ่มจำนวนที่">+</button>
+            </span>
+            <span class="mono" id="servLabel" style="font-size:11px;opacity:.6"></span>
+          </div>
+          <div id="ingList"></div>
+          <div class="progress" aria-hidden="true"><i id="ingBar"></i></div>
+          <p class="mono" id="ingHint" style="font-size:11px;opacity:.6;margin:8px 0 0">ติ๊กของที่หยิบแล้ว — แถบเขียวจะค่อยๆ เต็ม</p>
+        </div>
+        <div class="box">
+          <h4>แผนที่รส <span class="mono">ชิมแล้วปรับได้</span></h4>
+          <div class="flavor-grid" id="dFlavor"></div>
+          <div class="timer-panel">
+            <div class="timer-presets" id="timerPresets">
+              <span class="mono">ด่วน:</span>
+              <button class="tchip" data-min="1">1</button>
+              <button class="tchip" data-min="2">2</button>
+              <button class="tchip" data-min="3">3</button>
+              <button class="tchip" data-min="5">5</button>
+              <button class="tchip" data-min="7">7</button>
+              <button class="tchip" data-min="10">10</button>
+              <button class="tchip" data-min="15">15</button>
+              <button class="tchip" data-min="20">20</button>
+              <button class="tchip" data-min="30">30</button>
+              <button class="tchip" data-min="45">45</button>
+              <button class="tchip" data-min="60">60</button>
+              <span class="mono">นาที</span>
+            </div>
+            <div class="timer-custom">
+              <input id="timerMin" type="number" min="1" max="720" value="10" aria-label="จำนวนนาที">
+              <span class="mono" style="font-size:12px">นาที</span>
+              <input id="timerLabel" maxlength="24" placeholder="ชื่อ เช่น ต้มไข่" aria-label="ชื่อนาฬิกา">
+              <button class="btn btn-gold" id="timerStart" style="padding:8px 14px">▶ เริ่ม</button>
+            </div>
+            <p class="mono" style="font-size:11px;opacity:.6;margin:8px 0 0">ตั้งได้หลายตัวพร้อมกัน · ปิดหน้านี้ไปนาฬิกาก็ยังเดิน · ดังเตือนจนกว่าจะกดปิด</p>
+          </div>
+        </div>
+      </div>
+      <div class="box">
+        <h4>วิธีทำทีละขั้น <span class="mono" id="stepCount"></span></h4>
+        <div id="stepList"></div>
+      </div>
+      <div class="box">
+        <h4>💡 เคล็ดลับจานนี้ <span class="mono">เลือกมาให้แล้ว</span></h4>
+        <ul id="dTips"></ul>
+      </div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <button class="btn btn-primary" id="dFav">♥ บันทึกสูตรนี้</button>
+        <button class="btn" id="dPrint">⎙ พิมพ์สูตร</button>
+        <button class="btn" id="dEdit" hidden>✎ แก้ไข</button>
+        <button class="btn btn-danger" id="dDelete" hidden>ลบสูตรนี้</button>
+      </div>
+      <p class="mono" id="dSourceWrap" style="font-size:12px;margin:0" hidden>ที่มา: <a class="source-link" id="dSource" href="#" target="_blank" rel="noopener">ดูต้นฉบับ ↗</a> <span style="opacity:.6">(เก็บไว้ดูส่วนตัว)</span></p>
+    </div>
+  </div>
+</div>
+
+<!-- add modal -->
+<div class="overlay" id="addOverlay" role="dialog" aria-modal="true" aria-labelledby="addTitle">
+  <div class="sheet">
+    <div class="sheet-head">
+      <div>
+        <h2 id="addTitle">เพิ่มสูตรของบ้าน</h2>
+        <div class="sub" id="addSub">จดแบบที่แม่จด — สั้นๆ แต่ทำตามได้จริง</div>
+      </div>
+      <button class="x" id="closeAdd" aria-label="ปิด">✕</button>
+    </div>
+    <div class="sheet-body">
+      <form class="form-grid" id="addForm">
+        <div class="link-box">
+          <label style="font-size:13px;font-weight:700">ดึงจากลิงก์ (สำหรับหน้าที่ได้รับอนุญาตแล้ว)
+            <span class="link-row" style="margin-top:6px">
+              <input id="linkUrl" type="url" inputmode="url" placeholder="วางลิงก์สูตร เช่น https://www.wongnai.com/recipes/...">
+              <button class="btn btn-leaf" type="button" id="fetchLink" style="flex-shrink:0">↓ ดึง</button>
+            </span>
+          </label>
+          <p class="link-status" id="linkStatus">วางลิงก์แล้วกดดึง — ระบบจะอ่านข้อมูลสูตรมาตรฐาน (ชื่อ วัตถุดิบ เวลา รูป) มากรอกให้ ตรวจทานก่อนกดจด</p>
+        </div>
+        <input type="hidden" name="img" id="fImg">
+        <input type="hidden" name="author" id="fAuthor">
+        <input type="hidden" name="servesCount" id="fServes" value="2">
+        <input type="hidden" name="serveLabel" id="fServeLabel">
+        <label>ชื่อเมนู<input name="title" required placeholder="เช่น แกงส้มหน่อไม้ดองปลาช่อน" maxlength="60"></label>
+        <div class="form-2">
+          <label>ประเภท
+            <select name="category"><option>ต้ม</option><option>ผัด</option><option>แกง</option><option>ยำ</option><option>ทอด</option><option>ย่าง</option><option>นึ่ง</option><option>อบ</option></select>
+          </label>
+          <label>เวลา (นาที)<input name="time" type="number" min="5" max="720" value="20" required></label>
+          <label>ระดับ
+            <select name="difficulty"><option>ง่าย</option><option>ปานกลาง</option><option>ท้าทาย</option></select>
+          </label>
+        </div>
+        <label>เล่าแบบสั้นๆ ว่าจานนี้ดียังไง<input name="desc" placeholder="เช่น เปรี้ยวปลาร้านิดๆ กินกับข้าวสวยร้อนๆ หมดหม้อไม่รู้ตัว" maxlength="140"></label>
+        <label>ลิงก์ต้นฉบับ (ถ้ามี — แนะนำให้แปะไว้)<input name="source" type="url" placeholder="เช่น https://www.wongnai.com/recipes/..." maxlength="300"></label>
+        <div class="clip-box">
+          <label style="font-size:13px;font-weight:700">วางซอร์สโค้ดตรงนี้ (เปิดหน้าสูตร → Ctrl+U → Ctrl+A → Ctrl+C → วาง)
+            <textarea id="pasteBox" placeholder="วางซอร์สโค้ดทั้งก้อนตรงนี้ (หรือจะวางข้อความธรรมดา / JSON จากปุ่มดึงสูตรก็ได้เหมือนกัน)"></textarea>
+          </label>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+            <button class="btn btn-gold" type="button" id="parsePaste" style="padding:8px 16px">✂ แยกจากซอร์สโค้ด</button>
+            <span class="mono" style="font-size:11px;opacity:.65">วางแล้วกดปุ่มเดียว ระบบแยกให้เอง</span>
+          </div>
+          <p class="note-private"><b>ใช้ส่วนตัวเท่านั้น:</b> เก็บไว้ดูเองในเครื่องนี้ ไม่เผยแพร่ต่อ แปะลิงก์ที่มาไว้เสมอ และอย่าก็อป <u>รูปภาพ</u> ของเขามา — สูตรที่จดควรเขียนทับเป็นสำนวนของเราเมื่อมีเวลา</p>
+        </div>
+        <label>วัตถุดิบ (บรรทัดละ 1 อย่าง)<textarea name="ingredients" required placeholder="หมูสับ 300 กรัม&#10;กะเพรา 1 กำ&#10;พริกขี้หนู 10 เม็ด"></textarea></label>
+        <label>วิธีทำ (บรรทัดละ 1 ขั้น)<textarea name="steps" required placeholder="โขลกพริกกับกระเทียมพอหยาบ&#10;ผัดหมูให้สุก ปรุงรส&#10;ใส่กะเพรา ผัดไฟแรง 10 วินาที"></textarea></label>
+        <label>ความเผ็ด (0–3, พริกในการ์ด)<input name="spicy" type="number" min="0" max="3" value="1"></label>
+        <div>
+          <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+            <span style="font-size:13px;font-weight:700">แผนที่รส (0–5 — โชว์เป็นแถบรสในการ์ดและหน้าสูตร)</span>
+            <button class="btn btn-ghost" type="button" id="autoTaste" style="padding:6px 13px;font-size:12px">🎲 เดารสจากสูตร</button>
+          </div>
+          <div class="taste-grid" style="margin-top:6px">
+            <label>เผ็ด<input name="t_hot" type="number" min="0" max="5" value="1"></label>
+            <label>เปรี้ยว<input name="t_sour" type="number" min="0" max="5" value="2"></label>
+            <label>เค็ม<input name="t_salty" type="number" min="0" max="5" value="3"></label>
+            <label>หวาน<input name="t_sweet" type="number" min="0" max="5" value="2"></label>
+          </div>
+          <p class="mono" id="tasteWhy" style="font-size:11px;opacity:.65;margin:6px 0 0"></p>
+        </div>
+        <div style="display:flex;gap:10px">
+          <button class="btn btn-leaf" type="submit" id="addSubmit" style="flex:1">จดลงสมุด →</button>
+          <button class="btn btn-ghost" type="button" id="cancelAdd">ยกเลิก</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div id="dock" aria-live="polite"></div>
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+const BASE_RECIPES = [
+  {id:"kaprao", title:"ผัดกะเพราหมูสับไข่ดาว", latin:"PAD KAPRAO", cat:"ผัด", time:15, diff:"ง่าย", serves:2, spicy:3,
+   desc:"แห้งๆ เผ็ดโดด หอมใบกะเพรา — เมนูสิ้นคิดที่ไม่มีวันเบื่อ",
+   theme:"theme-chili", letter:"ผ",
+   taste:{เผ็ด:5,เปรี้ยว:0,เค็ม:3,หวาน:1},
+   ings:["หมูสับ 300 กรัม","ใบกะเพรา 1 กำใหญ่","พริกขี้หนูสวน 10 เม็ด","กระเทียม 5 กลีบ","น้ำปลา 1 ช้อนโต๊ะ","น้ำตาล 0.5 ช้อนชา","น้ำมัน 2 ช้อนโต๊ะ","ไข่ไก่ 2 ฟอง"],
+   steps:["โขลกพริกกับกระเทียมพอหยาบ ไม่ต้องละเอียด","ตั้งกระทะไฟแรง ใส่น้ำมัน ผัดเครื่องโขลกให้หอม","ใส่หมูสับ ผัดให้สุก ปรุงน้ำปลา น้ำตาล","ใส่ใบกะเพรา ผัด 10 วินาทีแล้วปิดไฟ","ทอดไข่ดาวกรอบๆ โปะหน้า เสิร์ฟกับข้าวสวย"]},
+  {id:"tomyum", title:"ต้มยำกุ้งน้ำข้น", latin:"TOM YUM GOONG", cat:"ต้ม", time:25, diff:"ปานกลาง", serves:2, spicy:3,
+   desc:"เปรี้ยวนำ เค็มตาม มันนมนิดๆ ซดร้อนๆ โล่งคอ",
+   theme:"theme-chili", letter:"ต้",
+   taste:{เผ็ด:3,เปรี้ยว:5,เค็ม:3,หวาน:1},
+   ings:["กุ้ง 8 ตัว ผ่าหลัง","ตะไคร้ 2 ต้น ทุบหั่น","ใบมะกรูด 5 ใบ ฉีก","ข่า 5 แว่น","เห็ดฟาง 100 กรัม","น้ำพริกเผา 1 ช้อนโต๊ะ","นมข้นจืด 0.25 ถ้วย","มะนาว 2 ลูก","น้ำปลา 2 ช้อนโต๊ะ","พริกขี้หนูทุบ 5 เม็ด"],
+   steps:["ต้มน้ำ 3 ถ้วยกับข่า ตะไคร้ ใบมะกรูดให้หอม","ใส่เห็ดกับกุ้ง พอสุกยกลงจากเตา","ปรุงน้ำพริกเผา น้ำปลา แล้วค่อยบีบมะนาว","ใส่นมข้นจืด คนเบาๆ ชิมให้เปรี้ยวนำ","โรยผักชีฝรั่งกับพริกทุบ เสิร์ฟร้อนๆ"]},
+  {id:"green", title:"แกงเขียวหวานไก่", latin:"GREEN CURRY", cat:"แกง", time:35, diff:"ปานกลาง", serves:4, spicy:2,
+   desc:"กะทิแตกมัน หอมพริกแกงตำเอง กินกับขนมจีนคือที่สุด",
+   theme:"theme-leaf", letter:"แก",
+   taste:{เผ็ด:3,เปรี้ยว:0,เค็ม:3,หวาน:3},
+   ings:["สะโพกไก่ 500 กรัม","พริกแกงเขียวหวาน 3 ช้อนโต๊ะ","กะทิ 500 มล.","มะเขือเปราะ 6 ลูก","โหระพา 1 กำ","พริกชี้ฟ้า 2 เม็ด","น้ำปลา 2 ช้อนโต๊ะ","น้ำตาลปี๊บ 1 ช้อนชา"],
+   steps:["เคี่ยวหัวกะทิกับพริกแกงจนแตกมันหอม","ใส่ไก่ ผัดให้ตึง เติมหางกะทิ","เคี่ยว 15 นาที ใส่มะเขือเปราะ","ปรุงน้ำปลา น้ำตาลปี๊บ ชิมให้เค็มหวานพอดี","ใส่โหระพากับพริกชี้ฟ้า ปิดไฟทันที"]},
+  {id:"somtum", title:"ส้มตำไทย", latin:"SOM TUM", cat:"ยำ", time:15, diff:"ง่าย", serves:2, spicy:3,
+   desc:"เส้นกรอบ น้ำตำนัวๆ เปรี้ยวหวานเค็มครบในครกเดียว",
+   theme:"theme-gold", letter:"ส้",
+   taste:{เผ็ด:4,เปรี้ยว:4,เค็ม:3,หวาน:3},
+   ings:["มะละกอดิบสับ 2 ถ้วย","ถั่วฝักยาว 2 ฝัก","มะเขือเทศ 3 ลูก","กุ้งแห้ง 2 ช้อนโต๊ะ","ถั่วลิสงคั่ว 2 ช้อนโต๊ะ","พริกขี้หนู 5 เม็ด","กระเทียม 2 กลีบ","น้ำปลา 2 ช้อนโต๊ะ","น้ำตาลปี๊บ 1 ช้อนโต๊ะ","มะนาว 1.5 ลูก"],
+   steps:["โขลกพริก กระเทียม กุ้งแห้งพอหยาบ","ปรุงน้ำปลา น้ำตาลปี๊บ มะนาวในครก คนให้ละลาย","ใส่ถั่วฝักยาว มะเขือเทศ โขลกเบาๆ","ใส่มะละกอ ตำคลุกให้เข้ากัน ชิมให้ครบรส","ตักใส่จาน โรยถั่วลิสง กินกับข้าวเหนียวไก่ย่าง"]},
+  {id:"padthai", title:"ผัดไทยกุ้งสด", latin:"PAD THAI", cat:"ผัด", time:30, diff:"ปานกลาง", serves:2, spicy:1,
+   desc:"เส้นนุ่ม น้ำมะขามเข้มข้น ห่อไข่บางๆ แบบร้านเก่า",
+   theme:"theme-gold", letter:"ผั",
+   taste:{เผ็ด:1,เปรี้ยว:4,เค็ม:3,หวาน:4},
+   ings:["เส้นจันท์ 200 กรัม แช่น้ำ","กุ้งสด 8 ตัว","เต้าหู้แข็ง 0.5 ก้อน","ไข่ไก่ 2 ฟอง","ถั่วงอก 1 ถ้วย","กุยช่าย 4 ต้น","น้ำมะขาม 3 ช้อนโต๊ะ","น้ำตาลปี๊บ 2 ช้อนโต๊ะ","น้ำปลา 2 ช้อนโต๊ะ"],
+   steps:["เคี่ยวน้ำมะขาม น้ำตาลปี๊บ น้ำปลาเป็นซอสผัดไทย","ผัดกุ้งกับเต้าหู้พอสุก ตักพักไว้","ผัดเส้นกับซอสจนเส้นนุ่ม เขี่ยข้างกระทะใส่ไข่","ใส่ทุกอย่างกลับลงไป ตามด้วยถั่วงอก กุยช่าย","เสิร์ฟกับมะนาว ถั่วป่น พริกป่น"]},
+  {id:"tomkha", title:"ต้มข่าไก่", latin:"TOM KHA GAI", cat:"ต้ม", time:30, diff:"ง่าย", serves:3, spicy:1,
+   desc:"ซุปหัวกะทิหอมข่า รสนวลๆ กินง่ายทั้งบ้าน",
+   theme:"theme-leaf", letter:"ต้",
+   taste:{เผ็ด:1,เปรี้ยว:3,เค็ม:3,หวาน:2},
+   ings:["สะโพกไก่ 400 กรัม","กะทิ 400 มล.","ข่าอ่อน 8 แว่น","ตะไคร้ 2 ต้น","ใบมะกรูด 5 ใบ","เห็ดนางฟ้า 150 กรัม","มะนาว 1.5 ลูก","น้ำปลา 2 ช้อนโต๊ะ","พริกขี้หนูทุบ 3 เม็ด"],
+   steps:["ต้มหางกะทิกับข่า ตะไคร้ ใบมะกรูดให้หอม","ใส่ไก่ เคี่ยวไฟกลาง 10 นาที","ใส่เห็ด เติมหัวกะทิ รอเดือดขอบหม้อแล้วปิดไฟ","ปรุงน้ำปลา มะนาวนอกเตา ชิมให้มันเปรี้ยวเค็ม","โรยพริกทุบกับผักชี เสิร์ฟกับข้าวสวย"]},
+  {id:"gangsomm", title:"แกงส้มชะอมกุ้ง", latin:"GAENG SOM", cat:"แกง", time:30, diff:"ปานกลาง", serves:3, spicy:2,
+   desc:"เปรี้ยวมะขามเปียก เผ็ดพริกแกงส้ม ซดคล่องคอแบบบ้านๆ",
+   theme:"theme-chili", letter:"แก",
+   taste:{เผ็ด:3,เปรี้ยว:5,เค็ม:3,หวาน:1},
+   ings:["กุ้ง 300 กรัม","ไข่เจียวชะอม 1 จาน หั่น","น้ำพริกแกงส้ม 3 ช้อนโต๊ะ","น้ำมะขามเปียก 4 ช้อนโต๊ะ","น้ำปลา 2.5 ช้อนโต๊ะ","น้ำตาลปี๊บ 1 ช้อนชา","น้ำ 4 ถ้วย"],
+   steps:["ละลายพริกแกงส้มในน้ำ ต้มให้เดือดหอม","ปรุงน้ำมะขาม น้ำปลา น้ำตาล ชิมให้เปรี้ยวนำ","ใส่กุ้ง พอสุกใส่ไข่เจียวชะอม","รอเดือดอีกครั้ง ปิดไฟ","ตักเสิร์ฟ กินกับปลาสลิดทอดเข้ากันมาก"]},
+  {id:"omelet", title:"ไข่เจียวหมูสับ", latin:"KHAI JIAO", cat:"ทอด", time:10, diff:"ง่าย", serves:1, spicy:0,
+   desc:"ฟูกรอบ ไม่อมน้ำมัน — กับข้าว 10 นาทีที่รอดทุกมื้อ",
+   theme:"theme-gold", letter:"ไข",
+   taste:{เผ็ด:0,เปรี้ยว:0,เค็ม:3,หวาน:1},
+   ings:["ไข่ไก่ 3 ฟอง","หมูสับ 100 กรัม","น้ำปลา 1 ช้อนชา","ซีอิ๊วขาว 0.5 ช้อนชา","พริกไทยนิดหน่อย","น้ำมัน 0.5 ถ้วย"],
+   steps:["ตีไข่กับหมูสับและเครื่องปรุงให้ฟู","ตั้งน้ำมันไฟกลางค่อนแรงให้ร้อนจัด","เทไข่ลงไป ทอดให้ฟูเหลืองทีละด้าน","ตักพักสะเด็ดน้ำมัน หั่นพอคำ","กินกับซอสพริกกับข้าวสวยร้อนๆ"]},
+  {id:"friedrice", title:"ข้าวผัดปู", latin:"CRAB FRIED RICE", cat:"ผัด", time:20, diff:"ง่าย", serves:2, spicy:0,
+   desc:"ข้าวร่วน หอมกระทะ เนื้อปูเป็นก้อน บีบมะนาวนิดเดียวพอ",
+   theme:"theme-ink", letter:"ข้",
+   taste:{เผ็ด:0,เปรี้ยว:1,เค็ม:3,หวาน:1},
+   ings:["ข้าวสวยค้างคืน 3 ถ้วย","เนื้อปู 200 กรัม","ไข่ไก่ 2 ฟอง","กระเทียมสับ 1 ช้อนโต๊ะ","ต้นหอมซอย 3 ต้น","น้ำปลา 1.5 ช้อนโต๊ะ","น้ำตาล 0.5 ช้อนชา","พริกไทย 1 ช้อนชา"],
+   steps:["ผัดกระเทียมให้หอม ใส่ไข่ยีพอสุก","ใส่ข้าว ผัดไฟแรงให้ข้าวดีดกระทะ","ปรุงน้ำปลา น้ำตาล พริกไทย","ใส่เนื้อปู ต้นหอม คลุกเบาๆ ไม่ให้ปูเละ","เสิร์ฟกับมะนาวซีก แตงกวา ต้นหอม"]},
+  {id:"mooping", title:"หมูปิ้งนมสด", latin:"MOO PING", cat:"ย่าง", time:30, diff:"ง่าย", serves:4, spicy:0,
+   desc:"หอมนมสด หวานเค็มกำลังดี — เจ้าประจำหน้าปากซอย ทำเองได้ไม่ต้องรอคิว",
+   theme:"theme-chili", letter:"หม",
+   taste:{เผ็ด:0,เปรี้ยว:0,เค็ม:3,หวาน:3},
+   ings:["สันคอหมู 500 กรัม","นมสดจืด 0.25 ถ้วย","กระเทียม 1 ช้อนโต๊ะ","พริกไทย 1 ช้อนชา","น้ำตาลปี๊บ 2 ช้อนโต๊ะ","ซีอิ๊วขาว 2 ช้อนโต๊ะ","ซอสหอย 1 ช้อนโต๊ะ","น้ำมันพืช 1 ช้อนโต๊ะ"],
+   steps:["โขลกกระเทียมกับพริกไทยให้ละเอียด","ผสมนมสด น้ำตาลปี๊บ ซีอิ๊วขาว ซอสหอย และน้ำมัน คนให้น้ำตาลละลาย","ใส่หมูลงคลุก หมักในตู้เย็นข้ามคืน อย่างน้อย 8 ชั่วโมง","เสียบหมูสลับมันด้วยไม้ปลายแหลม","ย่างไฟกลางด้านละ 5 นาที ทาน้ำหมักระหว่างย่าง"]},
+  {id:"planung", title:"ปลากะพงนึ่งมะนาว", latin:"PLA NEUNG MANAO", cat:"นึ่ง", time:25, diff:"ง่าย", serves:2, spicy:2,
+   desc:"เปรี้ยวจี๊ดซดคล่อง เผ็ดนิดๆ กินกับข้าวสวยร้อนๆ หมดจานไม่รู้ตัว",
+   theme:"theme-leaf", letter:"ปล",
+   taste:{เผ็ด:2,เปรี้ยว:5,เค็ม:3,หวาน:1},
+   ings:["ปลากะพง 1 ตัว ประมาณ 700 กรัม","น้ำมะนาว 4 ช้อนโต๊ะ","น้ำปลา 3 ช้อนโต๊ะ","น้ำซุป 0.5 ถ้วย","กระเทียมสับ 2 ช้อนโต๊ะ","พริกขี้หนูสับ 2 ช้อนโต๊ะ","ขิงซอย 2 ช้อนโต๊ะ","ตะไคร้ทุบ 2 ต้น","ขึ้นฉ่าย 2 ต้น"],
+   steps:["ล้างปลา บั้งข้างละ 3 รอย ยัดไส้ขิงซอยกับตะไคร้","ตั้งซึ้งน้ำเดือดจัด นึ่งปลา 12 นาที","ผสมน้ำมะนาว น้ำปลา น้ำซุป กระเทียมและพริกสับ ชิมให้เปรี้ยวนำ","ราดน้ำยำบนปลา โรยขึ้นฉ่าย เสิร์ฟร้อนๆ"]},
+  {id:"wingob", title:"ปีกไก่อบน้ำผึ้ง", latin:"HONEY BAKED WINGS", cat:"อบ", time:45, diff:"ปานกลาง", serves:3, spicy:0,
+   desc:"หนังกรอบน้ำผึ้ง หอมกระเทียม — เด็กกินได้ผู้ใหญ่กินดี",
+   theme:"theme-gold", letter:"ปี",
+   taste:{เผ็ด:0,เปรี้ยว:0,เค็ม:3,หวาน:4},
+   ings:["ปีกไก่ 8 ชิ้น","น้ำผึ้ง 3 ช้อนโต๊ะ","ซีอิ๊วขาว 2 ช้อนโต๊ะ","ซอสหอย 1 ช้อนโต๊ะ","กระเทียมสับ 1 ช้อนโต๊ะ","พริกไทย 0.5 ช้อนชา","น้ำมันงา 1 ช้อนชา"],
+   steps:["หมักปีกไก่กับทุกอย่าง 30 นาทีในตู้เย็น","วอร์มเตาอบ 200 องศา 10 นาที","เรียงไก่บนตะแกรง อบ 25 นาที","กลับด้าน ทาน้ำหมัก อบต่อ 10 นาทีจนสีสวย"]},
+];
+
+const store = {
+  get favs(){ try{return JSON.parse(localStorage.getItem("krua-favs")||"[]")}catch{return[]} },
+  set favs(v){ localStorage.setItem("krua-favs", JSON.stringify(v)) },
+  get custom(){ try{return JSON.parse(localStorage.getItem("krua-custom")||"[]")}catch{return[]} },
+  set custom(v){ localStorage.setItem("krua-custom", JSON.stringify(v)) },
+};
+
+let state = {
+  q:"", cat:"all", crave:new Set(), sort:"default", favOnly:false,
+  recipes:[...store.custom, ...BASE_RECIPES],
+  current:null, serves:2, timerId:null, timerLeft:0,
+};
+
+const $ = s => document.querySelector(s);
+const grid = $("#grid"), resultLine = $("#resultLine");
+function esc(s){ return String(s??"").replace(/[&<>"']/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])) }
+
+function toast(msg){
+  const t = $("#toast"); t.textContent = msg; t.classList.add("show");
+  clearTimeout(t._h); t._h = setTimeout(()=>t.classList.remove("show"), 2200);
+}
+function isFav(id){ return store.favs.includes(id) }
+function toggleFav(id){
+  let f = store.favs;
+  if(f.includes(id)){ f = f.filter(x=>x!==id); toast("เอาออกจากสมุดบันทึกแล้ว") }
+  else{ f = [...f, id]; toast("♥ บันทึกไว้แล้ว ดูได้ที่ปุ่มบันทึก") }
+  store.favs = f; render();
+  if(state.current && state.current.id===id) paintFavBtn();
+}
+function chili(n){ return "🌶".repeat(n) + "<span style='opacity:.25'>" + "🌶".repeat(Math.max(0,3-n)) + "</span>" }
+function tasteStrip(t){
+  const order = [["เผ็ด",t.เผ็ด||0,"var(--chili)"],["เปรี้ยว",t.เปรี้ยว||0,"#5B8C2A"],["เค็ม",t.เค็ม||0,"#2B3A8F"],["หวาน",t.หวาน||0,"var(--turmeric)"]];
+  return order.map(([k,v,c])=>`<div><b>${k}</b><span>${v}/5</span><div class="taste-bar"><i style="width:${v*20}%;background:${c}"></i></div></div>`).join("");
+}
+function matches(r){
+  if(state.favOnly && !isFav(r.id)) return false;
+  if(state.cat!=="all" && r.cat!==state.cat) return false;
+  if(state.q){
+    const q = state.q.toLowerCase();
+    const hay = (r.title+" "+(r.desc||"")+" "+r.ings.join(" ")+" "+(r.source||"")+" "+(r.author||"")).toLowerCase();
+    if(!hay.includes(q)) return false;
+  }
+  for(const c of state.crave){
+    if(c==="spicy" && !(r.spicy>=2 || (r.taste.เผ็ด||0)>=4)) return false;
+    if(c==="sour" && !((r.taste.เปรี้ยว||0)>=4)) return false;
+    if(c==="creamy" && !(r.id==="green"||r.id==="tomkha"||r.id==="tomyum"||(r.desc.includes("กะทิ")))) return false;
+    if(c==="fast" && !(r.time<=20)) return false;
+    if(c==="easy" && !(r.diff==="ง่าย")) return false;
+  }
+  return true;
+}
+function render(){
+  let list = state.recipes.filter(matches);
+  if(state.sort==="fast") list = [...list].sort((a,b)=>a.time-b.time);
+  if(state.sort==="spicy") list = [...list].sort((a,b)=>b.spicy-a.spicy);
+  if(state.sort==="easy"){ const w={ง่าย:0,"ปานกลาง":1,"ท้าทาย":2}; list=[...list].sort((a,b)=>(w[a.diff]??9)-(w[b.diff]??9)) }
+  $("#favCount").textContent = store.favs.length;
+  $("#statCount").textContent = state.recipes.length;
+  $("#statTime").textContent = "≤" + Math.max(0, ...state.recipes.map(r=>+r.time||0));
+  resultLine.textContent = list.length
+    ? `เจอ ${list.length} สูตร ${state.cat!=="all"?"· หมวด"+state.cat+" ":""}${state.q?`· “${state.q}”`:""} — จิ้มเปิดสูตรแล้วทำตามได้เลย`
+    : `ไม่เจอสูตรที่ตรง — ลองล้างตัวกรอง หรือจดสูตรใหม่ลงสมุดเองเลย`;
+  const wq = state.q.trim();
+  $("#webBox").innerHTML = wq
+    ? `<span class="mono" style="font-size:12px;opacity:.7">อยากค้นต่อนอกสมุด? เอาลิงก์ที่เจอมาดึงเข้าสมุดได้เลย →</span>
+       <a class="btn btn-ghost" style="padding:7px 13px" target="_blank" rel="noopener" href="https://www.google.com/search?q=${encodeURIComponent(wq + " สูตรอาหาร วิธีทำ")}">Google ↗</a>
+       <a class="btn btn-ghost" style="padding:7px 13px" target="_blank" rel="noopener" href="https://www.wongnai.com/recipes?q=${encodeURIComponent(wq)}">Wongnai ↗</a>`
+    : "";
+  grid.innerHTML = list.length ? list.map((r,i)=>`
+    <article class="card" style="animation-delay:${Math.min(i*60,420)}ms">
+      <div class="card-visual ${r.theme||"theme-leaf"} ${r.img?"has-img":""}">
+        ${r.img?`<img class="cover" src="${esc(r.img)}" alt="" loading="lazy">`:""}
+        <div class="card-top-row">
+          <span class="card-cat">${r.cat} · ${r.time} นาที</span>
+          <button class="fav-btn ${isFav(r.id)?"active":""}" data-fav="${r.id}" aria-label="บันทึก${esc(r.title)}" aria-pressed="${isFav(r.id)}">${isFav(r.id)?"♥":"♡"}</button>
+        </div>
+        <span class="big-letter" aria-hidden="true">${(r.letter||r.title[0])}</span>
+        <span class="mono" style="position:relative;z-index:1;font-size:11px;opacity:.85">${r.latin||""}</span>
+      </div>
+      <div class="card-body">
+        <h3>${esc(r.title)} ${r.mine?'<span class="badge-mine">ส่วนตัว</span>':""}</h3>
+        <p class="card-desc">${esc(r.desc||"")}</p>
+        <div class="card-stats">
+          <span class="mini-meter">⏱ ${r.time} นาที</span>
+          <span class="mini-meter">· ${esc(r.diff||"ง่าย")}</span>
+          <span class="mini-meter chili-dots" title="ความเผ็ด ${r.spicy}/3">${chili(r.spicy||0)}</span>
+          ${r.source?'<span class="badge-src">📎 มีต้นฉบับ</span>':""}
+        </div>
+        <div class="taste-strip" aria-label="รสชาติ">${tasteStrip(r.taste||{})}</div>
+        <div class="card-foot">
+          <button class="btn btn-leaf" data-open="${r.id}">เปิดสูตร</button>
+          <button class="btn" data-quick="${r.id}" title="ดูวัตถุดิบแบบไว">ของที่ต้องมี</button>
+        </div>
+      </div>
+    </article>`).join("")
+  : `<div class="empty"><h3>ครกยังว่างอยู่</h3><p>ไม่มีสูตรไหนตรงกับที่เลือก — ลองเปลี่ยนรส หรือจดสูตรของบ้านตัวเองเพิ่ม</p><button class="btn btn-gold" id="emptyAdd">+ จดสูตรใหม่</button></div>`;
+  const ea = $("#emptyAdd"); if(ea) ea.onclick = ()=>openAdd();
+}
+
+/* ticker: เกร็ดครัวสั้นๆ วิ่งวน */
+const TICKER_TIPS = ["ทริกครัว <b>ข้าวค้างคืน</b> ผัดถึงจะร่วน","มะนาวต้อง <b>บีบนอกเตา</b> โดนร้อนจัดแล้วขม","ของไม่ติดกระทะ ถ้า <b>กระทะร้อนก่อนน้ำมัน</b>","น้ำซุปใสๆ <b>ช้อนฟองทิ้ง</b> บ่อยๆ","เกลือให้ <b>ทีละนิด</b> แก้เค็มยากกว่าแก้จืด","ทอดกรอบไม่อมน้ำมัน <b>อย่าใส่แน่นกระทะ</b>","เนื้อย่างพัก <b>5 นาที</b> ก่อนหั่น น้ำฉ่ำกว่า","กะทิเอาแค่ <b>เดือดขอบหม้อ</b> พล่านแล้วแตกมัน","ยำแล้ว <b>เสิร์ฟทันที</b> ทิ้งไว้น้ำออก รสจืด","ลวกผักเสร็จ <b>น็อกน้ำเย็น</b> สีเขียวไม่ดำ"];
+$("#ticker").innerHTML = [...TICKER_TIPS, ...TICKER_TIPS].map(t=>`<span>${t}</span>·`).join("");
+
+/* paint dots in hero */
+document.querySelectorAll("[data-dots]").forEach(el=>{
+  const n = +el.dataset.dots, sweet = el.classList.contains("sweet");
+  el.innerHTML = Array.from({length:5},(_,i)=>`<span class="dot ${i<n?"on":""} ${sweet?"sweet":""}"></span>`).join("");
+});
+
+/* events */
+$("#search").addEventListener("input", e=>{ state.q = e.target.value.trim(); render() });
+$("#catRow").addEventListener("click", e=>{
+  const b = e.target.closest(".cat"); if(!b) return;
+  state.cat = b.dataset.cat;
+  document.querySelectorAll(".cat").forEach(x=>x.setAttribute("aria-pressed", x===b ? "true":"false"));
+  render();
+});
+$("#craveRow").addEventListener("click", e=>{
+  const b = e.target.closest(".tag"); if(!b) return;
+  const k = b.dataset.crave;
+  if(state.crave.has(k)){ state.crave.delete(k); b.setAttribute("aria-pressed","false") }
+  else{ state.crave.add(k); b.setAttribute("aria-pressed","true") }
+  render();
+});
+$("#sort").addEventListener("change", e=>{ state.sort = e.target.value; render() });
+$("#clearFilters").onclick = ()=>{
+  state.q=""; $("#search").value=""; state.cat="all"; state.crave.clear(); state.sort="default"; $("#sort").value="default"; state.favOnly=false;
+  document.querySelectorAll(".cat").forEach((x,i)=>x.setAttribute("aria-pressed", i===0?"true":"false"));
+  document.querySelectorAll(".tag").forEach(x=>x.setAttribute("aria-pressed","false"));
+  const ft=$("#favToggle"); ft.setAttribute("aria-pressed","false");
+  render(); toast("ล้างตัวกรองแล้ว เห็นทั้งสมุดเหมือนเดิม");
+};
+$("#favToggle").onclick = (e)=>{
+  state.favOnly = !state.favOnly;
+  e.currentTarget.setAttribute("aria-pressed", String(state.favOnly));
+  render();
+  if(state.favOnly && !store.favs.length) toast("ยังไม่มีสูตรที่บันทึก — กด ♡ ที่การ์ดไหนก็ได้");
+};
+grid.addEventListener("click", e=>{
+  const f = e.target.closest("[data-fav]");
+  if(f){ toggleFav(f.dataset.fav); return }
+  const o = e.target.closest("[data-open]");
+  if(o){ openDetail(o.dataset.open); return }
+  const q = e.target.closest("[data-quick]");
+  if(q){
+    const r = state.recipes.find(x=>x.id===q.dataset.quick);
+    if(r) toast(`${r.title}: ${r.ings.slice(0,3).join(" · ")} + อีก ${Math.max(0,r.ings.length-3)} อย่าง — กดเปิดสูตรดูทั้งหมด`);
+  }
+});
+
+/* detail */
+const dOverlay = $("#detailOverlay");
+function scaleIng(text, base, next){
+  if(base===next) return text;
+  return text.replace(/^(\S+\s+)?(\d+(?:\.\d+)?)/, (m, pre, num)=>{
+    const v = parseFloat(num) * next / base;
+    const nice = v % 1 === 0 ? String(v) : String(Math.round(v*10)/10);
+    return (pre||"") + nice;
+  });
+}
+function openDetail(id){
+  const r = state.recipes.find(x=>x.id===id); if(!r) return;
+  state.current = r; state.serves = r.serves||2;
+  $("#dTitle").textContent = r.title;
+  $("#dSub").textContent = `${r.latin||""} · ${r.cat} · ${r.time} นาที · ${r.diff||"ง่าย"} · เผ็ด ${r.spicy||0}/3${r.author?" · โดย "+r.author:""}`;
+  const dImg = $("#dImg");
+  if(r.img){ dImg.src = r.img; dImg.hidden = false } else { dImg.removeAttribute("src"); dImg.hidden = true }
+  paintTips(r);
+  const sw = $("#dSourceWrap"), sl = $("#dSource");
+  if(r.source){ sw.hidden = false; sl.href = r.source; sl.textContent = shortHost(r.source) + " ↗" }
+  else{ sw.hidden = true }
+  $("#dDelete").hidden = !r.mine;
+  $("#dEdit").hidden = !r.mine;
+  paintDetail(); paintFavBtn();
+  dOverlay.classList.add("open"); $("#closeDetail").focus();
+}
+function shortHost(u){ try{ return new URL(u).hostname.replace(/^www\./,"") }catch{ return "ดูต้นฉบับ" } }
+function paintDetail(){
+  const r = state.current; if(!r) return;
+  $("#servVal").textContent = state.serves + " ที่";
+  $("#servLabel").textContent = r.serveLabel ? "· " + r.serveLabel : "";
+  $("#ingList").innerHTML = r.ings.map((t,i)=>`<label class="ing"><input type="checkbox" data-ing="${i}"><span>${esc(scaleIng(t, r.serves||2, state.serves))}</span></label>`).join("");
+  $("#ingCount").textContent = `${r.ings.length} อย่าง`;
+    $("#stepList").innerHTML = r.steps.map((s,i)=>{
+    const dm = /(\d+)\s*(ชั่วโมง|ชม|นาที|วินาที)/.exec(s);
+    let chip = "";
+    if(dm){
+      const n = +dm[1];
+      const ms = (/ชั่วโมง/.test(dm[2]) || dm[2] === "ชม") ? n*3600000 : /วินาที/.test(dm[2]) ? n*1000 : n*60000;
+      chip = `<button type="button" class="step-timer" data-ms="${ms}" data-i="${i+1}" title="จับเวลา ${n} ${dm[2]}">⏱ ${n} ${dm[2]}</button>`;
+    }
+    return `<div class="step"><label><input type="checkbox" data-step="${i}" style="width:17px;height:17px;margin-top:4px;accent-color:var(--leaf);flex-shrink:0"><span class="step-num">${i+1}</span><span>${esc(s)}</span></label>${chip}</div>`;
+  }).join("");
+  $("#stepCount").textContent = `${r.steps.length} ขั้น`;
+  $("#dFlavor").innerHTML = [["เผ็ด",r.taste.เผ็ด||0],["เปรี้ยว",r.taste.เปรี้ยว||0],["เค็ม",r.taste.เค็ม||0],["หวาน",r.taste.หวาน||0]]
+    .map(([k,v])=>`<div class="flavor-row"><span>${k}</span><span class="dot-track">${Array.from({length:5},(_,i)=>`<span class="dot ${i<v?"on":""}"></span>`).join("")}</span><span class="mono">${v}/5</span></div>`).join("");
+  updateProgress();
+}
+function updateProgress(){
+  const boxes = [...document.querySelectorAll("#ingList input")];
+  const done = boxes.filter(b=>b.checked).length;
+  $("#ingBar").style.width = boxes.length ? (done/boxes.length*100)+"%" : "0";
+  $("#ingHint").textContent = done===0 ? "ติ๊กของที่หยิบแล้ว — แถบเขียวจะค่อยๆ เต็ม" : done===boxes.length ? "ครบแล้ว ลงมือได้เลย!" : `หยิบแล้ว ${done}/${boxes.length} อย่าง`;
+  document.querySelectorAll("#ingList .ing").forEach(l=>l.classList.toggle("done", l.querySelector("input").checked));
+}
+document.addEventListener("change", e=>{
+  if(e.target.matches("#ingList input")) updateProgress();
+  if(e.target.matches("#stepList input")){
+    e.target.closest(".step").classList.toggle("done", e.target.checked);
+    const all=[...document.querySelectorAll("#stepList input")];
+    if(all.length && all.every(b=>b.checked)) toast("เก่งมาก เสร็จครบทุกขั้นแล้ว — ตักเสิร์ฟได้เลย!");
+  }
+});
+$("#servMinus").onclick = ()=>{ if(state.serves>1){ state.serves--; paintDetail() } };
+$("#servPlus").onclick = ()=>{ if(state.serves<12){ state.serves++; paintDetail() } };
+function hashStr(s){ let h = 7; for(let i = 0; i < s.length; i++) h = (h*31 + s.charCodeAt(i))>>>0; return h; }
+const CAT_TIPS = {
+  "ผัด":["ตั้งกระทะให้ร้อนจนควันขึ้นนิดๆ ก่อนใส่น้ำมัน ของจะไม่ติดกระทะ","ผัดผักใบเขียวไฟแรงเวลาน้อย สีจะยังสดกรอบ","อย่าใส่ของแน่นกระทะ ความร้อนตกแล้วจะกลายเป็นต้ม","ปรุงตอนท้ายแล้วชิมก่อนตักเสมอ"],
+  "ต้ม":["ใส่ข่า ตะไคร้ ใบมะกรูดตอนน้ำเดือด กลิ่นจะพุ่งที่สุด","ช้อนฟองทิ้งเรื่อยๆ น้ำซุปจะใส","เค็มเติมทีละน้อยตอนท้าย แก้เค็มยากกว่าแก้จืด"],
+  "แกง":["ผัดพริกแกงกับหัวกะทิจนแตกมันก่อน สีสวยหอมกว่าเทรวม","มะเขือใส่ตอนใกล้เสร็จ ต้มนานเกินจะเละ","แกงค้างคืนอุ่นอีกวันมักอร่อยกว่าเดิม"],
+  "ทอด":["น้ำมันต้องร้อน (ไม้จิ้มฟันจุ่มแล้วฟองฟู่) ของถึงกรอบไม่อมน้ำมัน","ทอดทีละน้อย ใส่เยอะอุณหภูมิร่วง ของจะนิ่ม","ตักขึ้นพักบนตะแกรง ไอน้ำจากทิชชู่ทำให้หายกรอบ"],
+  "ย่าง":["หมักข้ามคืนในตู้เย็น เนื้อนุ่มเข้าเนื้อกว่าหมักแป๊บเดียว","ย่างไฟกลางใจเย็นๆ ไฟแรงข้างนอกไหม้ข้างในดิบ","ซอสหวานทาตอนใกล้สุก น้ำตาลไหม้เร็ว"],
+  "นึ่ง":["รอน้ำเดือดจัดก่อนเอาของขึ้นนึ่ง แล้วค่อยจับเวลา","อย่าเปิดฝาบ่อย ไอน้ำหายอุณหภูมิร่วง ของสุกช้า","ปลานึ่งรองจานด้วยขิงหรือตะไคร้ ช่วยดับคาว"],
+  "อบ":["วอร์มเตาก่อน 10 นาที อุณหภูมิจะนิ่ง ของสุกทั่ว","คลุมฟอยล์ช่วงแรกกันหน้าไหม้ เปิดออกตอนท้ายเอาสี","พักของอบ 5 นาทีก่อนหั่น น้ำจะได้ไม่ไหลออกหมด"],
+  "ยำ":["น้ำยำต้องชิมก่อนคลุก เปรี้ยวเค็มหวานต้องชัดตั้งแต่ในถ้วย","คลุกเบาๆ เร็วๆ ผักไม่ช้ำ น้ำไม่ออก","ยำแล้วเสิร์ฟทันที ทิ้งไว้น้ำออก รสจะจืดลง"],
+  "all":["ชิมทุกครั้งก่อนตักเสิร์ฟ ลิ้นเราคือเครื่องวัดที่ดีที่สุด","เตรียมของให้ครบก่อนจุดไฟ ครัวจะไม่วุ่นตอนทำ","มีดคมทำงานเร็วกว่าและปลอดภัยกว่ามีดทื่อ","จานร้อนเสิร์ฟอาหารร้อน จานเย็นเสิร์ฟยำ"]
+};
+const FOOD_TIPS = [
+  [/กะทิ/, "กะทิห้ามต้มเดือดพล่าน ใช้ไฟกลางให้เดือดแค่ขอบหม้อ ไม่งั้นแตกมันเป็นเม็ด"],
+  [/มะนาว/, "บีบมะนาวนอกเตาเสมอ เจอความร้อนจัดจะขมและกลิ่นหาย"],
+  [/ไข่เจียว|ทอดไข่|ไข่ดาว/, "ทอดไข่น้ำมันต้องร้อนจัด ตอกแล้วอย่าขยับ ขอบจะฟูกรอบ"],
+  [/ไข่ต้ม|ต้มไข่/, "ไข่ยางมะตูมจับเวลา 7 นาทีแล้วน็อกน้ำเย็นทันที ปอกง่ายไข่ไม่สุกต่อ"],
+  [/ปลากะพง|ปลาทู|ปลานิล|ปลาทับทิม|เนื้อปลา|ทอดปลา|นึ่งปลา/, "ทำปลาซับน้ำให้แห้งก่อน หนังจะกรอบ ไม่ติดกระทะ"],
+  [/เส้นจันท์|เส้นเล็ก|เส้นหมี่|ขนมจีน|วุ้นเส้น|สปาเก็ตตี้|พาสต้า/, "ลวกเส้นเสร็จคลุกน้ำมันกระเทียมเจียวบางๆ เส้นไม่ติดกันเป็นก้อน"],
+  [/ข้าวผัด|ข้าว.*ผัด/, "ข้าวผัดต้องใช้ข้าวค้างคืน ผัดไฟแรงให้ข้าวดีดกระทะ"],
+  [/หมัก/, "หมักเนื้อในตู้เย็น ใส่แป้งมันปลายช้อน เนื้อนุ่มขึ้นเยอะ"],
+  [/พริกแกง/, "ผัดพริกแกงกับหัวกะทิจนแตกมันก่อนเทหางกะทิ สีสวยหอมกว่า"]
+];
+function tipsFor(r){
+  const out = [];
+  const push = t => { if(t && !out.includes(t) && out.length < 3) out.push(t); };
+  if(r.id === "somtum") push("ชิมน้ำตำก่อนใส่มะละกอทุกครั้ง น้ำปลาร้าแต่ละขวดเค็มไม่เท่ากัน");
+  if(r.id === "kaprao") push("กระทะต้องร้อนจัด ใบกะเพราลงแล้วนับ 1-10 ปิดไฟเลย จะได้ไม่ดำ");
+  const hay = (r.title||"") + " " + (r.desc||"") + " " + (r.ings||[]).join(" ") + " " + (r.steps||[]).join(" ");
+  for(const [re, tip] of FOOD_TIPS){ if(out.length >= 2) break; try{ if(re.test(hay)) push(tip); }catch(e){} }
+  const pool = CAT_TIPS[r.cat] || [];
+  const gen = CAT_TIPS.all;
+  const h = hashStr(r.id || r.title || "x");
+  for(let k = 0; out.length < 3 && k < pool.length; k++) push(pool[(h+k)%pool.length]);
+  for(let k = 0; out.length < 3 && k < gen.length; k++) push(gen[(h+k)%gen.length]);
+  return out;
+}
+function paintTips(r){
+  $("#dTips").innerHTML = tipsFor(r).map(t=>`<li>${esc(t)}</li>`).join("");
+}
+function paintFavBtn(){ $("#dFav").textContent = isFav(state.current.id) ? "♥ บันทึกไว้แล้ว" : "♡ บันทึกสูตรนี้" }
+$("#dFav").onclick = ()=>toggleFav(state.current.id);
+$("#dPrint").onclick = ()=>window.print();
+$("#dEdit").onclick = ()=>{
+  if(!state.current?.mine) return;
+  const id = state.current.id;
+  dOverlay.classList.remove("open"); openAdd(id);
+};
+$("#dDelete").onclick = ()=>{
+  if(!state.current?.mine) return;
+  if(!confirm(`ลบ “${state.current.title}” ออกจากสมุดส่วนตัว?`)) return;
+  const id = state.current.id;
+  state.recipes = state.recipes.filter(x=>x.id!==id);
+  store.custom = store.custom.filter(x=>x.id!==id);
+  store.favs = store.favs.filter(x=>x!==id);
+  dOverlay.classList.remove("open"); render(); toast("ลบสูตรส่วนตัวแล้ว");
+};
+$("#closeDetail").onclick = ()=>{ dOverlay.classList.remove("open") };
+dOverlay.addEventListener("click", e=>{ if(e.target===dOverlay){ dOverlay.classList.remove("open") } });
+
+/* timers: นาฬิกาจับเวลาหลายตัว + ดังเตือน + จำข้ามreload (อิงเวลาจริง ไม่เพี้ยนตอนสลับแท็บ) */
+let timers = [];
+const TKEY = "krua-timers";
+function fmtMs(ms){
+  const s = Math.max(0, Math.ceil(ms/1000));
+  const h = Math.floor(s/3600), m = Math.floor(s%3600/60), ss = s%60;
+  const p = n => String(n).padStart(2, "0");
+  return h ? `${h}:${p(m)}:${p(ss)}` : `${m}:${p(ss)}`;
+}
+function saveTimers(){
+  try{ localStorage.setItem(TKEY, JSON.stringify(timers.map(t=>({id:t.id,label:t.label,total:t.total,endsAt:t.endsAt,left:t.left,state:t.state,acked:t.acked})))) }catch(e){}
+}
+function loadTimers(){
+  timers = [];
+  try{
+    const a = JSON.parse(localStorage.getItem(TKEY)||"[]");
+    if(!Array.isArray(a)) return;
+    const now = Date.now();
+    timers = a.filter(t=>t && t.id && +t.total > 0).slice(0, 6).map(t=>({
+      id:String(t.id), label:String(t.label||"จับเวลา").slice(0,28),
+      total:+t.total, endsAt:+t.endsAt||now, left:+t.left||0,
+      state:t.state === "paused" ? "paused" : "running", acked:true
+    }));
+    for(const t of timers){
+      if(t.state === "running"){
+        t.left = t.endsAt - now;
+        if(t.left <= 0){ t.left = 0; t.state = "done"; }
+      }
+    }
+  }catch(e){ timers = []; }
+}
+function startTimerMs(ms, label){
+  ms = Math.min(12*3600*1000, Math.max(5000, Math.round(+ms||0)));
+  if(timers.length >= 6){ toast("นาฬิกาเต็ม 6 ตัวแล้ว — ปิดตัวเก่าก่อน"); return; }
+  const t = {id:"t"+Date.now()+Math.floor(Math.random()*1000), label:String(label||"จับเวลา").slice(0,28)||"จับเวลา", total:ms, endsAt:Date.now()+ms, left:ms, state:"running", acked:false};
+  timers.push(t); renderDock(); saveTimers();
+  toast(`เริ่มจับเวลา ${fmtMs(ms)} (${t.label})`);
+}
+function renderDock(){
+  const dock = $("#dock");
+  if(!dock) return;
+  dock.innerHTML = timers.map(t=>{
+    const pct = t.total ? Math.max(0, t.left/t.total*100) : 0;
+    if(t.state === "done") return `<div class="tcard done" data-tid="${t.id}">
+      <div class="t-top"><b>⏰ ${esc(t.label)}</b><span class="t-left">หมดเวลา!</span></div>
+      <div class="tbar"><i></i></div>
+      <div class="t-btns"><button class="tbtn ok" data-act="dismiss" data-id="${t.id}">ปิดเสียง ✓</button></div></div>`;
+    return `<div class="tcard" data-tid="${t.id}">
+      <div class="t-top"><b>${esc(t.label)}</b><span class="t-left">${fmtMs(t.left)}</span></div>
+      <div class="tbar"><i style="width:${pct}%"></i></div>
+      <div class="t-btns">${t.state === "running"
+        ? `<button class="tbtn" data-act="pause" data-id="${t.id}">⏸ พัก</button>`
+        : `<span class="mono" style="font-size:11px;opacity:.6">พักอยู่</span><button class="tbtn" data-act="resume" data-id="${t.id}">▶ ต่อ</button>`}
+        <button class="tbtn danger" data-act="stop" data-id="${t.id}">✕ ยกเลิก</button></div></div>`;
+  }).join("");
+}
+function tickTimers(){
+  const now = Date.now();
+  let rebuilt = false;
+  for(const t of timers){
+    if(t.state !== "running") continue;
+    t.left = t.endsAt - now;
+    if(t.left <= 0){
+      t.left = 0; t.state = "done"; t.acked = false; rebuilt = true;
+      toast(`⏰ หมดเวลา: ${t.label} — กลับมาดูเตาด่วน!`);
+    } else {
+      const el = document.querySelector(`#dock [data-tid="${t.id}"]`);
+      if(el){
+        const lt = el.querySelector(".t-left"); if(lt) lt.textContent = fmtMs(t.left);
+        const bar = el.querySelector(".tbar i"); if(bar) bar.style.width = (t.left/t.total*100)+"%";
+      }
+    }
+  }
+  if(rebuilt){ renderDock(); saveTimers(); }
+}
+let AC = null;
+function beep(){
+  try{
+    AC = AC || new (window.AudioContext||window.webkitAudioContext)();
+    if(AC.state === "suspended") AC.resume();
+    const t0 = AC.currentTime;
+    [0, 0.35, 0.7].forEach(dt=>{
+      const o = AC.createOscillator(), g = AC.createGain();
+      o.type = "sine"; o.frequency.value = 880;
+      g.gain.setValueAtTime(0.0001, t0+dt);
+      g.gain.exponentialRampToValueAtTime(0.5, t0+dt+0.03);
+      g.gain.exponentialRampToValueAtTime(0.0001, t0+dt+0.3);
+      o.connect(g); g.connect(AC.destination);
+      o.start(t0+dt); o.stop(t0+dt+0.35);
+    });
+  }catch(e){}
+}
+let titleTimer = null, titleFlip = false;
+const titleOrig = document.title;
+function updateTitle(ringing){
+  if(ringing && !titleTimer){
+    titleTimer = setInterval(()=>{ document.title = titleFlip ? "⏰ หมดเวลา! กลับมาดูเตา" : titleOrig; titleFlip = !titleFlip; }, 1000);
+  } else if(!ringing && titleTimer){
+    clearInterval(titleTimer); titleTimer = null; document.title = titleOrig;
+  }
+}
+function alarmLoop(){
+  updateTitle(timers.some(t=>t.state === "done" && !t.acked) && (beep(), true));
+}
+$("#dock").addEventListener("click", e=>{
+  const b = e.target.closest("[data-act]"); if(!b) return;
+  const t = timers.find(x=>x.id === b.dataset.id); if(!t) return;
+  const act = b.dataset.act;
+  if(act === "pause" && t.state === "running"){ t.state = "paused"; t.left = Math.max(0, t.endsAt - Date.now()); }
+  else if(act === "resume" && t.state === "paused"){ t.state = "running"; t.endsAt = Date.now() + t.left; }
+  else if(act === "stop" || act === "dismiss"){ timers = timers.filter(x=>x.id !== t.id); }
+  renderDock(); saveTimers();
+});
+$("#timerPresets").addEventListener("click", e=>{
+  const b = e.target.closest("[data-min]"); if(!b) return;
+  const lbl = $("#timerLabel").value.trim() || (state.current ? state.current.title : "จับเวลา");
+  startTimerMs((+b.dataset.min)*60000, lbl);
+});
+$("#timerStart").onclick = ()=>{
+  const lbl = $("#timerLabel").value.trim() || (state.current ? state.current.title : "จับเวลา");
+  startTimerMs((+$("#timerMin").value)*60000, lbl);
+};
+$("#stepList").addEventListener("click", e=>{
+  const b = e.target.closest("[data-ms]"); if(!b) return;
+  startTimerMs(+b.dataset.ms, ((state.current && state.current.title) || "สูตร") + " · ขั้น " + b.dataset.i);
+});
+loadTimers(); renderDock();
+setInterval(tickTimers, 500);
+setInterval(alarmLoop, 2500);
+document.addEventListener("keydown", e=>{
+  if(e.key==="Escape"){ dOverlay.classList.remove("open"); closeAddGuarded() }
+  if(e.key==="/" && document.activeElement!==$("#search")){ e.preventDefault(); $("#search").focus() }
+});
+
+/* add + edit */
+const addOverlay = $("#addOverlay");
+let editingId = null;
+let tasteTouched = false;
+let addSnapshot = "";
+function snapAdd(){
+  const f = $("#addForm");
+  return JSON.stringify([f.title.value,f.category.value,f.time.value,f.difficulty.value,f.desc.value,f.source.value,f.ingredients.value,f.steps.value,f.spicy.value,f.t_hot.value,f.t_sour.value,f.t_salty.value,f.t_sweet.value,$("#fImg").value,$("#fAuthor").value,$("#fServes").value,$("#fServeLabel").value,$("#pasteBox").value,$("#linkUrl").value]);
+}
+function closeAddGuarded(){
+  if(addOverlay.classList.contains("open") && snapAdd() !== addSnapshot && !confirm("ปิดโดยยังไม่บันทึก? ข้อความที่พิมพ์หรือดึงไว้จะหายหมด")) return;
+  addOverlay.classList.remove("open"); editingId = null;
+}
+function setOpt(select, val, fallback){
+  const ok = [...select.options].some(o=>o.value === val || o.text === val);
+  select.value = ok ? val : fallback;
+}
+function openAdd(editId){
+  const form = $("#addForm");
+  if(editId){
+    const r = state.recipes.find(x=>x.id===editId && x.mine);
+    if(!r){ toast("แก้ไขได้เฉพาะสูตรส่วนตัว"); return }
+    editingId = editId;
+    $("#addTitle").textContent = "แก้ไขสูตร";
+    $("#addSub").textContent = "แก้แล้วกดบันทึก — สูตรโปรดและลิงก์ที่มายังอยู่ครบ";
+    $("#addSubmit").textContent = "บันทึกการแก้ไข →";
+    form.title.value = r.title||"";
+    setOpt(form.category, r.cat, "ต้ม");
+    form.time.value = r.time||20;
+    setOpt(form.difficulty, r.diff, "ง่าย");
+    form.desc.value = r.desc||"";
+    form.source.value = r.source||"";
+    form.ingredients.value = (r.ings||[]).join("\n");
+    form.steps.value = (r.steps||[]).join("\n");
+    form.spicy.value = r.spicy||0;
+    form.t_hot.value = (r.taste && r.taste.เผ็ด != null) ? r.taste.เผ็ด : (r.spicy||0);
+    form.t_sour.value = (r.taste && r.taste.เปรี้ยว != null) ? r.taste.เปรี้ยว : 2;
+    form.t_salty.value = (r.taste && r.taste.เค็ม != null) ? r.taste.เค็ม : 3;
+    form.t_sweet.value = (r.taste && r.taste.หวาน != null) ? r.taste.หวาน : 2;
+    $("#fImg").value = r.img||"";
+    $("#fAuthor").value = r.author||"";
+    $("#fServes").value = r.serves||2;
+    $("#fServeLabel").value = r.serveLabel||"";
+    tasteTouched = false; $("#tasteWhy").textContent = "";
+  } else {
+    editingId = null;
+    form.reset();
+    $("#addTitle").textContent = "เพิ่มสูตรของบ้าน";
+    $("#addSub").textContent = "จดแบบที่แม่จด — สั้นๆ แต่ทำตามได้จริง";
+    $("#addSubmit").textContent = "จดลงสมุด →";
+    $("#pasteBox").value = "";
+    tasteTouched = false; $("#tasteWhy").textContent = "";
+    setLinkStatus("วางลิงก์แล้วกดดึง — ระบบจะอ่านข้อมูลสูตรมาตรฐาน (ชื่อ วัตถุดิบ เวลา รูป) มากรอกให้ ตรวจทานก่อนกดจด");
+  }
+  addSnapshot = snapAdd();
+  addOverlay.classList.add("open"); addOverlay.querySelector("input").focus();
+}
+$("#openAdd").onclick = ()=>openAdd();
+$("#closeAdd").onclick = closeAddGuarded;
+$("#cancelAdd").onclick = closeAddGuarded;
+$("#addForm").addEventListener("submit", e=>{
+  e.preventDefault();
+  const fd = new FormData(e.target);
+  const ings = String(fd.get("ingredients")).split("\n").map(s=>s.trim()).filter(Boolean);
+  const steps = String(fd.get("steps")).split("\n").map(s=>s.trim()).filter(Boolean);
+  if(!ings.length || !steps.length){ toast("ใส่วัตถุดิบกับวิธีทำอย่างน้อยอย่างละ 1 บรรทัดก่อน — หรือวางข้อความแล้วกดแยกให้"); return }
+  const rawSource = String(fd.get("source")||"").trim();
+  const source = /^https?:\/\//i.test(rawSource) ? rawSource : "";
+  const title = String(fd.get("title")).trim();
+  const cat = String(fd.get("category")), time = Math.min(720, Math.max(5, +fd.get("time")||20));
+  const diff = String(fd.get("difficulty")), spicy = +fd.get("spicy")||0;
+  const tnum = (n,fb)=>{ const v = parseInt(fd.get(n),10); return Number.isFinite(v) ? Math.min(5, Math.max(0, v)) : fb; };
+  const taste = {เผ็ด:tnum("t_hot",spicy),เปรี้ยว:tnum("t_sour",2),เค็ม:tnum("t_salty",3),หวาน:tnum("t_sweet",2)};
+  const desc = String(fd.get("desc")).trim()||"สูตรเซฟส่วนตัว จดไว้กันลืม";
+  const img = String(fd.get("img")||"").trim(), author = String(fd.get("author")||"").trim();
+  const serves = Math.min(12, Math.max(1, parseInt(fd.get("servesCount"),10)||2));
+  const serveLabel = String(fd.get("serveLabel")||"").trim();
+  if(editingId){
+    const r = state.recipes.find(x=>x.id===editingId);
+    if(!r){ toast("หาสูตรนี้ไม่เจอแล้ว"); return }
+    Object.assign(r, {title, cat, time, diff, desc, source, ings, steps, spicy, img, author, serves, serveLabel});
+    r.letter = title[0]||"ส";
+    r.taste = taste;
+    const all = store.custom;
+    const ci = all.findIndex(x=>x.id===editingId);
+    if(ci>-1) all[ci] = r; else all.unshift(r);
+    store.custom = all;
+    const eid = editingId; editingId = null;
+    addOverlay.classList.remove("open");
+    render(); toast("บันทึกการแก้ไขแล้ว");
+    openDetail(eid);
+    return;
+  }
+  const themes = ["theme-leaf","theme-chili","theme-gold","theme-ink"];
+  const fromWongnai = /wongnai\.com/i.test(source);
+  const r = {
+    id:"my-"+Date.now(), title,
+    latin: fromWongnai ? "SAVED · ส่วนตัว" : "HOME RECIPE", cat, time,
+    diff, serves, serveLabel, spicy,
+    desc,
+    theme:themes[state.recipes.length%themes.length], letter:title[0]||"ส",
+    taste,
+    ings, steps, mine:true, source, img, author,
+  };
+  state.recipes.unshift(r);
+  const c = store.custom; c.unshift(r); store.custom = c;
+  addOverlay.classList.remove("open"); e.target.reset(); $("#pasteBox").value = "";
+  $("#linkStatus").textContent = "วางลิงก์แล้วกดดึง — ระบบจะอ่านข้อมูลสูตรมาตรฐาน (ชื่อ วัตถุดิบ เวลา รูป) มากรอกให้ ตรวจทานก่อนกดจด";
+  state.cat="all"; document.querySelectorAll(".cat").forEach((x,i)=>x.setAttribute("aria-pressed",i===0?"true":"false"));
+  render(); toast("จดลงสมุดแล้ว — สูตรของบ้านอยู่บนสุดเลย");
+  openDetail(r.id);
+});
+
+/* fetch-from-link: วางลิงก์หน้าที่ได้รับอนุญาต → อ่าน schema.org/Recipe มากรอกให้ */
+function isoMinutes(s){
+  const m = /PT(?:(\d+)H)?(?:(\d+)M)?/i.exec(String(s||""));
+  if(!m) return 0;
+  return (+m[1]||0)*60 + (+m[2]||0);
+}
+function metaContent(html, attr, name){
+  const re = new RegExp('<meta[^>]+(?:name|property)=["\']'+attr+'["\'][^>]*>', 'i');
+  const tag = re.exec(html)?.[0] || "";
+  return /content=["']([^"']*)["']/i.exec(tag)?.[1] || "";
+}
+/* Wongnai ฝังข้อมูลสูตรฉบับเต็มไว้ใน window._wn (ดีกว่า ld+json ที่เขียนมาพัง) */
+function parseWnStore(html){
+  const i = html.indexOf("window._wn");
+  if(i < 0) return null;
+  const j = html.indexOf("{", i);
+  if(j < 0) return null;
+  let depth = 0, inStr = false, esc = false, qq = "";
+  for(let k = j; k < html.length && k < j + 3000000; k++){
+    const c = html[k];
+    if(inStr){ if(esc) esc = false; else if(c === "\\") esc = true; else if(c === qq) inStr = false; }
+    else{
+      if(c === '"' || c === "'"){ inStr = true; qq = c; }
+      else if(c === "{") depth++;
+      else if(c === "}"){
+        depth--;
+        if(depth === 0){ try{ return JSON.parse(html.slice(j, k+1)); }catch(e){ return null; } }
+      }
+    }
+  }
+  return null;
+}
+function extractRecipeFromHtml(html, url){
+  let recipe = null;
+  const scripts = [...html.matchAll(/<script[^>]+type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi)];
+  outer:
+  for(const s of scripts){
+    let data;
+    try{ data = JSON.parse(s[1].trim()) }catch{ continue }
+    const nodes = Array.isArray(data) ? data : (data["@graph"] || [data]);
+    for(const n of nodes){
+      if(!n || typeof n !== "object") continue;
+      const t = n["@type"];
+      if(t === "Recipe" || (Array.isArray(t) && t.includes("Recipe"))){ recipe = n; break outer }
+    }
+  }
+  const ogTitle = metaContent(html, "og:title", "") || /<title[^>]*>([^<]*)<\/title>/i.exec(html)?.[1] || "";
+  const ogImage = metaContent(html, "og:image", "");
+  const metaDesc = metaContent(html, "description", "");
+  const d = {title:"", desc:"", ings:[], steps:[], time:0, serves:2, serveLabel:"", img:"", author:"", keywords:"", partial:false};
+  if(recipe){
+    d.title = String(recipe.name||"").trim();
+    d.desc = String(recipe.description||"").trim();
+    const ri = recipe.recipeIngredient;
+    if(Array.isArray(ri)) d.ings = ri.map(x=>String(x).trim()).filter(s=>s && s !== "[object Object]");
+    else if(typeof ri === "string") d.ings = ri.split(/[,;\n]+/).map(x=>x.trim()).filter(s=>s && s !== "[object Object]");
+    const ins = recipe.recipeInstructions;
+    if(ins){
+      const arr = Array.isArray(ins) ? ins : [ins];
+      d.steps = arr.map(x=>{
+        if(typeof x === "string") return x.replace(/\[object Object\]/g, "").replace(/^[,;\s]+|[,;\s]+$/g, "").trim();
+        if(x && typeof x === "object") return String(x.text||x.name||"").replace(/\[object Object\]/g, "").trim();
+        return "";
+      }).filter(s=>s && s !== "[object Object]" && s.length > 1);
+    }
+    d.keywords = Array.isArray(recipe.keywords) ? recipe.keywords.join(",") : String(recipe.keywords||"");
+    d.time = isoMinutes(recipe.totalTime) || (isoMinutes(recipe.prepTime) + isoMinutes(recipe.cookTime)) || 0;
+    const y = String(recipe.recipeYield||"").trim();
+    d.serveLabel = y;
+    const yn = parseInt((y.match(/\d+/)||[])[0]||"", 10);
+    d.serves = (yn >= 1 && yn <= 12) ? yn : 2;
+    const im = recipe.image;
+    d.img = (Array.isArray(im) ? im[0] : im) ? String(Array.isArray(im) ? im[0] : im).split(",")[0].trim() : "";
+  }
+  try{
+    const wd = parseWnStore(html).store.recipeData.value.data;
+    if(wd && (wd.ingredients || wd.instructions)){
+      if(wd.title) d.title = String(wd.title).trim();
+      if(wd.description) d.desc = String(wd.description).trim();
+      const wing = [...(wd.ingredients||[])].sort((a,b)=>(a.seq||0)-(b.seq||0));
+      if(wing.length) d.ings = wing.map(x=>((x.ingredientName||"") + " " + (x.amount||"")).replace(/\s+/g, " ").trim()).filter(s=>s && s !== "[object Object]");
+      const wins = [...(wd.instructions||[])].sort((a,b)=>(a.seq||0)-(b.seq||0));
+      if(wins.length){
+        d.steps = wins.map(x=>{
+          let s = String(x.detail||"").replace(/\s+/g, " ").trim();
+          const tip = String(x.tips||"").replace(/\s+/g, " ").trim();
+          if(tip && !s.includes(tip)) s += (s ? " " : "") + "เคล็ดลับ: " + tip;
+          return s;
+        }).filter(s=>s.length > 1);
+        d.partial = false;
+      }
+      if(wd.owner && wd.owner.name) d.author = String(wd.owner.name).trim();
+      const tt = ((+wd.prepTimeH||0)*60 + (+wd.prepTimeM||0)) + ((+wd.cookTimeH||0)*60 + (+wd.cookTimeM||0));
+      if(tt > 0) d.time = tt;
+      if(wd.yield){
+        d.serveLabel = String(wd.yield).trim();
+        const yn = parseInt((String(wd.yield).match(/\d+/)||[])[0]||"", 10);
+        d.serves = (yn >= 1 && yn <= 12) ? yn : 2;
+      }
+      const tags = (wd.tags||[]).map(t=>t.thaiName||t.primaryName||"").filter(Boolean).join(",");
+      if(tags) d.keywords = (d.keywords ? d.keywords + "," : "") + tags;
+      const ph = wd.photos && wd.photos[0] && (wd.photos[0].contentUrl || wd.photos[0].thumbnailUrl);
+      if(ph && !d.img) d.img = ph;
+    }
+  }catch(e){}
+  if(!d.title) d.title = ogTitle.replace(/\s+(โดย|by)\s+.+/i, "").replace(/^สูตร\s+/, "").trim() || ogTitle.trim();
+  if(!d.desc) d.desc = metaDesc.split(/\s*:\s*\d+\./)[0].trim();
+  if(!d.img && ogImage) d.img = ogImage;
+  const authorM = /โดย\s+(.+?)\s+on\s+wongnai\.com/i.exec(ogTitle);
+  if(authorM) d.author = authorM[1].trim();
+  if(!d.ings.length && metaDesc.includes(",")){
+    const head = metaDesc.split(":")[0];
+    if(/วัตถุดิบ|ส่วนผสม/.test(head)) d.ings = head.replace(/.*(?:วัตถุดิบ|ส่วนผสม)\s*/,"").split(",").map(x=>x.trim()).filter(Boolean);
+  }
+  if(!d.steps.length && metaDesc){
+    const afterColon = metaDesc.includes(":") ? metaDesc.slice(metaDesc.indexOf(":")+1) : metaDesc;
+    d.steps = afterColon.replace(/\.{3,}$/,"").split(/(?=\d+\.\s)/).map(x=>x.replace(/^\d+\.\s*/,"").trim().replace(/[,;，、]+$/,"")).map(x=>x.trim()).filter(x=>x.length > 1);
+    if(/(…|\.\.\.)\s*$/.test(metaDesc)) d.partial = true;
+  }
+  return d;
+}
+const stepNote = d => d.partial ? " (วิธีทำจากคำโปรยอาจไม่ครบ — ก็อปวิธีทำทั้งหน้ามาวางเพิ่มได้)" : "";
+function guessCategory(keywords, title){
+  const hay = (keywords||"") + " " + (title||"");
+  const noOb = hay.replace(/กรอบ|ประกอบ|ระบอบ|คำตอบ|ชอบ|มอบ|ปลอบ|แอบ/g, "");
+  if(/ย่าง|ปิ้ง/.test(hay)) return "ย่าง";
+  if(/นึ่ง/.test(hay)) return "นึ่ง";
+  if(/ทอด|เจียว/.test(hay)) return "ทอด";
+  if(/ต้ม|ซุป|ตุ๋น/.test(hay)) return "ต้ม";
+  if(/แกง/.test(hay)) return "แกง";
+  if(/อบ/.test(noOb)) return "อบ";
+  if(/ยำ|ตำ/.test(hay)) return "ยำ";
+  if(/ผัด/.test(hay)) return "ผัด";
+  return "";
+}
+const TASTE_RULES = {
+  "เผ็ด": {s:["พริกขี้หนู","พริกแห้ง","พริกป่น","พริกแกง","ปาปริก้า","ดีปลี","พริกกะเหรี่ยง"], w:["พริกเผา","พริกชี้ฟ้า","พริกหยวก","พริกไทย","พริกสด","วาซาบิ"], d:["เผ็ด","รสจัด"]},
+  "เปรี้ยว": {s:["น้ำส้มสายชู","มะนาว","มะขาม","ตะลิงปลิง","มะดัน","มะยม","เสาวรส","ส้มแขก","ชะมวง"], w:["น้ำส้ม","มะเขือเทศ","สับปะรด","ส้มโอ"], d:["เปรี้ยว"]},
+  "เค็ม": {s:["น้ำปลา","กะปิ","ปลาร้า","บูดู","เต้าเจี้ยว"], w:["เกลือ","ซีอิ๊ว","ซอสปรุงรส","ซอสหอย","ผงปรุงรส","รสดี","คนอร์","ซอสฝาเขียว"], d:["เค็ม"]},
+  "หวาน": {s:["น้ำตาล","น้ำผึ้ง","นมข้น"], w:["กะทิ","น้ำอ้อย","ช็อกโกแลต","น้ำหวาน","แยม"], d:["หวาน"]}
+};
+const escRe = s => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+/* guessTaste: เดาแผนที่รส 0–5 จากชื่อ+คำอธิบาย+วัตถุดิบ+วิธีทำ */
+function guessTaste(rec){
+  const zones = [
+    {t:(rec.ings||[]).join("\n"), w:2},
+    {t:(rec.steps||[]).join("\n"), w:1},
+    {t:[rec.title||"", rec.desc||""].join(" "), w:1}
+  ];
+  const all = zones.map(z=>z.t).join("\n");
+  const out = {};
+  for(const flavor of Object.keys(TASTE_RULES)){
+    const rules = TASTE_RULES[flavor];
+    let raw = 0; const hits = [];
+    zones.forEach(z=>{
+      let s = (flavor === "หวาน") ? z.t.replace(/นมข้นจืด|นมสด|นมจืด/g, " ") : z.t;
+      [["s",2],["w",1],["d",1]].forEach(([list,weight])=>{
+        rules[list].forEach(kw=>{
+          const re = new RegExp(escRe(kw), "g");
+          const mm = s.match(re);
+          if(mm){ raw += mm.length*weight*z.w; hits.push(kw); s = s.replace(re, " "); }
+        });
+      });
+    });
+    if(flavor === "เผ็ด"){
+      let n = 0, m; const re = /พริก[^\n]*?(\d+(?:\.\d+)?)\s*เม็ด/g;
+      while((m = re.exec(all))) n += parseFloat(m[1]);
+      raw += n >= 10 ? 4 : n >= 5 ? 2 : 0;
+    }
+    if(flavor === "เปรี้ยว"){
+      let n = 0, m; const re = /มะนาว[^\n]*?(\d+(?:\.\d+)?)\s*ลูก/g;
+      while((m = re.exec(all))) n += parseFloat(m[1]);
+      raw += n >= 2 ? 2 : n >= 1 ? 1 : 0;
+      let u0 = 0, m0; const re0 = /มะนาว[^\n]*?(\d+(?:\.\d+)?)\s*(ช้อนโต๊ะ|ช้อนชา|ช้อน)/g;
+      while((m0 = re0.exec(all))) u0 += parseFloat(m0[1])*(m0[2] === "ช้อนชา" ? 1 : 3);
+      raw += u0 >= 9 ? 2 : u0 >= 3 ? 1 : 0;
+      let u = 0, u2; const re2 = /มะขาม[^\n]*?(\d+(?:\.\d+)?)\s*(ช้อนโต๊ะ|ช้อนชา|ช้อน|ถ้วย)/g;
+      const uw = {"ช้อนโต๊ะ":3,"ช้อน":3,"ช้อนชา":1,"ถ้วย":12};
+      while((u2 = re2.exec(all))) u += parseFloat(u2[1])*(uw[u2[2]]||0);
+      raw += u >= 3 ? 2 : u >= 1 ? 1 : 0;
+    }
+    if(flavor === "หวาน"){
+      let u = 0, m; const re = /(?:น้ำตาล|น้ำผึ้ง)[^\n]*?(\d+(?:\.\d+)?)\s*(ช้อนโต๊ะ|ช้อนชา|ช้อน|ถ้วย)/g;
+      const uw = {"ช้อนโต๊ะ":3,"ช้อน":3,"ช้อนชา":1,"ถ้วย":12};
+      while((m = re.exec(all))) u += parseFloat(m[1])*(uw[m[2]]||0);
+      raw += u >= 9 ? 2 : u >= 3 ? 1 : 0;
+    }
+    out[flavor] = {v: raw<=0?0 : raw<=2?1 : raw<=4?2 : raw<=6?3 : raw<=9?4 : 5, hits:[...new Set(hits)].slice(0,4)};
+  }
+  return out;
+}
+function applyAutoTaste(){
+  const form = $("#addForm");
+  const g = guessTaste({title:form.title.value, desc:form.desc.value, ings:form.ingredients.value.split("\n"), steps:form.steps.value.split("\n")});
+  const names = {"เผ็ด":"t_hot","เปรี้ยว":"t_sour","เค็ม":"t_salty","หวาน":"t_sweet"};
+  for(const k of Object.keys(names)){
+    form[names[k]].value = g[k].v;
+    form[names[k]].title = g[k].hits.length ? ("เจอคำว่า: " + g[k].hits.join(" · ")) : "";
+  }
+  form.spicy.value = Math.round(g["เผ็ด"].v*3/5);
+  const why = Object.keys(names).filter(k=>g[k].hits.length).map(k=>k + "←" + g[k].hits.slice(0,2).join("+")).join("   ");
+  $("#tasteWhy").textContent = why ? "เดาอัตโนมัติจากคำที่เจอ: " + why + "  (ไม่ตรงแก้ได้เลย)" : "ยังไม่เจอคำบ่งชี้รส — เติมวัตถุดิบแล้วกดเดาอีกที";
+}
+function fillRecipeForm(d, url){
+  const form = $("#addForm");
+  if(d.title && !form.title.value.trim()) form.title.value = d.title.slice(0,60);
+  if(d.desc && !form.desc.value.trim()) form.desc.value = d.desc.slice(0,140);
+  if(d.ings.length) form.ingredients.value = d.ings.join("\n");
+  if(d.steps.length) form.steps.value = d.steps.join("\n");
+  if(d.time) form.time.value = Math.min(720, Math.max(5, d.time));
+  const cat = guessCategory(d.keywords, d.title);
+  if(cat) form.category.value = cat;
+  if(url) form.source.value = url;
+  if(d.img) $("#fImg").value = d.img;
+  if(d.author) $("#fAuthor").value = d.author;
+  $("#fServes").value = d.serves||2;
+  if(d.serveLabel) $("#fServeLabel").value = d.serveLabel;
+  if(!tasteTouched) applyAutoTaste();
+}
+function setLinkStatus(msg){ $("#linkStatus").textContent = msg }
+$("#fetchLink").onclick = async ()=>{
+  const url = $("#linkUrl").value.trim();
+  if(!/^https?:\/\/.+\..+/i.test(url)){ setLinkStatus("ลิงก์ยังไม่ถูก — ต้องขึ้นต้นด้วย http(s):// แล้วกดดึงอีกครั้ง"); toast("วางลิงก์ให้ครบก่อน (ขึ้นต้นด้วย https://)"); return }
+  setLinkStatus("กำลังดึง " + url + " …");
+  const sig = (typeof AbortSignal !== "undefined" && AbortSignal.timeout) ? AbortSignal.timeout(20000) : undefined;
+  const pick = html => {
+    const d = extractRecipeFromHtml(html, url);
+    return (d.title || d.ings.length || d.steps.length) ? d : null;
+  };
+  try{
+    const res = await fetch(url, {credentials:"omit", signal:sig});
+    if(!res.ok) throw new Error("HTTP " + res.status);
+    const d = pick(await res.text());
+    if(!d){ setLinkStatus("ดึงหน้ามาได้ แต่ไม่เจอข้อมูลสูตรในหน้านี้ — ลองใช้วิธีวางซอร์สโค้ดด้านล่างแทน"); return }
+    fillRecipeForm(d, url);
+    setLinkStatus(`ดึงสำเร็จ: “${d.title||"ไม่พบชื่อ"}” · วัตถุดิบ ${d.ings.length} อย่าง · วิธีทำ ${d.steps.length} ขั้น${stepNote(d)} — ตรวจทานแล้วกดจดลงสมุด`);
+    toast("ดึงสูตรมากรอกให้แล้ว ตรวจทานก่อนกดจด");
+  }catch(err){
+    setLinkStatus("ดึงตรงไม่ได้ (เบราว์เซอร์บล็อก) กำลังลองช่องทางสำรอง …");
+    try{
+      const res2 = await fetch("https://api.allorigins.win/raw?url=" + encodeURIComponent(url), {signal:sig});
+      if(!res2.ok) throw 0;
+      const html2 = await res2.text();
+      if(!/<\s*html|ld\+json/i.test(html2)) throw 0;
+      const d2 = pick(html2);
+      if(!d2) throw 0;
+      fillRecipeForm(d2, url);
+      setLinkStatus(`ดึงสำเร็จ (ช่องทางสำรอง): “${d2.title||"ไม่พบชื่อ"}” · วัตถุดิบ ${d2.ings.length} อย่าง · วิธีทำ ${d2.steps.length} ขั้น${stepNote(d2)} — ตรวจทานแล้วกดจดลงสมุด`);
+      toast("ดึงสูตรมากรอกให้แล้ว ตรวจทานก่อนกดจด");
+    }catch(e2){
+      setLinkStatus("ดึงอัตโนมัติไม่ได้ทั้งสองช่องทาง → วิธีที่ชัวร์สุด: เปิดหน้าสูตร กด Ctrl+A Ctrl+C ก็อปข้อความ มาวางในช่อง “วางตรงนี้แล้วกดแยกให้” ด้านล่าง หรือกด Ctrl+U ก็อปซอร์สโค้ดมาวางก็ได้");
+    }
+  }
+};
+const CATS = ["ต้ม","ผัด","แกง","ยำ","ทอด","ย่าง","นึ่ง","อบ"];
+function normalizeImport(o, fallbackUrl){
+  const str = v => String(v ?? "").trim();
+  const lines = v => Array.isArray(v) ? v.map(str).filter(Boolean) : (v ? String(v).split("\n").map(s=>s.trim()).filter(Boolean) : []);
+  const ings = lines(o.ings).length ? lines(o.ings) : lines(o.ingredients);
+  const steps = lines(o.steps).length ? lines(o.steps) : lines(o.instructions);
+  return {
+    title:str(o.title || o.name), desc:str(o.desc || o.description),
+    ings, steps,
+    time:+o.time || +o.timeMin || 0,
+    serves:(+o.serves >= 1 && +o.serves <= 12) ? +o.serves : 2,
+    serveLabel:str(o.serveLabel || o.yield),
+    img:str(o.img || o.image), author:str(o.author),
+    keywords:str(o.keywords), source:str(o.source || o.url) || String(fallbackUrl||"")
+  };
+}
+function completeRecipe(o, i, have){
+  const b = normalizeImport(o, "");
+  const g = guessTaste({title:b.title, desc:b.desc, ings:b.ings, steps:b.steps});
+  const t = (o.taste && typeof o.taste === "object") ? o.taste : {};
+  const num = (v, fb) => { const n = +v; return Number.isFinite(n) ? n : fb; };
+  const taste = {
+    "เผ็ด":Math.min(5, Math.max(0, num(t["เผ็ด"], g["เผ็ด"].v))),
+    "เปรี้ยว":Math.min(5, Math.max(0, num(t["เปรี้ยว"], g["เปรี้ยว"].v))),
+    "เค็ม":Math.min(5, Math.max(0, num(t["เค็ม"], g["เค็ม"].v))),
+    "หวาน":Math.min(5, Math.max(0, num(t["หวาน"], g["หวาน"].v)))
+  };
+  const themes = ["theme-leaf","theme-chili","theme-gold","theme-ink"];
+  return {
+    id:o.id && !have.has(o.id) ? String(o.id) : "my-imp-"+Date.now()+"-"+i,
+    title:b.title || "สูตรไม่มีชื่อ",
+    latin:/wongnai\.com/i.test(b.source) ? "SAVED · ส่วนตัว" : "HOME RECIPE",
+    cat:CATS.includes(o.cat) ? o.cat : (guessCategory(b.keywords, b.title) || "ต้ม"),
+    time:Math.min(720, Math.max(5, b.time || 20)),
+    diff:["ง่าย","ปานกลาง","ท้าทาย"].includes(o.diff) ? o.diff : "ปานกลาง",
+    serves:b.serves, serveLabel:b.serveLabel,
+    spicy:(+o.spicy >= 0 && +o.spicy <= 3) ? +o.spicy : Math.round(taste["เผ็ด"]*3/5),
+    desc:b.desc || "สูตรนำเข้า",
+    theme:o.theme || themes[(have.size + i)%themes.length],
+    letter:(b.title || "ส")[0],
+    taste, ings:b.ings, steps:b.steps, mine:true, source:b.source, img:b.img, author:b.author
+  };
+}
+
+/* paste-and-split: วางข้อความที่ก็อปมา → แยกเป็นวัตถุดิบ/วิธีทำ (ใช้ส่วนตัว) */
+function cleanLine(s){
+  return String(s).replace(/^[\s•\-*▪︎·]+/, "").replace(/^\d+[.)\s]+/, "").trim();
+}
+function tidyIng(s){
+  return cleanLine(s).replace(/([ก-๛A-Za-z])(\d)/g, "$1 $2").replace(/(\d)(?=[ก-๛A-Za-z])/g, "$1 ").replace(/\s+/g, " ").trim();
+}
+/* parsePastedRecipe: แยกข้อความที่ก็อปจากหน้าสูตร (Ctrl+A) เป็นวัตถุดิบ/วิธีทำ */
+function parsePastedRecipe(raw){
+  const out = {ings:[], steps:[], serveLabel:"", serves:0, timeMin:0};
+  const t = String(raw||"").replace(/\r/g, "");
+  const toMin = mm => mm ? (+mm[1])*(mm[2]==="ชั่วโมง"?60:1) : 0;
+  const tp = /เวลาเตรียม[^:\n]{0,20}:\s*(\d+)\s*(ชั่วโมง|นาที)/.exec(t);
+  const tc = /เวลาปรุง[^:\n]{0,20}:\s*(\d+)\s*(ชั่วโมง|นาที)/.exec(t);
+  if(toMin(tp)+toMin(tc) > 0) out.timeMin = Math.min(720, Math.max(5, toMin(tp)+toMin(tc)));
+  const iIng = t.search(/ส่วนผสม|วัตถุดิบ/);
+  let iStep = -1;
+  const re = /วิธีทำ|ขั้นตอน/g; let m; const cands = [];
+  while((m = re.exec(t))) cands.push(m.index);
+  const afterIng = cands.filter(i => iIng < 0 || i > iIng);
+  const timed = afterIng.filter(i => /เวลาเตรียม|เวลาปรุง/.test(t.slice(i, i+120)));
+  if(timed.length) iStep = timed[0];
+  else if(afterIng.length) iStep = afterIng[0];
+  else {
+    for(const i of cands){
+      const ahead = t.slice(i, i+250);
+      if(/เวลาเตรียม|เวลาปรุง/.test(ahead) || /\d{1,2}\s+[ก-๛]/.test(ahead)){ iStep = i; break; }
+    }
+    if(iStep < 0 && cands.length) iStep = cands[cands.length-1];
+  }
+  const cutEnd = s => { const k = s.search(/แท็ก|ความคิดเห็น|สูตรอาหารที่เกี่ยวข้อง|แนะนำสูตร|เขียนสูตรอาหาร|เกร็ดความรู้|เผยแพร่:/); return k > 0 ? s.slice(0, k) : s; };
+  const skipLine = s => !s || s.length < 2 || /^(เวลาเตรียม|เวลาปรุง|สำหรับ|แท็ก|เผยแพร่|อ่าน\s)/.test(s) || /ถูกใจ\s*•|ความคิดเห็น\s*•/.test(s);
+  const UNITS = "กิโลกรัม|กิโล|กรัม|ขีด|ช้อนโต๊ะ|ช้อนชา|ช้อน|ถ้วยตวง|ถ้วย|ฟอง|ตัว|ต้น|ลูก|หัว|กลีบ|เม็ด|กำ|ก้อน|กระป๋อง|ซอง|ห่อ|ขวด|ลิตร|ถุง|แผ่น|ไม้|ชิ้น|แท่ง|เส้น|จาน|แพ็ค";
+  if(iIng < 0 && iStep < 0){
+    const lines = t.split("\n").map(cleanLine).filter(s=>s && !skipLine(s));
+    const qty = /(\d|กรัม|กิโล|ขีด|ช้อน|ถ้วย|ฟอง|ตัว|ต้น|ใบ|ลูก|กลีบ|เม็ด|กำ|ก้อน|มล\.?|ลิตร|ซีก|แว่น|ท่อน|ห่อ|ซอง)/;
+    lines.forEach(l=>{
+      if(l.length < 45 && qty.test(l) && out.steps.length === 0) out.ings.push(tidyIng(l));
+      else if(out.ings.length && l.length > 20) out.steps.push(l);
+      else out.ings.push(tidyIng(l));
+    });
+    if(!out.steps.length && out.ings.length > 4){ out.steps = out.ings.slice(Math.ceil(out.ings.length/2)); out.ings = out.ings.slice(0, Math.ceil(out.ings.length/2)); }
+    return out;
+  }
+  if(iIng >= 0){
+    let z = cutEnd(t.slice(iIng, (iStep > iIng) ? iStep : undefined));
+    const sm = /สำหรับ\s*([^\n]{1,60})/.exec(z);
+    if(sm){
+      out.serveLabel = sm[1].trim();
+      const n = parseInt((sm[1].match(/\d+/)||[])[0]||"", 10);
+      if(n >= 1 && n <= 12) out.serves = n;
+    }
+    z = z.replace(/สำหรับ\s*[^\n]{0,60}/, "").replace(/^[^\n]*?(ส่วนผสม|วัตถุดิบ)/, "");
+    const parts = z.match(new RegExp("[^\\n,;]+?\\d+\\s*(?:" + UNITS + ")|[^\\n,;]{2,}", "g")) || [];
+    parts.map(tidyIng).filter(s=>s && !skipLine(s) && !/ส่วนผสม|วัตถุดิบ|วิธีทำ|ขั้นตอน/.test(s)).forEach(s=>out.ings.push(s));
+  }
+  if(iStep >= 0){
+    let z = cutEnd(t.slice(iStep).replace(/^[^\n]*?(วิธีทำ|ขั้นตอน)/, ""));
+    z = z.replace(/(^|[ก-๛A-Za-z.%\)\]\s])(\d{1,2})(?=[ก-๛])/gm, "$1$2 ");
+    const lines = z.split("\n").map(s=>s.trim()).filter(s=>s && !skipLine(s));
+    if(lines.filter(s=>/^\d{1,2}[\).\s]/.test(s)).length >= 2){
+      let cur = "";
+      const flush = ()=>{ const c = cleanLine(cur).replace(/\s+/g, " ").trim(); if(c.length > 1) out.steps.push(c); cur = ""; };
+      lines.forEach(l=>{ if(/^\d{1,2}[\).\s]/.test(l)){ if(cur) flush(); cur = l; } else cur = cur ? cur + " " + l : l; });
+      if(cur) flush();
+    } else {
+      lines.map(cleanLine).filter(s=>s.length > 1).forEach(s=>out.steps.push(s));
+    }
+  }
+  return out;
+}
+$("#parsePaste").onclick = ()=>{
+  const raw = $("#pasteBox").value;
+  if(!raw.trim()){ toast("วางลิงก์ ข้อความ หรือซอร์สโค้ดลงในช่องก่อน แล้วค่อยกด"); return }
+  const t0 = raw.trim();
+  if(/^[\[{]/.test(t0)){
+    try{
+      const o = JSON.parse(t0);
+      const first = Array.isArray(o) ? o[0] : o;
+      if(first && (first.title || first.name) && (first.ings || first.ingredients || first.steps || first.instructions)){
+        const d = normalizeImport(first, $("#linkUrl").value.trim());
+        fillRecipeForm(d, d.source);
+        if(!tasteTouched) applyAutoTaste();
+        setLinkStatus(`รับสูตร “${d.title||"ไม่พบชื่อ"}” แล้ว — ตรวจทานแล้วกดจดลงสมุด`);
+        toast("รับสูตรจากไฟล์แล้ว ตรวจทานก่อนกดจด");
+        return;
+      }
+    }catch(e){}
+    toast("อ่าน JSON ไม่ได้ — ต้องเป็นข้อความในไฟล์จากปุ่มดึงสูตร");
+    return;
+  }
+  if(/<\s*!doctype|<\s*html|application\/ld\+json|window\._wn/i.test(raw)){
+    const url = ($("#linkUrl") && $("#linkUrl").value.trim()) || "";
+    const d = extractRecipeFromHtml(raw, url);
+    if(!d.title && !d.ings.length && !d.steps.length){ toast("ในข้อความนี้ไม่เจอข้อมูลสูตร — ลองก็อปแบบข้อความธรรมดา (Ctrl+A) แทน"); return }
+    fillRecipeForm(d, url);
+  setLinkStatus(`แยกสำเร็จ: “${d.title||"ไม่พบชื่อ"}” · วัตถุดิบ ${d.ings.length} อย่าง · วิธีทำ ${d.steps.length} ขั้น${stepNote(d)} — ตรวจทานแล้วกดจดลงสมุด`);
+    toast("แยกสูตรให้แล้ว ตรวจทานก่อนกดจด");
+    return;
+  }
+  const p = parsePastedRecipe(raw);
+  const form = $("#addForm");
+  const touched = [];
+  if(p.ings.length && (!form.ingredients.value.trim() || /ส่วนผสม|วัตถุดิบ/.test(raw))){ form.ingredients.value = p.ings.join("\n"); touched.push(`วัตถุดิบ ${p.ings.length} อย่าง`); }
+  if(p.steps.length && (!form.steps.value.trim() || /วิธีทำ|ขั้นตอน/.test(raw))){ form.steps.value = p.steps.join("\n"); touched.push(`วิธีทำ ${p.steps.length} ขั้น`); }
+  if(p.serveLabel) $("#fServeLabel").value = p.serveLabel;
+  if(p.serves) $("#fServes").value = p.serves;
+  if(p.timeMin) form.time.value = p.timeMin;
+  if(!tasteTouched && (p.ings.length || p.steps.length)) applyAutoTaste();
+  if(!form.title.value.trim()){
+    const nav = /Cooking|เข้าสู่ระบบ|ค้นหา|หน้าแรก|ทำอาหาร|อ่าน\s*[\d.k]+|ถูกใจ|ความคิดเห็น/;
+    for(const l of raw.split("\n").map(cleanLine).filter(Boolean).slice(0, 12)){
+      if(l.length >= 2 && l.length <= 60 && !nav.test(l) && !/ส่วนผสม|วัตถุดิบ|วิธีทำ|ขั้นตอน/.test(l)){ form.title.value = l; break; }
+    }
+  }
+  if(touched.length) toast(`แยกให้แล้ว: ${touched.join(" · ")} — ตรวจทานก่อนกดจด`);
+  else if(p.ings.length || p.steps.length) toast("ช่องมีข้อมูลอยู่แล้วเลยไม่ได้ทับ — อยากแทนที่ให้ล้างช่องนั้นก่อน");
+  else toast("แยกไม่ได้ — ลองก็อปข้อความมาใหม่ หรือกรอกเองได้เลย");
+};
+
+/* sync: แก้รสเผ็ด → พริกในการ์ดขยับตาม */
+$("#addForm").t_hot.addEventListener("input", e=>{
+  const v = Math.min(5, Math.max(0, parseInt(e.target.value,10)||0));
+  $("#addForm").spicy.value = Math.round(v*3/5);
+});
+/* มือแตะช่องรสเมื่อไหร่ ถือว่า override — ระบบจะไม่เดาทับ */
+$("#addForm").addEventListener("input", e=>{
+  if(["t_hot","t_sour","t_salty","t_sweet","spicy"].includes(e.target.name)) tasteTouched = true;
+});
+$("#autoTaste").onclick = ()=>{
+  tasteTouched = false;
+  applyAutoTaste();
+  toast("เดารสจากสูตรให้แล้ว — ไม่ตรงตรงไหนแก้ได้เลย");
+};
+
+/* backup: สำรอง / นำเข้าสูตรส่วนตัว (JSON, เก็บในเครื่อง) */
+$("#exportBtn").onclick = ()=>{
+  const data = JSON.stringify(store.custom, null, 2);
+  const blob = new Blob([data], {type:"application/json"});
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "krua-baan-backup.json";
+  a.click(); URL.revokeObjectURL(a.href);
+  toast(`สำรองสูตรส่วนตัว ${store.custom.length} สูตรแล้ว`);
+};
+$("#importFile").addEventListener("change", e=>{
+  const f = e.target.files[0]; if(!f) return;
+  const rd = new FileReader();
+  rd.onload = ()=>{
+    try{
+      const parsed = JSON.parse(rd.result);
+      const list = Array.isArray(parsed) ? parsed : [parsed];
+      const valid = list.filter(x=>x && (x.title || x.name) && (Array.isArray(x.ings) || Array.isArray(x.ingredients) || Array.isArray(x.steps) || Array.isArray(x.instructions)));
+      if(!valid.length){ toast("ไฟล์นี้ไม่มีสูตรที่นำเข้าได้"); return }
+      const have = new Set(state.recipes.map(r=>r.id));
+      const fresh = valid.map((r,i)=>completeRecipe(r, i, have));
+      state.recipes = [...fresh, ...state.recipes];
+      store.custom = [...fresh, ...store.custom];
+      render(); toast(`นำเข้าสูตรส่วนตัว ${fresh.length} สูตรแล้ว`);
+      if(fresh.length === 1) openDetail(fresh[0].id);
+    }catch{ toast("อ่านไฟล์ไม่ได้ — ต้องเป็นไฟล์ .json ที่สำรองจากแอปนี้") }
+    e.target.value = "";
+  };
+  rd.readAsText(f);
+});
+
+/* quick open from featured */
+document.querySelectorAll("[data-open]").forEach(b=>{ if(b.closest(".featured")) b.onclick=()=>openDetail(b.dataset.open) });
+
+render();
+</script>
+</body>
+</html>
