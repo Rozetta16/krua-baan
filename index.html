@@ -4,6 +4,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#16432E">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="ครัวบ้านๆ">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icons/icon-180.png">
 <title>ครัวบ้านๆ — สมุดสูตรอาหารไทย</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -46,7 +52,7 @@ html, body{overflow-x:clip}
 button, a, input, select, textarea, label{touch-action:manipulation}
 button, a{-webkit-tap-highlight-color:transparent}
 .card-body h3, .featured-visual h2, .sheet-head h2, .wn-info b, .toast, .hero h1{overflow-wrap:anywhere}
-.search input, .fridge input, .form-grid input, .form-grid select, .form-grid textarea, .timer-custom input, .link-row input, select{font-size:16px}
+.search input, .fridge input, .form-grid input, .form-grid select, .form-grid textarea, #timerMin, .link-row input, select{font-size:16px}
 
 /* ---------- top bar ---------- */
 .topbar{
@@ -164,11 +170,10 @@ button, a{-webkit-tap-highlight-color:transparent}
   background:linear-gradient(135deg, var(--chili) 0%, var(--chili-deep) 55%, #4A0E08 100%);
   display:flex; flex-direction:column; justify-content:flex-end;
 }
-.featured-visual::before{
-  content:"ต้ม"; font-family:var(--font-display);
-  position:absolute; right:-10px; top:-30px; font-size:190px; line-height:1;
-  color:rgba(255,255,255,.14);
-}
+.price-board{padding:18px 20px; display:flex; flex-direction:column; gap:10px}
+.price-board-head{display:flex; justify-content:space-between; align-items:center}
+.price-board-foot{margin:0; font-size:11px; opacity:.65; line-height:1.7}
+.price-board-foot a{color:var(--leaf-2); font-weight:700}
 .featured-visual::after{
   content:""; position:absolute; inset:0;
   background-image:radial-gradient(rgba(255,255,255,.22) 1.5px, transparent 1.5px);
@@ -351,10 +356,7 @@ footer{background:var(--ink); color:var(--wash); border-top:2px solid var(--ink)
 .timer-presets .mono{font-size:11px; opacity:.6}
 .tchip{border:2px solid var(--ink); background:var(--paper); border-radius:999px; padding:5px 11px; font-family:var(--font-mono); font-size:12px; font-weight:700; cursor:pointer}
 .tchip:hover{background:var(--turmeric)}
-.timer-custom{display:flex; gap:6px; align-items:center; flex-wrap:wrap}
-.timer-custom input{font-family:inherit; font-size:14px; border:2px solid var(--ink); border-radius:10px; padding:7px 10px; background:#fff; color:inherit}
-#timerMin{width:64px}
-#timerLabel{flex:1; min-width:100px}
+#timerMin{width:76px; font-family:inherit; font-size:16px; border:2px solid var(--ink); border-radius:10px; padding:7px 10px; background:#fff; color:inherit}
 #dock{position:fixed; right:14px; bottom:14px; z-index:150; display:flex; flex-direction:column; gap:8px; width:min(320px, calc(100vw - 28px))}
 #dock:empty{display:none}
 .tcard{background:var(--paper); border:2px solid var(--ink); border-radius:14px; box-shadow:4px 4px 0 var(--ink); padding:10px 12px; display:grid; gap:8px}
@@ -423,7 +425,10 @@ footer{background:var(--ink); color:var(--wash); border-top:2px solid var(--ink)
 .price-meta{font-family:var(--font-mono); font-size:11px; opacity:.65; line-height:1.7; margin:6px 0 0}
 .price-meta a{color:var(--leaf-2); font-weight:700}
 .price-ref{opacity:.55}
+.pc[data-pkey]{cursor:pointer; text-decoration:underline dotted; text-underline-offset:3px}
 #dTips{margin:0; padding-left:20px; display:grid; gap:8px; font-size:14px; line-height:1.65}
+.nutri-top{display:flex; gap:12px; align-items:flex-end; margin-bottom:10px}
+.kcal-big{font-family:var(--font-display); font-size:38px; line-height:1}
 .toast{
   position:fixed; bottom:22px; left:50%; translate:-50% 0; z-index:200;
   background:var(--ink); color:#fff; padding:12px 20px; border-radius:999px;
@@ -469,7 +474,6 @@ footer{background:var(--ink); color:var(--wash); border-top:2px solid var(--ink)
   .form-2{grid-template-columns:1fr}
   .taste-grid{grid-template-columns:repeat(2,1fr)}
   .featured-visual{min-height:180px; padding:18px}
-  .featured-visual::before{font-size:130px}
   .featured-body{padding:14px 16px 16px}
   #dock{left:12px; right:12px; bottom:12px; width:auto}
   .toast{bottom:auto; top:64px}
@@ -535,26 +539,13 @@ footer{background:var(--ink); color:var(--wash); border-top:2px solid var(--ink)
     </div>
   </div>
 
-  <article class="featured" aria-label="เมนูแนะนำวันนี้">
-    <div class="featured-visual">
-      <span class="ribbon">★ เมนูแนะนำวันนี้ · ทำได้ชัวร์</span>
-      <h2>ต้มยำกุ้งน้ำข้น</h2>
-      <p>เปรี้ยวนำ เค็มตาม เผ็ดปิดท้าย — สูตรร้านข้าวต้มรอบดึก หอมตะไคร้ใบมะกรูด ซดร้อนๆ โล่งทั้งตัว</p>
+  <article class="featured price-board" aria-label="ราคาวัตถุดิบวันนี้">
+    <div class="price-board-head">
+      <span class="ribbon">💰 ราคาตลาดวันนี้</span>
+      <button class="btn btn-ghost" id="priceRefresh" title="รีเฟรชราคา" style="padding:6px 12px">↻</button>
     </div>
-    <div class="featured-body">
-      <div class="flavor-grid" aria-label="แผนที่รสชาติ">
-        <div class="flavor-row"><span>เผ็ด</span><span class="dot-track" data-dots="3"></span><span class="mono">3/5</span></div>
-        <div class="flavor-row"><span>เปรี้ยว</span><span class="dot-track" data-dots="5"></span><span class="mono">5/5</span></div>
-        <div class="flavor-row"><span>เค็ม</span><span class="dot-track" data-dots="3"></span><span class="mono">3/5</span></div>
-        <div class="flavor-row"><span>หวาน</span><span class="dot-track sweet" data-dots="1"></span><span class="mono">1/5</span></div>
-      </div>
-      <div class="featured-actions">
-        <span class="pill">⏱ 25 นาที</span>
-        <span class="pill">ปานกลาง</span>
-        <span class="pill">สำหรับ 2 ที่</span>
-        <button class="btn btn-leaf" data-open="tomyum" style="margin-left:auto">เปิดสูตร →</button>
-      </div>
-    </div>
+    <div id="priceBoardList"></div>
+    <p class="mono price-board-foot" id="priceBoardFoot"></p>
   </article>
 </section>
 
@@ -604,11 +595,12 @@ footer{background:var(--ink); color:var(--wash); border-top:2px solid var(--ink)
   <div class="foot-inner">
     <p><b style="font-family:var(--font-display);font-weight:400">ครัวบ้านๆ</b> — MVP สมุดสูตรอาหารไทย เก็บสูตรโปรดไว้ในเครื่อง (localStorage) เพิ่มสูตรของบ้านตัวเองได้ ไม่ต้องสมัครอะไรทั้งนั้น กับข้าวบ้านๆ แต่ตั้งใจทำ<br><span style="opacity:.65">สูตรที่เซฟจากเว็บอื่นเก็บไว้ดูส่วนตัวในเครื่องนี้เท่านั้น กรุณาแปะลิงก์ที่มาเสมอ</span></p>
     <div class="foot-btns">
-      <span class="mono" style="font-size:12px;opacity:.7;align-self:center">รสเผ็ด · รสเปรี้ยว · รสมือแม่ — v0.4</span>
+      <span class="mono" style="font-size:12px;opacity:.7;align-self:center">รสเผ็ด · รสเปรี้ยว · รสมือแม่ — v0.5</span>
       <button class="btn" id="exportBtn" type="button">↓ สำรองสูตร</button>
       <label class="btn" for="importFile" style="cursor:pointer">↑ นำเข้า</label>
       <input id="importFile" type="file" accept="application/json" hidden>
       <button class="btn" id="syncBtn" type="button">☁ ซิงก์</button>
+      <button class="btn" id="installBtn" type="button" hidden>＋ ติดตั้งแอป</button>
       <span class="mono" id="syncStatus" style="font-size:11px;opacity:.7;align-self:center">☁ ยังไม่ตั้งค่า</span>
     </div>
     <details class="sync-details">
@@ -662,29 +654,21 @@ footer{background:var(--ink); color:var(--wash); border-top:2px solid var(--ink)
           <div class="flavor-grid" id="dFlavor"></div>
           <div class="timer-panel">
             <div class="timer-presets" id="timerPresets">
-              <span class="mono">ด่วน:</span>
-              <button class="tchip" data-min="1">1</button>
-              <button class="tchip" data-min="2">2</button>
-              <button class="tchip" data-min="3">3</button>
+              <span class="mono">⏱</span>
               <button class="tchip" data-min="5">5</button>
-              <button class="tchip" data-min="7">7</button>
               <button class="tchip" data-min="10">10</button>
               <button class="tchip" data-min="15">15</button>
-              <button class="tchip" data-min="20">20</button>
               <button class="tchip" data-min="30">30</button>
-              <button class="tchip" data-min="45">45</button>
-              <button class="tchip" data-min="60">60</button>
-              <span class="mono">นาที</span>
-            </div>
-            <div class="timer-custom">
               <input id="timerMin" type="number" min="1" max="720" value="10" aria-label="จำนวนนาที">
               <span class="mono" style="font-size:12px">นาที</span>
-              <input id="timerLabel" maxlength="24" placeholder="ชื่อ เช่น ต้มไข่" aria-label="ชื่อนาฬิกา">
               <button class="btn btn-gold" id="timerStart" style="padding:8px 14px">▶ เริ่ม</button>
             </div>
-            <p class="mono" style="font-size:11px;opacity:.6;margin:8px 0 0">ตั้งได้หลายตัวพร้อมกัน · ปิดหน้านี้ไปนาฬิกาก็ยังเดิน · ดังเตือนจนกว่าจะกดปิด</p>
           </div>
         </div>
+      </div>
+      <div class="box">
+        <h4>🔥 โภชนาการโดยประมาณ <span class="mono">ต่อ 1 ที่</span></h4>
+        <div id="nutriBox"></div>
       </div>
       <div class="box">
         <h4>วิธีทำทีละขั้น <span class="mono" id="stepCount"></span></h4>
@@ -1024,6 +1008,95 @@ function openSharedDetail(id){
   paintDetail(); paintSharedFav();
   dOverlay.classList.add("open"); $("#closeDetail").focus();
 }
+const NUTRI_BASE = [
+  {n:"หมูสับ", k:260, p:17, c:0, f:21}, {n:"หมูสันคอ", k:220, p:19, c:0, f:16},
+  {n:"หมู", k:240, p:19, c:0, f:18, pc:{"ชิ้น":50}}, {n:"สะโพกไก่", k:185, p:17, c:0, f:13},
+  {n:"อกไก่", k:120, p:23, c:0, f:3}, {n:"ไก่", k:160, p:19, c:0, f:9, pc:{"ชิ้น":90, "ตัว":1000}},
+  {n:"เนื้อวัว", k:250, p:26, c:0, f:15}, {n:"เนื้อปู", k:90, p:18, c:1, f:1},
+  {n:"กุ้งแห้ง", k:280, p:55, c:8, f:3}, {n:"กุ้ง", k:100, p:20, c:1, f:1, pc:{"ตัว":15}},
+  {n:"ปลากะพง", k:110, p:20, c:0, f:3}, {n:"ปลาทู", k:150, p:19, c:0, f:7, pc:{"ตัว":80}},
+  {n:"ปลาหมึก", k:95, p:16, c:2, f:1}, {n:"ปลา", k:110, p:20, c:0, f:3},
+  {n:"ไข่ไก่", k:140, p:12, c:1, f:10, pc:{"ฟอง":50}}, {n:"ไข่เป็ด", k:180, p:13, c:1, f:14, pc:{"ฟอง":50}},
+  {n:"ไข่", k:140, p:12, c:1, f:10, pc:{"ฟอง":50}},
+  {n:"เต้าหู้", k:80, p:8, c:2, f:4, pc:{"ก้อน":250}},
+  {n:"กะทิ", k:230, p:2, c:6, f:24}, {n:"นมสด", k:60, p:3, c:5, f:3},
+  {n:"นมข้นจืด", k:130, p:7, c:10, f:8}, {n:"นมข้น", k:320, p:8, c:55, f:9},
+  {n:"น้ำมันหอย", k:100, p:1, c:22, f:0}, {n:"น้ำมันงา", k:884, p:0, c:0, f:100},
+  {n:"น้ำมันพืช", k:884, p:0, c:0, f:100}, {n:"น้ำมัน", k:884, p:0, c:0, f:100},
+  {n:"เนย", k:720, p:1, c:1, f:80},
+  {n:"น้ำตาลทราย", k:385, p:0, c:100, f:0}, {n:"น้ำตาลปี๊บ", k:375, p:0, c:95, f:0},
+  {n:"น้ำตาล", k:385, p:0, c:100, f:0}, {n:"น้ำผึ้ง", k:300, p:0, c:82, f:0},
+  {n:"ข้าว", k:130, p:2.7, c:28, f:0.3},
+  {n:"เส้นจันท์", k:150, p:3, c:32, f:0.5}, {n:"เส้นเล็ก", k:150, p:3, c:32, f:0.5},
+  {n:"เส้นหมี่", k:150, p:3, c:32, f:0.5}, {n:"เส้น", k:150, p:3, c:32, f:0.5},
+  {n:"วุ้นเส้น", k:330, p:0.5, c:82, f:0}, {n:"ขนมจีน", k:110, p:2, c:25, f:0},
+  {n:"ถั่วงอก", k:30, p:3, c:6, f:0}, {n:"กุยช่าย", k:25, p:2, c:5, f:0},
+  {n:"ผักบุ้ง", k:24, p:3, c:4, f:0}, {n:"คะน้า", k:36, p:3, c:6, f:0.5},
+  {n:"กะเพรา", k:45, p:4, c:7, f:1}, {n:"โหระพา", k:30, p:3, c:5, f:1},
+  {n:"ผักชี", k:25, p:2, c:4, f:0.5}, {n:"ต้นหอม", k:30, p:2, c:6, f:0},
+  {n:"ขึ้นฉ่าย", k:20, p:1, c:4, f:0}, {n:"กวางตุ้ง", k:20, p:1.5, c:3.5, f:0.3},
+  {n:"ผักกาดขาว", k:15, p:1, c:3, f:0.2}, {n:"กะหล่ำปลี", k:25, p:1.5, c:5, f:0.2},
+  {n:"แตงกวา", k:15, p:0.7, c:3.5, f:0.1}, {n:"ถั่วฝักยาว", k:45, p:3, c:8, f:0.4},
+  {n:"มะเขือเปราะ", k:30, p:1.5, c:6, f:0.3}, {n:"มะเขือเทศ", k:20, p:1, c:4, f:0.2},
+  {n:"มะเขือยาว", k:25, p:1, c:5, f:0.2}, {n:"มะเขือ", k:25, p:1, c:5, f:0.2},
+  {n:"เห็ดฟาง", k:30, p:3, c:5, f:0.3}, {n:"เห็ด", k:30, p:3, c:5, f:0.3},
+  {n:"ขิง", k:60, p:2, c:13, f:0.7}, {n:"ข่า", k:50, p:1.5, c:11, f:0.5},
+  {n:"ตะไคร้", k:70, p:2, c:15, f:0.5}, {n:"ใบมะกรูด", k:55, p:2, c:12, f:0.5},
+  {n:"มะนาว", k:25, p:0.5, c:8, f:0, pc:{"ลูก":30}}, {n:"มะขามเปียก", k:230, p:3, c:60, f:0.5},
+  {n:"สับปะรด", k:50, p:0.5, c:13, f:0.1},
+  {n:"กระเทียม", k:140, p:6, c:30, f:0.5, pc:{"กลีบ":3}}, {n:"หอมแดง", k:40, p:1, c:9, f:0},
+  {n:"พริกขี้หนู", k:40, p:2, c:9, f:0.5, pc:{"เม็ด":1}}, {n:"พริกแห้ง", k:320, p:11, c:65, f:6},
+  {n:"พริกชี้ฟ้า", k:35, p:1.5, c:8, f:0.4}, {n:"พริกไทย", k:250, p:10, c:60, f:3},
+  {n:"เกลือ", k:0, p:0, c:0, f:0}, {n:"น้ำปลา", k:55, p:7, c:4, f:0},
+  {n:"ซีอิ๊ว", k:60, p:6, c:5, f:0}, {n:"ซอสหอย", k:100, p:1, c:22, f:0},
+  {n:"เต้าเจี้ยว", k:120, p:7, c:12, f:4}, {n:"กะปิ", k:150, p:20, c:10, f:5},
+  {n:"ถั่วลิสง", k:570, p:26, c:16, f:48}, {n:"ผงปรุงรส", k:250, p:15, c:40, f:8},
+  {n:"แป้ง", k:350, p:0, c:85, f:0},
+  {n:"ซอสมะเขือเทศ", k:100, p:1, c:22, f:0}, {n:"ซอสพริก", k:90, p:1, c:20, f:0}
+];
+function matchNutri(name){
+  const n = String(name || "").replace(/\s+/g, "");
+  if(n.length < 2) return null;
+  let best = null;
+  for(const e of NUTRI_BASE){
+    const key = e.n.replace(/\s+/g, "");
+    if(key.length >= 2 && n.includes(key) && (!best || key.length > best.key.length)) best = {...e, key};
+  }
+  return best;
+}
+function nutriOf(line){
+  const m = matchNutri(cleanFoodName(line));
+  if(!m) return null;
+  const q = parseQty(line);
+  if(q.g) return {g:q.g, e:m};
+  if(q.pc && m.pc && m.pc[q.unit]) return {g:q.pc*m.pc[q.unit], e:m};
+  return null;
+}
+function estimateNutrition(r){
+  let k = 0, p = 0, c = 0, f = 0, counted = 0;
+  const n = (r.ings || []).length;
+  for(const line of (r.ings || [])){
+    const x = nutriOf(line);
+    if(!x) continue;
+    const s = x.g/100;
+    k += x.e.k*s; p += x.e.p*s; c += x.e.c*s; f += x.e.f*s;
+    counted++;
+  }
+  const sv = r.serves || 2;
+  return {k:k/sv, p:p/sv, c:c/sv, f:f/sv, counted, n};
+}
+function paintNutrition(){
+  const r = state.current, el = $("#nutriBox");
+  if(!r || !el) return;
+  const e = estimateNutrition(r);
+  const pct = (v, dv) => Math.min(100, Math.round(v/dv*100));
+  el.innerHTML = `
+    <div class="nutri-top"><span class="kcal-big">${Math.round(e.k)}</span><span class="mono">kcal / ที่<br>โปรตีน ${e.p.toFixed(0)} · คาร์บ ${e.c.toFixed(0)} · ไขมัน ${e.f.toFixed(0)} ก.</span></div>
+    <div class="flavor-grid">
+      ${[["โปรตีน", e.p, 50], ["คาร์บ", e.c, 300], ["ไขมัน", e.f, 65]].map(([k2, v, dv])=>`<div class="flavor-row"><span>${k2}</span><span class="dot-track" style="align-items:center"><span class="taste-bar" style="flex:1;margin:0"><i style="width:${pct(v, dv)}%;background:var(--leaf-2)"></i></span></span><span class="mono">${pct(v, dv)}%</span></div>`).join("")}
+    </div>
+    <p class="mono" style="font-size:11px;opacity:.6;margin:8px 0 0">นับ ${e.counted}/${e.n} อย่าง · เทียบ 2000 kcal/วัน · นับน้ำมันตามที่ใส่ (ทอดจริงร่างกายได้ไม่ถึงนี้) · ตัวเลขโดยประมาณมากๆ</p>`;
+}
 function paintSharedFav(){
   const r = state.current;
   const kept = r && sharedMine[r.id] && state.recipes.some(x=>x.id === sharedMine[r.id].recipeId);
@@ -1229,6 +1302,35 @@ $("#shuffleBtn").onclick = ()=>{
   };
   step();
 };
+
+/* price board: ตารางราคาตลาดรายวัน */
+const BOARD_WANT = ["พริกขี้หนู","กระเทียม","มะนาว","กะเพรา","โหระพา","ผักชี","ต้นหอม","มะเขือเทศ","มะเขือเปราะ","ถั่วฝักยาว","ผักกาดขาว","กะหล่ำปลี","แตงกวา","ผักบุ้ง","คะน้า","กวางตุ้ง","ขึ้นฉ่าย","ตะไคร้","ข่า","หอมใหญ่","หอมแดง","มะละกอ","ถั่วงอก","กุยช่าย","ผักชีฝรั่ง","พริกชี้ฟ้า","พริกหยวก","มะเขือยาว","ฟัก","บวบ","แตงร้าน","มันฝรั่ง","ฟักทอง"];
+function pickBoardItems(items, n){
+  const out = []; const used = new Set();
+  const norm = s => String(s || "").replace(/\s+/g, "");
+  for(const w of BOARD_WANT){
+    const f = items.find(it=>!used.has(it.n) && norm(it.n).includes(norm(w)));
+    if(f){ out.push(f); used.add(f.n); if(out.length >= n) break; }
+  }
+  for(const it of items){ if(out.length >= n) break; if(!used.has(it.n)){ out.push(it); used.add(it.n); } }
+  return out;
+}
+async function updatePriceBoard(force){
+  const list = $("#priceBoardList"), foot = $("#priceBoardFoot");
+  if(!list) return;
+  list.innerHTML = `<p class="mono" style="font-size:11px;opacity:.6">กำลังดึงราคา…</p>`;
+  try{
+    const mk = await getMarketPrices(force);
+    const items = pickBoardItems(mk.items, 8);
+    list.innerHTML = items.map(x=>`<div class="price-row"><span>${esc(x.n)}</span><span class="pc">฿${money(x.p)}/กก.</span></div>`).join("") || `<p class="mono" style="font-size:11px;opacity:.6">ไม่มีข้อมูล</p>`;
+    const when = new Date(mk.at).toLocaleDateString("th-TH", {day:"numeric", month:"short"});
+    foot.innerHTML = `${mk.dateStr ? esc(mk.dateStr) + " · " : ""}ดึงเมื่อ ${when}${mk.stale ? " (ข้อมูลเก่า)" : (mk.cached ? " (แคช)" : "")} · <a href="${PRICE_PAGE}" target="_blank" rel="noopener">allkaset ↗</a>`;
+  }catch(e){
+    list.innerHTML = `<p class="mono" style="font-size:11px;opacity:.6">ดึงไม่ได้ตอนนี้ — <a href="${PRICE_PAGE}" target="_blank" rel="noopener">ดูต้นฉบับ ↗</a></p>`;
+    foot.innerHTML = "";
+  }
+}
+$("#priceRefresh").onclick = ()=>updatePriceBoard(true);
 
 /* paint dots in hero */
 document.querySelectorAll("[data-dots]").forEach(el=>{
@@ -1506,6 +1608,7 @@ function paintDetail(){
   $("#dFlavor").innerHTML = [["เผ็ด",r.taste.เผ็ด||0],["เปรี้ยว",r.taste.เปรี้ยว||0],["เค็ม",r.taste.เค็ม||0],["หวาน",r.taste.หวาน||0]]
     .map(([k,v])=>`<div class="flavor-row"><span>${k}</span><span class="dot-track">${Array.from({length:5},(_,i)=>`<span class="dot ${i<v?"on":""}"></span>`).join("")}</span><span class="mono">${v}/5</span></div>`).join("");
   updateProgress();
+  paintNutrition();
 }
 function updateProgress(){
   const boxes = [...document.querySelectorAll("#ingList input")];
@@ -1536,7 +1639,12 @@ const PRICE_BASE = [
   {n:"ซอสหอย", p:85, per:"kg"}, {n:"น้ำมันพืช", p:60, per:"kg"}, {n:"น้ำมันงา", p:300, per:"kg"},
   {n:"เต้าหู้", p:12, per:"pc", units:["ก้อน","ชิ้น"]}, {n:"มะนาว", p:6, per:"pc", units:["ลูก"]},
   {n:"พริกไทย", p:450, per:"kg"}, {n:"ข้าว", p:45, per:"kg"}, {n:"เส้น", p:55, per:"kg"},
-  {n:"ถั่วลิสง", p:120, per:"kg"}, {n:"กุ้งแห้ง", p:600, per:"kg"}
+  {n:"ถั่วลิสง", p:120, per:"kg"}, {n:"กุ้งแห้ง", p:600, per:"kg"},
+  {n:"ตะไคร้", p:5, per:"pc", units:["ต้น"]}, {n:"ข่า", p:8, per:"pc", units:["แง่ง","หัว","ชิ้น"]},
+  {n:"ใบมะกรูด", p:10, per:"pc", units:["ถุง","กำ","ใบ"]}, {n:"มะกรูด", p:5, per:"pc", units:["ลูก"]},
+  {n:"ผักชี", p:10, per:"pc", units:["ต้น","กำ","ถุง"]}, {n:"ต้นหอม", p:10, per:"pc", units:["ต้น","กำ"]},
+  {n:"ขึ้นฉ่าย", p:15, per:"pc", units:["ต้น","กำ"]}, {n:"โหระพา", p:10, per:"pc", units:["กำ","ถุง"]},
+  {n:"กะเพรา", p:10, per:"pc", units:["กำ","ถุง"]}, {n:"พริกชี้ฟ้า", p:5, per:"pc", units:["เม็ด","ผล"]}
 ];
 const G_PER_UNIT = {"กิโลกรัม":1000,"กิโล":1000,"กก":1000,"กรัม":1,"ขีด":100,"มล":1,"ลิตร":1000,"ช้อนโต๊ะ":15,"ช้อนชา":5,"ช้อน":15,"ถ้วย":240,"ถ้วยตวง":240};
 const money = v => (v >= 100 ? String(Math.round(v)) : String(Math.round(v*10)/10));
@@ -1561,9 +1669,15 @@ function cleanFoodName(line){
     .replace(/\d+(?:\.\d+)?\s*(?:กิโลกรัม|กิโล|กก\.?|กรัม|ขีด|มล\.?|ลิตร|ช้อนโต๊ะ|ช้อนชา|ช้อน|ถ้วยตวง|ถ้วย|ฟอง|ลูก|ตัว|ต้น|หัว|กลีบ|เม็ด|กำ|ก้อน|ชิ้น|แท่ง|เส้น|จาน|แผ่น|ซีก|แว่น|ท่อน|ห่อ|ซอง|ขวด|กระป๋อง|ถุง)/g, " ")
     .replace(/[0-9.\-–/]+/g, " ").replace(/\s+/g, " ").trim();
 }
-function matchPrice(name, market){
+function priceOverrides(){ try{ return JSON.parse(localStorage.getItem("krua-my-prices") || "{}"); }catch(e){ return {}; } }
+function saveOverrides(o){ try{ localStorage.setItem("krua-my-prices", JSON.stringify(o)); }catch(e){} }
+function matchPrice(name, market, ov){
   const n = String(name || "").replace(/\s+/g, "");
   if(!n) return null;
+  if(ov && ov[n]){
+    const o = ov[n];
+    if(o && +o.p > 0) return {key:n, p:+o.p, per:o.per === "pc" ? "pc" : "kg", units:o.units, src:"mine"};
+  }
   let best = null;
   for(const it of ((market && market.items) || [])){
     const key = String(it.n || "").replace(/\s+/g, "");
@@ -1577,26 +1691,26 @@ function matchPrice(name, market){
   }
   return null;
 }
-function estimateDish(r, market){
+function estimateDish(r, market, ov){
   const rows = [];
   let total = 0, counted = 0;
   for(const line of (r.ings || [])){
     const name = cleanFoodName(line);
     if(!name){ rows.push({line, text:"—"}); continue; }
-    const m = matchPrice(name, market);
+    const m = matchPrice(name, market, ov);
     if(!m){ rows.push({line, text:"—"}); continue; }
     const q = parseQty(line);
-    if(m.src === "market"){
-      if(q.g){ const c = m.p/1000*q.g; total += c; counted++; rows.push({line, text:"≈ ฿" + money(c), title:m.key + " " + m.p + " บาท/กก."}); }
-      else rows.push({line, text:m.p + "/กก.", ref:true, title:m.key + " (ราคาอ้างอิง ชั่งไม่ได้)"});
-    } else if(m.per === "kg" && q.g){
+    const tag = m.src === "mine" ? " (ราคาที่แก้เอง — แตะเพื่อแก้)" : (m.src === "market" ? "" : " (โดยประมาณ — แตะเพื่อแก้)");
+    if((m.src === "market" || m.per === "kg") && q.g){
       const c = m.p/1000*q.g; total += c; counted++;
-      rows.push({line, text:"≈ ฿" + money(c), title:m.key + " ~" + m.p + " บาท/กก. (โดยประมาณ)"});
+      rows.push({line, text:"≈ ฿" + money(c), title:m.key + " " + m.p + " บาท/กก." + tag, pkey:m.key, per:"kg"});
     } else if(m.per === "pc" && q.pc && (!m.units || m.units.includes(q.unit))){
       const c = m.p*q.pc; total += c; counted++;
-      rows.push({line, text:"≈ ฿" + money(c), title:m.key + " ~" + m.p + " บาท/ชิ้น (โดยประมาณ)"});
+      rows.push({line, text:"≈ ฿" + money(c), title:m.key + " ~" + m.p + " บาท/ชิ้น" + tag, pkey:m.key, per:"pc", units:m.units});
+    } else if(m.src === "market"){
+      rows.push({line, text:m.p + "/กก.", ref:true, title:m.key + " (ราคาอ้างอิง ชั่งไม่ได้)", pkey:m.key, per:"kg"});
     } else {
-      rows.push({line, text:(m.per === "pc" ? "~฿" + m.p : "~฿" + m.p + "/กก."), ref:true, title:m.key + " (ราคาโดยประมาณ)"});
+      rows.push({line, text:(m.per === "pc" ? "~฿" + m.p : "~฿" + m.p + "/กก."), ref:true, title:m.key + tag, pkey:m.key, per:m.per || "kg", units:m.units});
     }
   }
   return {rows, total, counted, n:(r.ings || []).length};
@@ -1624,35 +1738,73 @@ function parseMarket(html){
 }
 async function getMarketPrices(force){
   const KEY = "krua-prices";
-  if(!force){
+  const readCache = () => {
     try{
       const c = JSON.parse(localStorage.getItem(KEY) || "null");
-      if(c && c.at && (Date.now() - c.at < 24*3600*1000) && Array.isArray(c.items) && c.items.length) return {...c, cached:true};
+      if(c && Array.isArray(c.items) && c.items.length) return c;
     }catch(e){}
+    return null;
+  };
+  if(!force){
+    const c = readCache();
+    if(c && c.at && (Date.now() - c.at < 24*3600*1000)) return {...c, cached:true};
   }
-  const html = await fetchHtmlBoth(PRICE_URL);
-  const parsed = parseMarket(html);
-  if(!parsed.items.length) throw new Error("no items");
-  const data = {at:Date.now(), dateStr:parsed.dateStr, items:parsed.items};
-  try{ localStorage.setItem(KEY, JSON.stringify(data)); }catch(e){}
-  return {...data, cached:false};
+  try{
+    const html = await fetchHtmlBoth(PRICE_URL);
+    const parsed = parseMarket(html);
+    if(!parsed.items.length) throw new Error("no items");
+    const data = {at:Date.now(), dateStr:parsed.dateStr, items:parsed.items};
+    try{ localStorage.setItem(KEY, JSON.stringify(data)); }catch(e){}
+    return {...data, cached:false};
+  }catch(e){
+    const stale = readCache();
+    if(stale) return {...stale, cached:true, stale:true};
+    throw e;
+  }
 }
-$("#priceBtn").onclick = async ()=>{
+async function refreshEstimate(){
   const r = state.current; if(!r) return;
   const out = $("#priceOut");
   out.innerHTML = `<p class="mono" style="font-size:11px;opacity:.65">กำลังดึงราคาตลาด …</p>`;
   try{
     const mk = await getMarketPrices(false);
-    const e = estimateDish(r, mk);
+    const e = estimateDish(r, mk, priceOverrides());
     const when = new Date(mk.at).toLocaleDateString("th-TH", {day:"numeric", month:"short"});
     out.innerHTML =
-      e.rows.map(x=>`<div class="price-row"><span class="${x.text === "—" ? "price-ref" : ""}">${esc(x.line)}</span><span class="pc${x.ref ? " price-ref" : ""}"${x.title ? ` title="${esc(x.title)}"` : ""}>${esc(x.text)}</span></div>`).join("")
+      e.rows.map(x=>`<div class="price-row"><span class="${x.text === "—" ? "price-ref" : ""}">${esc(x.line)}</span><span class="pc${x.ref ? " price-ref" : ""}"${x.pkey ? ` data-pkey="${esc(x.pkey)}" data-per="${x.per || "kg"}"${x.units ? ` data-units="${esc(x.units.join(","))}"` : ""}` : ""}${x.title ? ` title="${esc(x.title)}"` : ""}>${esc(x.text)}</span></div>`).join("")
       + `<div class="price-total"><span>รวมโดยประมาณ</span><span>≈ ฿${money(e.total)}</span></div>`
-      + `<p class="price-meta">นับ ${e.counted}/${e.n} อย่าง (เฉพาะที่ชั่ง/นับจำนวนได้) · อ้างอิง allkaset เฉลี่ย 3 ตลาด${mk.dateStr ? " · " + esc(mk.dateStr) : ""} · ดึงเมื่อ ${when}${mk.cached ? " (แคช)" : ""} · <a href="${PRICE_PAGE}" target="_blank" rel="noopener">ดูต้นฉบับ ↗</a></p>`;
+      + `<p class="price-meta">นับ ${e.counted}/${e.n} อย่าง (เฉพาะที่ชั่ง/นับจำนวนได้) · แตะที่ราคาเพื่อแก้เป็นราคาตลาดของเรา · อ้างอิง allkaset เฉลี่ย 3 ตลาด${mk.dateStr ? " · " + esc(mk.dateStr) : ""} · ดึงเมื่อ ${when}${mk.cached ? (mk.stale ? " (ข้อมูลเก่า — ต่อตลาดไม่ได้)" : " (แคช)") : ""} · <a href="${PRICE_PAGE}" target="_blank" rel="noopener">ดูต้นฉบับ ↗</a> · <a href="#" id="priceReset">↺ ล้างราคาที่แก้เอง</a></p>`;
   }catch(err){
-    out.innerHTML = `<p class="mono" style="font-size:11px;opacity:.65">ดึงราคาไม่ได้ตอนนี้ — ลองใหม่ภายหลัง (ต้องต่อเน็ตและเปิด relay)</p>`;
+    const tr = (err && err.trace && err.trace.length) ? " [" + err.trace.join(" · ") + "]" : "";
+    out.innerHTML = `<p class="mono" style="font-size:11px;opacity:.65">ดึงราคาไม่ได้ตอนนี้${tr} — ลองใหม่ภายหลัง (ต้องต่อเน็ตและเปิด relay)</p>`;
   }
-};
+}
+$("#priceBtn").onclick = ()=>refreshEstimate();
+$("#priceOut").addEventListener("click", e=>{
+  if(e.target.closest("#priceReset")){
+    e.preventDefault();
+    try{ localStorage.removeItem("krua-my-prices"); }catch(err){}
+    refreshEstimate();
+    toast("ล้างราคาที่แก้เองแล้ว");
+    return;
+  }
+  const b = e.target.closest("[data-pkey]"); if(!b) return;
+  const key = b.dataset.pkey, per = b.dataset.per || "kg";
+  const ov = priceOverrides();
+  const cur = ov[key] ? ov[key].p : null;
+  const v = prompt(`ราคา "${key}" ต่อ${per === "pc" ? "ชิ้น" : "กก."} (บาท)${cur != null ? " — เดิม " + cur : ""} (เว้นว่าง = กลับไปใช้ราคากลาง)`, cur != null ? String(cur) : "");
+  if(v === null) return;
+  const t = String(v).trim();
+  if(!t){ delete ov[key]; }
+  else{
+    const n = parseFloat(t.replace(/[^\d.]/g, ""));
+    if(!Number.isFinite(n) || n <= 0){ toast("ใส่ตัวเลขบาท"); return; }
+    ov[key] = {p:n, per, units:b.dataset.units ? b.dataset.units.split(",") : undefined};
+  }
+  saveOverrides(ov);
+  refreshEstimate();
+  toast("จำราคาที่แก้ไว้แล้ว");
+});
 $("#servMinus").onclick = ()=>{ if(state.serves>1){ state.serves--; paintDetail() } };
 $("#servPlus").onclick = ()=>{ if(state.serves<12){ state.serves++; paintDetail() } };
 function hashStr(s){ let h = 7; for(let i = 0; i < s.length; i++) h = (h*31 + s.charCodeAt(i))>>>0; return h; }
@@ -1830,11 +1982,11 @@ $("#dock").addEventListener("click", e=>{
 });
 $("#timerPresets").addEventListener("click", e=>{
   const b = e.target.closest("[data-min]"); if(!b) return;
-  const lbl = $("#timerLabel").value.trim() || (state.current ? state.current.title : "จับเวลา");
+  const lbl = state.current ? state.current.title : "จับเวลา";
   startTimerMs((+b.dataset.min)*60000, lbl);
 });
 $("#timerStart").onclick = ()=>{
-  const lbl = $("#timerLabel").value.trim() || (state.current ? state.current.title : "จับเวลา");
+  const lbl = state.current ? state.current.title : "จับเวลา";
   startTimerMs((+$("#timerMin").value)*60000, lbl);
 };
 $("#stepList").addEventListener("click", e=>{
@@ -2576,9 +2728,39 @@ $("#syncSave").onclick = ()=>{
 document.querySelectorAll("[data-open]").forEach(b=>{ if(b.closest(".featured")) b.onclick=()=>openDetail(b.dataset.open) });
 
 render();
+updatePriceBoard(false);
 try{ $("#syncUrl").value = cloud.url; $("#syncToken").value = cloud.token; }catch(e){}
 if(cloud.on){ setSyncStatus("☁ พร้อมซิงก์"); syncNow(false); }
 else setSyncStatus("☁ ยังไม่ตั้งค่า cloud");
+/* pwa: ลงทะเบียน service worker + ปุ่มติดตั้ง */
+if("serviceWorker" in navigator && /^https?:$/.test(location.protocol)){
+  navigator.serviceWorker.register("sw.js").then(reg=>{
+    reg.addEventListener("updatefound", ()=>{
+      const nw = reg.installing;
+      if(!nw) return;
+      nw.addEventListener("statechange", ()=>{
+        if(nw.state === "installed" && navigator.serviceWorker.controller){
+          toast("มีเวอร์ชันใหม่แล้ว — รีเฟรชหน้าเว็บได้เลย");
+        }
+      });
+    });
+  }).catch(()=>{});
+}
+let deferredPrompt = null;
+window.addEventListener("beforeinstallprompt", e=>{
+  e.preventDefault();
+  deferredPrompt = e;
+  const b = $("#installBtn");
+  if(b) b.hidden = false;
+});
+const ib = $("#installBtn");
+if(ib) ib.onclick = async ()=>{
+  if(!deferredPrompt) return;
+  deferredPrompt.prompt();
+  try{ await deferredPrompt.userChoice; }catch(e){}
+  deferredPrompt = null;
+  ib.hidden = true;
+};
 </script>
 </body>
 </html>
