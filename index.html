@@ -236,6 +236,9 @@ select{
 .wn-head .mono{font-weight:400; opacity:.75; font-size:11px}
 #wnList{display:grid}
 .wn-row{display:flex; gap:12px; align-items:center; justify-content:space-between; padding:12px 16px; border-top:1.5px dashed var(--line)}
+.wn-main{display:flex; gap:12px; align-items:center; min-width:0; flex:1}
+.wn-thumb{width:64px; height:64px; border-radius:14px; border:2px solid var(--ink); display:grid; place-items:center; font-family:var(--font-display); font-size:28px; color:#fff; flex-shrink:0; overflow:hidden}
+.wn-thumb img{width:100%; height:100%; object-fit:cover; display:block}
 .wn-row:first-child{border-top:0}
 .wn-info{display:grid; gap:3px; min-width:0}
 .wn-info b{font-size:15px}
@@ -243,7 +246,7 @@ select{
 .wn-meta{font-size:11px !important; opacity:.7}
 .wn-btns{display:flex; gap:8px; flex-shrink:0}
 #wnStatus{margin:0; padding:10px 16px 12px; font-size:11px; opacity:.65}
-@media (max-width:640px){ .wn-row{flex-direction:column; align-items:stretch} .wn-btns{justify-content:flex-end} }
+@media (max-width:640px){ .wn-row{flex-direction:column; align-items:stretch} .wn-btns{justify-content:flex-end} .wn-thumb{width:52px; height:52px; font-size:22px} }
 .grid{display:grid; grid-template-columns:repeat(3,1fr); gap:18px}
 .card{
   background:var(--paper); border:2px solid var(--ink); border-radius:var(--radius);
@@ -390,8 +393,17 @@ footer{background:var(--ink); color:var(--wash); border-top:2px solid var(--ink)
 .foot-btns{display:flex; gap:8px; flex-wrap:wrap}
 .foot-btns .btn{padding:7px 14px; font-size:12px; box-shadow:none; background:transparent; color:var(--wash); border-color:rgba(255,255,255,.4)}
 .foot-btns .btn:hover{border-color:#fff; box-shadow:none; transform:none}
+.sync-details{flex-basis:100%; border:1px solid rgba(255,255,255,.25); border-radius:12px; padding:10px 12px; margin-top:4px}
+.sync-details summary{font-size:13px; font-weight:700; cursor:pointer}
+.sync-grid{display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:8px}
+.sync-grid label{font-size:12px; font-weight:700; display:grid; gap:5px}
+.sync-grid input{font-family:inherit; font-size:14px; border:2px solid rgba(255,255,255,.4); border-radius:10px; padding:8px 10px; background:rgba(255,255,255,.08); color:var(--wash); width:100%}
+@media (max-width:640px){ .sync-grid{grid-template-columns:1fr} }
 .link-box{border:2px solid var(--ink); border-radius:14px; padding:12px; background:#fff; display:grid; gap:8px; box-shadow:3px 3px 0 rgba(23,33,28,.2)}
 .link-row{display:flex; gap:8px}
+.relay-details{border:2px dashed rgba(23,33,28,.4); border-radius:12px; padding:10px 12px; background:#fff; margin-top:4px}
+.relay-details summary{font-size:13px; font-weight:700; cursor:pointer}
+.relay-details pre{background:var(--ink); color:#F2F4E6; font-family:var(--font-mono); font-size:11px; padding:10px 12px; border-radius:10px; overflow:auto; line-height:1.6; margin:0 0 8px}
 .link-row input{flex:1; font-family:inherit; font-size:14px; border:2px solid var(--ink); border-radius:12px; padding:10px 12px; background:var(--paper); color:inherit; min-width:0}
 .link-status{font-family:var(--font-mono); font-size:11px; opacity:.7; margin:0; line-height:1.6}
 .card-visual.has-img{color:#fff}
@@ -399,6 +411,14 @@ footer{background:var(--ink); color:var(--wash); border-top:2px solid var(--ink)
 .card-visual.has-img::before{content:""; position:absolute; inset:0; background:linear-gradient(180deg, rgba(0,0,0,.05) 0%, rgba(0,0,0,.62) 100%)}
 .card-visual.has-img .big-letter{opacity:.3}
 #dImg{width:100%; max-height:230px; object-fit:cover; border:2px solid var(--ink); border-radius:14px; display:block}
+#priceOut{display:grid; gap:2px; margin-top:10px; font-size:13px}
+#priceOut:empty{display:none}
+.price-row{display:flex; justify-content:space-between; gap:10px; padding:6px 0; border-bottom:1px dashed var(--line)}
+.price-row .pc{font-family:var(--font-mono); font-size:12px; font-weight:700; white-space:nowrap}
+.price-total{display:flex; justify-content:space-between; font-weight:700; border-top:2px solid var(--ink); padding-top:8px; margin-top:4px}
+.price-meta{font-family:var(--font-mono); font-size:11px; opacity:.65; line-height:1.7; margin:6px 0 0}
+.price-meta a{color:var(--leaf-2); font-weight:700}
+.price-ref{opacity:.55}
 #dTips{margin:0; padding-left:20px; display:grid; gap:8px; font-size:14px; line-height:1.65}
 .toast{
   position:fixed; bottom:22px; left:50%; translate:-50% 0; z-index:200;
@@ -578,7 +598,20 @@ footer{background:var(--ink); color:var(--wash); border-top:2px solid var(--ink)
       <button class="btn" id="exportBtn" type="button">↓ สำรองสูตร</button>
       <label class="btn" for="importFile" style="cursor:pointer">↑ นำเข้า</label>
       <input id="importFile" type="file" accept="application/json" hidden>
+      <button class="btn" id="syncBtn" type="button">☁ ซิงก์</button>
+      <span class="mono" id="syncStatus" style="font-size:11px;opacity:.7;align-self:center">☁ ยังไม่ตั้งค่า</span>
     </div>
+    <details class="sync-details">
+      <summary>ตั้งค่า cloud (ซิงก์สูตรข้ามเครื่อง)</summary>
+      <div class="sync-grid">
+        <label>Worker URL<input id="syncUrl" inputmode="url" placeholder="https://krua-baan.koonjunear.workers.dev"></label>
+        <label>Sync token<input id="syncToken" type="password" placeholder="ตรงกับ SYNC_TOKEN ใน Worker"></label>
+      </div>
+      <div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap">
+        <button class="btn" id="syncSave" type="button" style="padding:7px 14px">จำไว้ในเครื่องนี้</button>
+      </div>
+      <p class="mono" style="font-size:11px;line-height:1.8;opacity:.75">เปิดใช้งาน: เอาโค้ดในโฟลเดอร์ cloudflare/ ของ repo นี้ไป Deploy เป็น Worker → ผูก KV → ตั้ง secret SYNC_TOKEN (วิธีอยู่ในนั้น) → เอา address + token มากรอกแล้วกดจำ กด ☁ ซิงก์ครั้งแรกจบ หลังจากนั้นเพิ่ม/แก้/ลบ/กด♥ ที่ไหนก็ขึ้น cloud เอง</p>
+    </details>
   </div>
 </footer>
 
@@ -609,6 +642,10 @@ footer{background:var(--ink); color:var(--wash); border-top:2px solid var(--ink)
           <div id="ingList"></div>
           <div class="progress" aria-hidden="true"><i id="ingBar"></i></div>
           <p class="mono" id="ingHint" style="font-size:11px;opacity:.6;margin:8px 0 0">ติ๊กของที่หยิบแล้ว — แถบเขียวจะค่อยๆ เต็ม</p>
+          <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;align-items:center">
+            <button class="btn btn-gold" id="priceBtn" type="button" style="padding:8px 14px">💰 ประเมินค่าของ</button>
+          </div>
+          <div id="priceOut"></div>
         </div>
         <div class="box">
           <h4>แผนที่รส <span class="mono">ชิมแล้วปรับได้</span></h4>
@@ -678,6 +715,33 @@ footer{background:var(--ink); color:var(--wash); border-top:2px solid var(--ink)
             </span>
           </label>
           <p class="link-status" id="linkStatus">วางลิงก์แล้วกดดึง — ระบบจะอ่านข้อมูลสูตรมาตรฐาน (ชื่อ วัตถุดิบ เวลา รูป) มากรอกให้ ตรวจทานก่อนกดจด</p>
+          <details class="relay-details">
+            <summary>โดนบล็อกบ่อย? ตั้ง relay ส่วนตัว (ฟรี ทีเดียวจบ)</summary>
+            <p class="mono" style="font-size:11px;line-height:1.8;margin:8px 0">relay คือทางผ่านของเราเอง แอปจะลองช่องนี้ก่อนเสมอ ขั้นตอน: สมัคร Cloudflare (ฟรี) → Workers → สร้าง Worker → วางโค้ดด้านล่าง → Deploy → ก็อป address มาใส่ช่องนี้</p>
+            <div class="link-row" style="margin-bottom:8px">
+              <input id="relayUrl" inputmode="url" placeholder="ว่างไว้ = ใช้ relay หลักให้อัตโนมัติ">
+              <button class="btn btn-leaf" type="button" id="relayTest" style="flex-shrink:0">ทดสอบ</button>
+            </div>
+            <p class="mono" id="relayStatus" style="font-size:11px;opacity:.7;margin:0 0 8px"></p>
+            <pre id="workerCode">export default {
+  async fetch(req) {
+    const u = new URL(req.url).searchParams.get("url") || "";
+    if (!/^https:\/\/(www\.)?wongnai\.com\//.test(u)) {
+      return new Response("only wongnai.com allowed", { status: 400 });
+    }
+    const r = await fetch(u, { headers: { "User-Agent": "Mozilla/5.0 (compatible; krua-baan personal use)" } });
+    const html = await r.text();
+    return new Response(html, {
+      headers: {
+        "content-type": "text/html;charset=utf-8",
+        "access-control-allow-origin": "*",
+        "cache-control": "max-age=300"
+      }
+    });
+  }
+};</pre>
+            <div><button class="btn btn-ghost" type="button" id="relayCopy" style="padding:8px 14px">คัดลอกโค้ด</button></div>
+          </details>
         </div>
         <input type="hidden" name="img" id="fImg">
         <input type="hidden" name="author" id="fAuthor">
@@ -696,12 +760,12 @@ footer{background:var(--ink); color:var(--wash); border-top:2px solid var(--ink)
         <label>เล่าแบบสั้นๆ ว่าจานนี้ดียังไง<input name="desc" placeholder="เช่น เปรี้ยวปลาร้านิดๆ กินกับข้าวสวยร้อนๆ หมดหม้อไม่รู้ตัว" maxlength="140"></label>
         <label>ลิงก์ต้นฉบับ (ถ้ามี — แนะนำให้แปะไว้)<input name="source" type="url" placeholder="เช่น https://www.wongnai.com/recipes/..." maxlength="300"></label>
         <div class="clip-box">
-          <label style="font-size:13px;font-weight:700">วางซอร์สโค้ดตรงนี้ (เปิดหน้าสูตร → Ctrl+U → Ctrl+A → Ctrl+C → วาง)
-            <textarea id="pasteBox" placeholder="วางซอร์สโค้ดทั้งก้อนตรงนี้ (หรือจะวางข้อความธรรมดา / JSON จากปุ่มดึงสูตรก็ได้เหมือนกัน)"></textarea>
+          <label style="font-size:13px;font-weight:700">วางซอร์สโค้ดตรงนี้ (คอม: เปิดหน้าสูตร → Ctrl+U → Ctrl+A → Ctrl+C)
+            <textarea id="pasteBox" placeholder="วางซอร์สโค้ดทั้งก้อน · บนมือถือ: ก็อปลิงก์มากดดึง หรือคลุมดำข้อความทั้งหน้าแล้ววาง"></textarea>
           </label>
           <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
             <button class="btn btn-gold" type="button" id="parsePaste" style="padding:8px 16px">✂ แยกจากซอร์สโค้ด</button>
-            <span class="mono" style="font-size:11px;opacity:.65">วางแล้วกดปุ่มเดียว ระบบแยกให้เอง</span>
+            <span class="mono" style="font-size:11px;opacity:.65">บนมือถือไม่ต้องใช้ซอร์สโค้ด — ก็อปลิงก์มากดดึงได้เลย</span>
           </div>
           <p class="note-private"><b>ใช้ส่วนตัวเท่านั้น:</b> เก็บไว้ดูเองในเครื่องนี้ ไม่เผยแพร่ต่อ แปะลิงก์ที่มาไว้เสมอ และอย่าก็อป <u>รูปภาพ</u> ของเขามา — สูตรที่จดควรเขียนทับเป็นสำนวนของเราเมื่อมีเวลา</p>
         </div>
@@ -835,7 +899,7 @@ function toggleFav(id){
   let f = store.favs;
   if(f.includes(id)){ f = f.filter(x=>x!==id); toast("เอาออกจากสมุดบันทึกแล้ว") }
   else{ f = [...f, id]; toast("♥ บันทึกไว้แล้ว ดูได้ที่ปุ่มบันทึก") }
-  store.favs = f; render();
+  store.favs = f; render(); scheduleSync();
   if(state.current && state.current.id===id) paintFavBtn();
 }
 function chili(n){ return "🌶".repeat(n) + "<span style='opacity:.25'>" + "🌶".repeat(Math.max(0,3-n)) + "</span>" }
@@ -977,6 +1041,38 @@ document.querySelectorAll("[data-dots]").forEach(el=>{
 $("#search").addEventListener("input", e=>{ state.q = e.target.value.trim(); render(); queueWnSearch(); });
 /* wongnai search: ในสมุดไม่เจอ → ไปค้นรายการจาก wongnai มาให้เลือกดึง */
 let wnSeq = 0, wnTimer = null, wnItems = [];
+let thumbQueue = [], thumbActive = 0;
+const THEME_CLS = ["theme-leaf","theme-chili","theme-gold","theme-ink"];
+const thumbCache = (()=>{ try{ return JSON.parse(sessionStorage.getItem("krua-thumbs") || "{}"); }catch(e){ return {}; } })();
+function saveThumbs(){ try{ sessionStorage.setItem("krua-thumbs", JSON.stringify(thumbCache)); }catch(e){} }
+function setThumb(i, src, seq){
+  if(seq !== wnSeq) return;
+  const el = document.querySelector(`#wnList [data-thumb="${i}"]`);
+  if(!el) return;
+  const img = document.createElement("img");
+  img.alt = ""; img.loading = "lazy";
+  img.onload = ()=>{ el.textContent = ""; el.appendChild(img); };
+  img.onerror = ()=>{ img.remove(); };
+  img.src = src;
+}
+function pumpThumbs(){
+  while(thumbActive < 2 && thumbQueue.length){
+    const job = thumbQueue.shift();
+    if(job.seq !== wnSeq) continue;
+    thumbActive++;
+    fetchHtmlChain(job.r.url, {allowText:false}).then(html=>{
+      const d = extractRecipeFromHtml(html, job.r.url);
+      if(d.img){ thumbCache[job.r.url] = d.img; saveThumbs(); setThumb(job.i, d.img, job.seq); }
+    }).catch(()=>{}).finally(()=>{ thumbActive--; pumpThumbs(); });
+  }
+}
+function fillThumbs(items, seq){
+  items.forEach((r,i)=>{
+    if(thumbCache[r.url]){ setThumb(i, thumbCache[r.url], seq); return; }
+    thumbQueue.push({r, i, seq});
+  });
+  pumpThumbs();
+}
 function wnSearchResults(html){
   try{
     const root = parseWnStore(html);
@@ -993,30 +1089,19 @@ function wnSearchResults(html){
 }
 function setWnStatus(t){ const el = $("#wnStatus"); if(el) el.textContent = t; }
 async function fetchHtmlBoth(url){
-  const sig = (typeof AbortSignal !== "undefined" && AbortSignal.timeout) ? AbortSignal.timeout(20000) : undefined;
-  try{
-    const r = await fetch(url, {signal:sig});
-    if(!r.ok) throw 0;
-    return await r.text();
-  }catch(e){
-    const r2 = await fetch("https://api.allorigins.win/raw?url=" + encodeURIComponent(url), {signal:sig});
-    if(!r2.ok) throw new Error("fetch failed");
-    const h2 = await r2.text();
-    if(!/<\s*html|ld\+json|window\._wn/i.test(h2)) throw new Error("bad html");
-    return h2;
-  }
+  return (await fetchHtmlChain(url, {allowText:false})).body;
 }
 function queueWnSearch(){
   clearTimeout(wnTimer);
   const q = state.q.trim();
-  if(q.length < 2){ wnSeq++; $("#wnBox").hidden = true; $("#wnList").innerHTML = ""; wnItems = []; return; }
+  if(q.length < 2){ wnSeq++; $("#wnBox").hidden = true; $("#wnList").innerHTML = ""; wnItems = []; thumbQueue = []; return; }
   wnTimer = setTimeout(()=>{ fetchWnSearch(q, ++wnSeq); }, 650);
 }
 async function fetchWnSearch(query, seq){
   const box = $("#wnBox"), list = $("#wnList");
   box.hidden = false;
   $("#wnQ").textContent = "“" + query + "”";
-  list.innerHTML = ""; wnItems = [];
+  list.innerHTML = ""; wnItems = []; thumbQueue = [];
   setWnStatus("กำลังค้น Wongnai …");
   const target = "https://www.wongnai.com/recipes?q=" + encodeURIComponent(query);
   let html = "";
@@ -1034,16 +1119,20 @@ async function fetchWnSearch(query, seq){
   setWnStatus(`เจอ ${items.length} สูตร — กดดึงเพื่อเอามาตรวจก่อนจดลงสมุด (ที่มายังอยู่ครบ)`);
   list.innerHTML = items.map((r,i)=>`
     <div class="wn-row">
-      <div class="wn-info">
-        <b>${esc(r.title)}</b>
-        ${r.desc ? `<span>${esc(r.desc.slice(0,110))}${r.desc.length > 110 ? "…" : ""}</span>` : ""}
-        <span class="mono wn-meta">${r.mins ? ("⏱ " + r.mins + " นาที") : ""}${r.mins && r.serves ? " · " : ""}${r.serves ? ("สำหรับ " + esc(r.serves)) : ""}</span>
+      <div class="wn-main">
+        <span class="wn-thumb ${THEME_CLS[i%4]}" data-thumb="${i}">${esc((r.title || "ส").trim()[0] || "ส")}</span>
+        <div class="wn-info">
+          <b>${esc(r.title)}</b>
+          ${r.desc ? `<span>${esc(r.desc.slice(0,110))}${r.desc.length > 110 ? "…" : ""}</span>` : ""}
+          <span class="mono wn-meta">${r.mins ? ("⏱ " + r.mins + " นาที") : ""}${r.mins && r.serves ? " · " : ""}${r.serves ? ("สำหรับ " + esc(r.serves)) : ""}</span>
+        </div>
       </div>
       <div class="wn-btns">
         <button class="btn btn-leaf" data-wn="${i}" style="padding:8px 14px">↓ ดึง</button>
         <a class="btn btn-ghost" style="padding:8px 14px" target="_blank" rel="noopener" href="${esc(r.url)}">ต้นฉบับ ↗</a>
       </div>
     </div>`).join("");
+  fillThumbs(items, seq);
 }
 $("#wnList").addEventListener("click", async e=>{
   const b = e.target.closest("[data-wn]"); if(!b) return;
@@ -1137,6 +1226,7 @@ function paintDetail(){
   $("#servLabel").textContent = r.serveLabel ? "· " + r.serveLabel : "";
   $("#ingList").innerHTML = r.ings.map((t,i)=>`<label class="ing"><input type="checkbox" data-ing="${i}"><span>${esc(scaleIng(t, r.serves||2, state.serves))}</span></label>`).join("");
   $("#ingCount").textContent = `${r.ings.length} อย่าง`;
+  $("#priceOut").innerHTML = "";
     $("#stepList").innerHTML = r.steps.map((s,i)=>{
     const dm = /(\d+)\s*(ชั่วโมง|ชม|นาที|วินาที)/.exec(s);
     let chip = "";
@@ -1167,6 +1257,137 @@ document.addEventListener("change", e=>{
     if(all.length && all.every(b=>b.checked)) toast("เก่งมาก เสร็จครบทุกขั้นแล้ว — ตักเสิร์ฟได้เลย!");
   }
 });
+/* market prices: ตารางราคาตลาดรายวัน (ผ่าน relay) + ประเมินค่าของเป็นรายจาน */
+const PRICE_URL = "https://www.allkaset.com/%E0%B8%A3%E0%B8%B2%E0%B8%84%E0%B8%B2%E0%B8%9C%E0%B8%B1%E0%B8%81.php";
+const PRICE_PAGE = "https://www.allkaset.com/ราคาผัก.php";
+const PRICE_BASE = [
+  {n:"หมู", p:180, per:"kg"}, {n:"ไก่", p:85, per:"kg"}, {n:"เนื้อวัว", p:320, per:"kg"},
+  {n:"กุ้ง", p:280, per:"kg"}, {n:"ปลากะพง", p:190, per:"kg"}, {n:"ปลาทู", p:120, per:"kg"},
+  {n:"ปลาหมึก", p:220, per:"kg"},
+  {n:"ไข่ไก่", p:4.2, per:"pc", units:["ฟอง"]}, {n:"ไข่เป็ด", p:5, per:"pc", units:["ฟอง"]},
+  {n:"กะทิ", p:90, per:"kg"}, {n:"นมสด", p:60, per:"kg"}, {n:"นมข้น", p:110, per:"kg"},
+  {n:"น้ำตาลทราย", p:28, per:"kg"}, {n:"น้ำตาลปี๊บ", p:55, per:"kg"}, {n:"น้ำตาล", p:30, per:"kg"},
+  {n:"เกลือ", p:18, per:"kg"}, {n:"น้ำปลา", p:65, per:"kg"}, {n:"ซีอิ๊ว", p:55, per:"kg"},
+  {n:"ซอสหอย", p:85, per:"kg"}, {n:"น้ำมันพืช", p:60, per:"kg"}, {n:"น้ำมันงา", p:300, per:"kg"},
+  {n:"เต้าหู้", p:12, per:"pc", units:["ก้อน","ชิ้น"]}, {n:"มะนาว", p:6, per:"pc", units:["ลูก"]},
+  {n:"พริกไทย", p:450, per:"kg"}, {n:"ข้าว", p:45, per:"kg"}, {n:"เส้น", p:55, per:"kg"},
+  {n:"ถั่วลิสง", p:120, per:"kg"}, {n:"กุ้งแห้ง", p:600, per:"kg"}
+];
+const G_PER_UNIT = {"กิโลกรัม":1000,"กิโล":1000,"กก":1000,"กรัม":1,"ขีด":100,"มล":1,"ลิตร":1000,"ช้อนโต๊ะ":15,"ช้อนชา":5,"ช้อน":15,"ถ้วย":240,"ถ้วยตวง":240};
+const money = v => (v >= 100 ? String(Math.round(v)) : String(Math.round(v*10)/10));
+function parseQty(line){
+  const s = String(line || "");
+  const m = /(\d+(?:\.\d+)?)\s*(กิโลกรัม|กิโล|กก\.?|กรัม|ขีด|มล\.?|ลิตร|ช้อนโต๊ะ|ช้อนชา|ช้อน|ถ้วยตวง|ถ้วย)/.exec(s);
+  if(m){
+    const g = G_PER_UNIT[m[2].replace(/\.$/, "")];
+    if(g) return {g:parseFloat(m[1])*g};
+  }
+  const pc = /(\d+(?:\.\d+)?)\s*(ฟอง|ลูก|ตัว|ต้น|หัว|กลีบ|เม็ด|กำ|ก้อน|ชิ้น|แท่ง|เส้น|จาน|แผ่น|ซีก|แว่น|ท่อน|ห่อ|ซอง|ขวด|กระป๋อง|ถุง)/.exec(s);
+  if(pc) return {pc:parseFloat(pc[1]), unit:pc[2]};
+  if(/ครึ่ง/.test(s)){
+    const m2 = /(กิโลกรัม|กิโล|กรัม|ขีด|ช้อนโต๊ะ|ช้อนชา|ช้อน|ถ้วย)/.exec(s);
+    if(m2 && G_PER_UNIT[m2[1]]) return {g:0.5*G_PER_UNIT[m2[1]]};
+  }
+  return {};
+}
+function cleanFoodName(line){
+  return String(line || "")
+    .replace(/\(.*?\)/g, " ")
+    .replace(/\d+(?:\.\d+)?\s*(?:กิโลกรัม|กิโล|กก\.?|กรัม|ขีด|มล\.?|ลิตร|ช้อนโต๊ะ|ช้อนชา|ช้อน|ถ้วยตวง|ถ้วย|ฟอง|ลูก|ตัว|ต้น|หัว|กลีบ|เม็ด|กำ|ก้อน|ชิ้น|แท่ง|เส้น|จาน|แผ่น|ซีก|แว่น|ท่อน|ห่อ|ซอง|ขวด|กระป๋อง|ถุง)/g, " ")
+    .replace(/[0-9.\-–/]+/g, " ").replace(/\s+/g, " ").trim();
+}
+function matchPrice(name, market){
+  const n = String(name || "").replace(/\s+/g, "");
+  if(!n) return null;
+  let best = null;
+  for(const it of ((market && market.items) || [])){
+    const key = String(it.n || "").replace(/\s+/g, "");
+    if(key.length >= 2 && (n.includes(key) || key.includes(n)) && (!best || key.length > best.key.length)) best = {key, p:it.p, src:"market"};
+  }
+  if(best) return best;
+  const sorted = [...PRICE_BASE].sort((a,b)=>b.n.length - a.n.length);
+  for(const b of sorted){
+    const key = b.n.replace(/\s+/g, "");
+    if(n.includes(key)) return {key, p:b.p, per:b.per, units:b.units, src:"base"};
+  }
+  return null;
+}
+function estimateDish(r, market){
+  const rows = [];
+  let total = 0, counted = 0;
+  for(const line of (r.ings || [])){
+    const name = cleanFoodName(line);
+    if(!name){ rows.push({line, text:"—"}); continue; }
+    const m = matchPrice(name, market);
+    if(!m){ rows.push({line, text:"—"}); continue; }
+    const q = parseQty(line);
+    if(m.src === "market"){
+      if(q.g){ const c = m.p/1000*q.g; total += c; counted++; rows.push({line, text:"≈ ฿" + money(c), title:m.key + " " + m.p + " บาท/กก."}); }
+      else rows.push({line, text:m.p + "/กก.", ref:true, title:m.key + " (ราคาอ้างอิง ชั่งไม่ได้)"});
+    } else if(m.per === "kg" && q.g){
+      const c = m.p/1000*q.g; total += c; counted++;
+      rows.push({line, text:"≈ ฿" + money(c), title:m.key + " ~" + m.p + " บาท/กก. (โดยประมาณ)"});
+    } else if(m.per === "pc" && q.pc && (!m.units || m.units.includes(q.unit))){
+      const c = m.p*q.pc; total += c; counted++;
+      rows.push({line, text:"≈ ฿" + money(c), title:m.key + " ~" + m.p + " บาท/ชิ้น (โดยประมาณ)"});
+    } else {
+      rows.push({line, text:(m.per === "pc" ? "~฿" + m.p : "~฿" + m.p + "/กก."), ref:true, title:m.key + " (ราคาโดยประมาณ)"});
+    }
+  }
+  return {rows, total, counted, n:(r.ings || []).length};
+}
+function parseMarket(html){
+  const items = [];
+  const re = /<center><b>([^<]+)<\/b>\s*<TABLE[^>]*>([\s\S]*?)<\/table>/gi;
+  let m;
+  while((m = re.exec(html))){
+    const name = m[1].trim();
+    const rows = [...m[2].matchAll(/<tr><td>([^<]*)<\/td><td>([^<]*)<\/td><\/tr>/gi)];
+    let avg = null;
+    for(const [, k, v] of rows){
+      if(/ราคาเฉลี่ย/.test(k)){
+        const n = parseFloat(String(v).replace(/[^\d.]/g, ""));
+        if(Number.isFinite(n) && n > 0) avg = n;
+      }
+    }
+    if(name && avg != null) items.push({n:name, p:avg});
+  }
+  let dateStr = "";
+  const dm = /ประจำวันที่\s*([^<\n]{1,40})/.exec(html);
+  if(dm) dateStr = dm[1].trim();
+  return {items, dateStr};
+}
+async function getMarketPrices(force){
+  const KEY = "krua-prices";
+  if(!force){
+    try{
+      const c = JSON.parse(localStorage.getItem(KEY) || "null");
+      if(c && c.at && (Date.now() - c.at < 24*3600*1000) && Array.isArray(c.items) && c.items.length) return {...c, cached:true};
+    }catch(e){}
+  }
+  const html = await fetchHtmlBoth(PRICE_URL);
+  const parsed = parseMarket(html);
+  if(!parsed.items.length) throw new Error("no items");
+  const data = {at:Date.now(), dateStr:parsed.dateStr, items:parsed.items};
+  try{ localStorage.setItem(KEY, JSON.stringify(data)); }catch(e){}
+  return {...data, cached:false};
+}
+$("#priceBtn").onclick = async ()=>{
+  const r = state.current; if(!r) return;
+  const out = $("#priceOut");
+  out.innerHTML = `<p class="mono" style="font-size:11px;opacity:.65">กำลังดึงราคาตลาด …</p>`;
+  try{
+    const mk = await getMarketPrices(false);
+    const e = estimateDish(r, mk);
+    const when = new Date(mk.at).toLocaleDateString("th-TH", {day:"numeric", month:"short"});
+    out.innerHTML =
+      e.rows.map(x=>`<div class="price-row"><span class="${x.text === "—" ? "price-ref" : ""}">${esc(x.line)}</span><span class="pc${x.ref ? " price-ref" : ""}"${x.title ? ` title="${esc(x.title)}"` : ""}>${esc(x.text)}</span></div>`).join("")
+      + `<div class="price-total"><span>รวมโดยประมาณ</span><span>≈ ฿${money(e.total)}</span></div>`
+      + `<p class="price-meta">นับ ${e.counted}/${e.n} อย่าง (เฉพาะที่ชั่ง/นับจำนวนได้) · อ้างอิง allkaset เฉลี่ย 3 ตลาด${mk.dateStr ? " · " + esc(mk.dateStr) : ""} · ดึงเมื่อ ${when}${mk.cached ? " (แคช)" : ""} · <a href="${PRICE_PAGE}" target="_blank" rel="noopener">ดูต้นฉบับ ↗</a></p>`;
+  }catch(err){
+    out.innerHTML = `<p class="mono" style="font-size:11px;opacity:.65">ดึงราคาไม่ได้ตอนนี้ — ลองใหม่ภายหลัง (ต้องต่อเน็ตและเปิด relay)</p>`;
+  }
+};
 $("#servMinus").onclick = ()=>{ if(state.serves>1){ state.serves--; paintDetail() } };
 $("#servPlus").onclick = ()=>{ if(state.serves<12){ state.serves++; paintDetail() } };
 function hashStr(s){ let h = 7; for(let i = 0; i < s.length; i++) h = (h*31 + s.charCodeAt(i))>>>0; return h; }
@@ -1224,7 +1445,7 @@ $("#dDelete").onclick = ()=>{
   state.recipes = state.recipes.filter(x=>x.id!==id);
   store.custom = store.custom.filter(x=>x.id!==id);
   store.favs = store.favs.filter(x=>x!==id);
-  dOverlay.classList.remove("open"); render(); toast("ลบสูตรส่วนตัวแล้ว");
+  dOverlay.classList.remove("open"); render(); scheduleSync(); toast("ลบสูตรส่วนตัวแล้ว");
 };
 $("#closeDetail").onclick = ()=>{ dOverlay.classList.remove("open") };
 dOverlay.addEventListener("click", e=>{ if(e.target===dOverlay){ dOverlay.classList.remove("open") } });
@@ -1443,7 +1664,7 @@ $("#addForm").addEventListener("submit", e=>{
   if(editingId){
     const r = state.recipes.find(x=>x.id===editingId);
     if(!r){ toast("หาสูตรนี้ไม่เจอแล้ว"); return }
-    Object.assign(r, {title, cat, time, diff, desc, source, ings, steps, spicy, img, author, serves, serveLabel});
+    Object.assign(r, {title, cat, time, diff, desc, source, ings, steps, spicy, img, author, serves, serveLabel, updatedAt:Date.now()});
     r.letter = title[0]||"ส";
     r.taste = taste;
     const all = store.custom;
@@ -1452,7 +1673,7 @@ $("#addForm").addEventListener("submit", e=>{
     store.custom = all;
     const eid = editingId; editingId = null;
     addOverlay.classList.remove("open");
-    render(); toast("บันทึกการแก้ไขแล้ว");
+    render(); scheduleSync(); toast("บันทึกการแก้ไขแล้ว");
     openDetail(eid);
     return;
   }
@@ -1465,16 +1686,84 @@ $("#addForm").addEventListener("submit", e=>{
     desc,
     theme:themes[state.recipes.length%themes.length], letter:title[0]||"ส",
     taste,
-    ings, steps, mine:true, source, img, author,
+    ings, steps, mine:true, source, img, author, updatedAt:Date.now(),
   };
   state.recipes.unshift(r);
   const c = store.custom; c.unshift(r); store.custom = c;
   addOverlay.classList.remove("open"); e.target.reset(); $("#pasteBox").value = "";
   $("#linkStatus").textContent = "วางลิงก์แล้วกดดึง — ระบบจะอ่านข้อมูลสูตรมาตรฐาน (ชื่อ วัตถุดิบ เวลา รูป) มากรอกให้ ตรวจทานก่อนกดจด";
   state.cat="all"; document.querySelectorAll(".cat").forEach((x,i)=>x.setAttribute("aria-pressed",i===0?"true":"false"));
-  render(); toast("จดลงสมุดแล้ว — สูตรของบ้านอยู่บนสุดเลย");
+  render(); scheduleSync(); toast("จดลงสมุดแล้ว — สูตรของบ้านอยู่บนสุดเลย");
   openDetail(r.id);
 });
+
+/* fetchHtmlChain: วนลองหลายช่องทางดึงหน้าเว็บ (relay ส่วนตัวก่อน แล้วค่อยสาธารณะ) */
+const DEFAULT_RELAY = "https://krua-baan.koonjunear.workers.dev";
+const normBase = u => String(u || "").trim().replace(/\/+$/, "");
+function relayBase(){
+  try{
+    const v = normBase(localStorage.getItem("krua-relay") || "");
+    return /^https:\/\/.+\..+/.test(v) ? v : "";
+  }catch(e){ return ""; }
+}
+function sig12(){ return (typeof AbortSignal !== "undefined" && AbortSignal.timeout) ? AbortSignal.timeout(12000) : undefined; }
+async function runChain(attempts){
+  let lastErr = null;
+  for(const a of attempts){
+    try{
+      const v = await a.run();
+      return {via:a.name, ...v};
+    }catch(e){ lastErr = e; }
+  }
+  throw lastErr || new Error("all failed");
+}
+async function fetchHtmlChain(url, opts){
+  opts = opts || {};
+  const skip = opts.skip || [];
+  const enc = encodeURIComponent(url);
+  const getText = async u => { const r = await fetch(u, {signal:sig12()}); if(!r.ok) throw new Error("HTTP " + r.status); return await r.text(); };
+  const need = html => {
+    if(/h-captcha|_gateway\/hcaptcha|cf-challenge|just a moment|attention required|access denied|please verify you are|verifying you are human/i.test(html)) throw new Error("blocked page");
+    if(!/<\s*html|ld\+json|window\._wn/i.test(html)) throw new Error("bad html");
+    return {kind:"html", body:html};
+  };
+  const A = [];
+  const rb = relayBase();
+  if(rb && rb !== DEFAULT_RELAY && !skip.includes("relay")) A.push({name:"relay ส่วนตัว", run:async()=>need(await getText(rb + "/relay?url=" + enc))});
+  if(!skip.includes("relay")) A.push({name:"relay หลัก", run:async()=>need(await getText(DEFAULT_RELAY + "/relay?url=" + enc))});
+  if(!skip.includes("direct")) A.push({name:"ตรง", run:async()=>need(await getText(url))});
+  if(!skip.includes("allorigins")) A.push({name:"สำรอง 1", run:async()=>need(await getText("https://api.allorigins.win/raw?url=" + enc))});
+  if(!skip.includes("codetabs")) A.push({name:"สำรอง 2", run:async()=>need(await getText("https://api.codetabs.com/v1/proxy?quest=" + enc))});
+  if(!skip.includes("corsproxy")) A.push({name:"สำรอง 3", run:async()=>need(await getText("https://corsproxy.io/?url=" + enc))});
+  if(opts.allowText) A.push({name:"ข้อความ", run:async()=>{
+    const t = await getText("https://r.jina.ai/" + encodeURI(url));
+    if(t.length < 300 || /^\s*(error|failed|captcha)/i.test(t)) throw new Error("bad text");
+    return {kind:"text", body:t};
+  }});
+  return runChain(A);
+}
+/* applyTextParse: เอาข้อความดิบ (ก็อปทั้งหน้า / markdown) แยกใส่ฟอร์ม คืน true ถ้าได้ของ */
+function applyTextParse(raw){
+  const p = parsePastedRecipe(raw);
+  const form = $("#addForm");
+  const touched = [];
+  if(p.ings.length && (!form.ingredients.value.trim() || /ส่วนผสม|วัตถุดิบ/.test(raw))){ form.ingredients.value = p.ings.join("\n"); touched.push(`วัตถุดิบ ${p.ings.length} อย่าง`); }
+  if(p.steps.length && (!form.steps.value.trim() || /วิธีทำ|ขั้นตอน/.test(raw))){ form.steps.value = p.steps.join("\n"); touched.push(`วิธีทำ ${p.steps.length} ขั้น`); }
+  if(p.serveLabel) $("#fServeLabel").value = p.serveLabel;
+  if(p.serves) $("#fServes").value = p.serves;
+  if(p.timeMin) form.time.value = p.timeMin;
+  if(!tasteTouched && (p.ings.length || p.steps.length)) applyAutoTaste();
+  if(!form.title.value.trim()){
+    const nav = /Cooking|เข้าสู่ระบบ|ค้นหา|หน้าแรก|ทำอาหาร|อ่าน\s*[\d.k]+|ถูกใจ|ความคิดเห็น|^(Title|URL Source|Markdown Content):/;
+    for(const l of raw.split("\n").map(cleanLine).filter(Boolean).slice(0, 12)){
+      if(l.length >= 2 && l.length <= 60 && !nav.test(l) && !/ส่วนผสม|วัตถุดิบ|วิธีทำ|ขั้นตอน/.test(l)){ form.title.value = l; break; }
+    }
+  }
+  if(touched.length){ toast(`แยกให้แล้ว: ${touched.join(" · ")} — ตรวจทานก่อนกดจด`); return true; }
+  if(p.ings.length || p.steps.length){ toast("ช่องมีข้อมูลอยู่แล้วเลยไม่ได้ทับ — อยากแทนที่ให้ล้างช่องนั้นก่อน"); return true; }
+  toast("แยกไม่ได้ — ลองก็อปข้อความมาใหม่ หรือกรอกเองได้เลย");
+  return false;
+}
 
 /* fetch-from-link: วางลิงก์หน้าที่ได้รับอนุญาต → อ่าน schema.org/Recipe มากรอกให้ */
 function isoMinutes(s){
@@ -1696,38 +1985,54 @@ function fillRecipeForm(d, url){
   if(!tasteTouched) applyAutoTaste();
 }
 function setLinkStatus(msg){ $("#linkStatus").textContent = msg }
+/* relay ส่วนตัว: จำ address + ทดสอบ + คัดลอกโค้ด Worker */
+try{ $("#relayUrl").value = localStorage.getItem("krua-relay") || ""; }catch(e){}
+$("#relayUrl").addEventListener("change", e=>{
+  const v = e.target.value.trim().replace(/\/+$/, "");
+  try{ localStorage.setItem("krua-relay", v); }catch(err){}
+  $("#relayStatus").textContent = v ? "จำ relay ไว้แล้ว จะลองช่องนี้ก่อนเสมอ" : "ล้าง relay แล้ว";
+});
+$("#relayTest").onclick = async ()=>{
+  const b = relayBase();
+  if(!b){ $("#relayStatus").textContent = "วาง address ของ Worker ก่อน (ว่างไว้ = ใช้ relay หลักให้อัตโนมัติอยู่แล้ว)"; return; }
+  $("#relayStatus").textContent = "กำลังทดสอบ relay ส่วนตัว …";
+  try{
+    const r = await fetch(b + "/relay?url=" + encodeURIComponent("https://www.wongnai.com/"), {signal:sig12()});
+    const t = await r.text();
+    if(!r.ok || !/<\s*html|ld\+json|window\._wn/i.test(t)) throw 0;
+    $("#relayStatus").textContent = "relay ส่วนตัวใช้ได้!";
+  }catch(e){ $("#relayStatus").textContent = "ยังใช้ไม่ได้ — เช็กว่า Deploy Worker แล้ว และ address ถูก"; }
+};
+$("#relayCopy").onclick = async ()=>{
+  const code = $("#workerCode").textContent;
+  try{ await navigator.clipboard.writeText(code); toast("คัดลอกโค้ด Worker แล้ว"); }
+  catch(e){ toast("คัดลอกไม่ได้ — ลากคลุมเองได้เลย"); }
+};
 $("#fetchLink").onclick = async ()=>{
   const url = $("#linkUrl").value.trim();
   if(!/^https?:\/\/.+\..+/i.test(url)){ setLinkStatus("ลิงก์ยังไม่ถูก — ต้องขึ้นต้นด้วย http(s):// แล้วกดดึงอีกครั้ง"); toast("วางลิงก์ให้ครบก่อน (ขึ้นต้นด้วย https://)"); return }
-  setLinkStatus("กำลังดึง " + url + " …");
-  const sig = (typeof AbortSignal !== "undefined" && AbortSignal.timeout) ? AbortSignal.timeout(20000) : undefined;
+  setLinkStatus("กำลังดึง " + url + " … (relay ก่อน)");
   const pick = html => {
     const d = extractRecipeFromHtml(html, url);
     return (d.title || d.ings.length || d.steps.length) ? d : null;
   };
   try{
-    const res = await fetch(url, {credentials:"omit", signal:sig});
-    if(!res.ok) throw new Error("HTTP " + res.status);
-    const d = pick(await res.text());
-    if(!d){ setLinkStatus("ดึงหน้ามาได้ แต่ไม่เจอข้อมูลสูตรในหน้านี้ — ลองใช้วิธีวางซอร์สโค้ดด้านล่างแทน"); return }
-    fillRecipeForm(d, url);
-    setLinkStatus(`ดึงสำเร็จ: “${d.title||"ไม่พบชื่อ"}” · วัตถุดิบ ${d.ings.length} อย่าง · วิธีทำ ${d.steps.length} ขั้น${stepNote(d)} — ตรวจทานแล้วกดจดลงสมุด`);
-    toast("ดึงสูตรมากรอกให้แล้ว ตรวจทานก่อนกดจด");
-  }catch(err){
-    setLinkStatus("ดึงตรงไม่ได้ (เบราว์เซอร์บล็อก) กำลังลองช่องทางสำรอง …");
-    try{
-      const res2 = await fetch("https://api.allorigins.win/raw?url=" + encodeURIComponent(url), {signal:sig});
-      if(!res2.ok) throw 0;
-      const html2 = await res2.text();
-      if(!/<\s*html|ld\+json/i.test(html2)) throw 0;
-      const d2 = pick(html2);
-      if(!d2) throw 0;
-      fillRecipeForm(d2, url);
-      setLinkStatus(`ดึงสำเร็จ (ช่องทางสำรอง): “${d2.title||"ไม่พบชื่อ"}” · วัตถุดิบ ${d2.ings.length} อย่าง · วิธีทำ ${d2.steps.length} ขั้น${stepNote(d2)} — ตรวจทานแล้วกดจดลงสมุด`);
+    const res = await fetchHtmlChain(url, {allowText:true});
+    if(res.kind === "html"){
+      const d = pick(res.body);
+      if(!d){ setLinkStatus("ดึงหน้ามาได้ แต่ไม่เจอข้อมูลสูตรในหน้านี้ — ลองก็อปข้อความมาวางแทน"); return }
+      fillRecipeForm(d, url);
+      setLinkStatus(`ดึงสำเร็จ (${res.via}): “${d.title||"ไม่พบชื่อ"}” · วัตถุดิบ ${d.ings.length} อย่าง · วิธีทำ ${d.steps.length} ขั้น${stepNote(d)} — ตรวจทานแล้วกดจดลงสมุด`);
       toast("ดึงสูตรมากรอกให้แล้ว ตรวจทานก่อนกดจด");
-    }catch(e2){
-      setLinkStatus("ดึงอัตโนมัติไม่ได้ทั้งสองช่องทาง → วิธีที่ชัวร์สุด: เปิดหน้าสูตร กด Ctrl+A Ctrl+C ก็อปข้อความ มาวางในช่อง “วางตรงนี้แล้วกดแยกให้” ด้านล่าง หรือกด Ctrl+U ก็อปซอร์สโค้ดมาวางก็ได้");
+    } else {
+      const f = $("#addForm");
+      if(!f.source.value.trim()) f.source.value = url;
+      $("#pasteBox").value = res.body.slice(0, 60000);
+      const ok = applyTextParse(res.body);
+      setLinkStatus(ok ? `ดึงสำเร็จ (${res.via}) แบบข้อความ — ตรวจทานแล้วกดจดลงสมุด` : "ดึงมาได้แต่แยกไม่ออก — ลองก็อปข้อความมาวางเอง หรือตั้ง relay ส่วนตัวด้านล่าง");
     }
+  }catch(err){
+    setLinkStatus("ดึงอัตโนมัติไม่ได้ทุกช่องทาง → วิธีที่ชัวร์สุด: เปิดหน้าสูตร กด Ctrl+A Ctrl+C ก็อปข้อความมาวางในช่องด้านล่าง หรือตั้ง relay ส่วนตัวตามวิธีด้านล่างนี้ (ทีเดียวจบ)");
   }
 };
 const CATS = ["ต้ม","ผัด","แกง","ยำ","ทอด","ย่าง","นึ่ง","อบ"];
@@ -1874,24 +2179,7 @@ $("#parsePaste").onclick = ()=>{
     toast("แยกสูตรให้แล้ว ตรวจทานก่อนกดจด");
     return;
   }
-  const p = parsePastedRecipe(raw);
-  const form = $("#addForm");
-  const touched = [];
-  if(p.ings.length && (!form.ingredients.value.trim() || /ส่วนผสม|วัตถุดิบ/.test(raw))){ form.ingredients.value = p.ings.join("\n"); touched.push(`วัตถุดิบ ${p.ings.length} อย่าง`); }
-  if(p.steps.length && (!form.steps.value.trim() || /วิธีทำ|ขั้นตอน/.test(raw))){ form.steps.value = p.steps.join("\n"); touched.push(`วิธีทำ ${p.steps.length} ขั้น`); }
-  if(p.serveLabel) $("#fServeLabel").value = p.serveLabel;
-  if(p.serves) $("#fServes").value = p.serves;
-  if(p.timeMin) form.time.value = p.timeMin;
-  if(!tasteTouched && (p.ings.length || p.steps.length)) applyAutoTaste();
-  if(!form.title.value.trim()){
-    const nav = /Cooking|เข้าสู่ระบบ|ค้นหา|หน้าแรก|ทำอาหาร|อ่าน\s*[\d.k]+|ถูกใจ|ความคิดเห็น/;
-    for(const l of raw.split("\n").map(cleanLine).filter(Boolean).slice(0, 12)){
-      if(l.length >= 2 && l.length <= 60 && !nav.test(l) && !/ส่วนผสม|วัตถุดิบ|วิธีทำ|ขั้นตอน/.test(l)){ form.title.value = l; break; }
-    }
-  }
-  if(touched.length) toast(`แยกให้แล้ว: ${touched.join(" · ")} — ตรวจทานก่อนกดจด`);
-  else if(p.ings.length || p.steps.length) toast("ช่องมีข้อมูลอยู่แล้วเลยไม่ได้ทับ — อยากแทนที่ให้ล้างช่องนั้นก่อน");
-  else toast("แยกไม่ได้ — ลองก็อปข้อความมาใหม่ หรือกรอกเองได้เลย");
+  return applyTextParse(raw);
 };
 
 /* sync: แก้รสเผ็ด → พริกในการ์ดขยับตาม */
@@ -1932,7 +2220,7 @@ $("#importFile").addEventListener("change", e=>{
       const fresh = valid.map((r,i)=>completeRecipe(r, i, have));
       state.recipes = [...fresh, ...state.recipes];
       store.custom = [...fresh, ...store.custom];
-      render(); toast(`นำเข้าสูตรส่วนตัว ${fresh.length} สูตรแล้ว`);
+      render(); scheduleSync(); toast(`นำเข้าสูตรส่วนตัว ${fresh.length} สูตรแล้ว`);
       if(fresh.length === 1) openDetail(fresh[0].id);
     }catch{ toast("อ่านไฟล์ไม่ได้ — ต้องเป็นไฟล์ .json ที่สำรองจากแอปนี้") }
     e.target.value = "";
@@ -1940,10 +2228,85 @@ $("#importFile").addEventListener("change", e=>{
   rd.readAsText(f);
 });
 
+/* cloud sync: เก็บสูตร+รายการโปรดไว้บน Cloudflare Worker+KV (worker ตัวเดียวกับ relay) */
+const cloud = {
+  get url(){ try{ return (localStorage.getItem("krua-sync-url") || "").replace(/\/+$/, ""); }catch(e){ return ""; } },
+  get token(){ try{ return localStorage.getItem("krua-sync-token") || ""; }catch(e){ return ""; } },
+  get on(){ return !!(this.url && this.token); }
+};
+function setSyncStatus(t){ const el = $("#syncStatus"); if(el) el.textContent = t; }
+function mergeStates(local, remote){
+  const byId = new Map();
+  for(const r of (local.recipes || [])) if(r && r.id) byId.set(String(r.id), r);
+  for(const r of (remote.recipes || [])){
+    if(!r || !r.id) continue;
+    const cur = byId.get(String(r.id));
+    if(!cur || (+r.updatedAt || 0) > (+cur.updatedAt || 0)) byId.set(String(r.id), r);
+  }
+  return {
+    recipes:[...byId.values()],
+    favs:[...new Set([...(local.favs || []), ...(remote.favs || [])].map(String))]
+  };
+}
+let syncing = false, syncQueued = false;
+async function cloudPull(){
+  const r = await fetch(cloud.url + "/api/state", {headers:{authorization:"Bearer " + cloud.token}, signal:sig12()});
+  if(r.status === 401) throw new Error("unauthorized");
+  if(!r.ok) throw new Error("http " + r.status);
+  return await r.json();
+}
+async function cloudPush(st){
+  const r = await fetch(cloud.url + "/api/state", {method:"PUT", headers:{"content-type":"application/json", authorization:"Bearer " + cloud.token}, body:JSON.stringify({recipes:(st.recipes || []).slice(0, 500), favs:(st.favs || []).slice(0, 500)}), signal:sig12()});
+  if(r.status === 401) throw new Error("unauthorized");
+  if(!r.ok) throw new Error("http " + r.status);
+  return await r.json();
+}
+function localState(){ return {recipes:store.custom, favs:store.favs}; }
+async function syncNow(manual){
+  if(!cloud.on){ if(manual) toast("ตั้งค่า cloud ก่อน (เปิดตั้งค่าท้ายเว็บ)"); return; }
+  if(syncing){ syncQueued = true; return; }
+  syncing = true;
+  setSyncStatus("☁ กำลังซิงก์…");
+  try{
+    const remote = await cloudPull();
+    const merged = mergeStates(localState(), remote);
+    const res = await cloudPush(merged);
+    store.custom = merged.recipes;
+    store.favs = merged.favs;
+    const baseIds = new Set(BASE_RECIPES.map(r=>r.id));
+    state.recipes = [...merged.recipes.filter(r=>!baseIds.has(r.id)), ...BASE_RECIPES];
+    render();
+    const t = new Date(res.updatedAt || Date.now());
+    setSyncStatus("☁ ซิงก์แล้ว " + String(t.getHours()).padStart(2, "0") + ":" + String(t.getMinutes()).padStart(2, "0"));
+    if(manual) toast("ซิงก์ cloud เรียบร้อย");
+  }catch(e){
+    const auth = e && e.message === "unauthorized";
+    setSyncStatus(auth ? "☁ token ไม่ถูก" : "☁ ออฟไลน์ — ใช้ข้อมูลในเครื่อง");
+    if(manual) toast(auth ? "token ไม่ถูก ตรวจในตั้งค่า cloud" : "ต่อ cloud ไม่ได้ เก็บไว้ในเครื่องก่อน");
+  }finally{
+    syncing = false;
+    if(syncQueued){ syncQueued = false; syncNow(false); }
+  }
+}
+function scheduleSync(){ try{ clearTimeout(scheduleSync._t); }catch(e){} scheduleSync._t = setTimeout(()=>{ syncNow(false); }, 3000); }
+document.addEventListener("visibilitychange", ()=>{ if(document.visibilityState === "hidden" && cloud.on) syncNow(false); });
+$("#syncBtn").onclick = ()=>syncNow(true);
+$("#syncSave").onclick = ()=>{
+  const u = $("#syncUrl").value.trim().replace(/\/+$/, "");
+  const t = $("#syncToken").value.trim();
+  try{ localStorage.setItem("krua-sync-url", u); localStorage.setItem("krua-sync-token", t); }catch(e){}
+  if(!u || !t){ setSyncStatus("☁ ยังไม่ตั้งค่า cloud"); toast("ใส่ Worker URL กับ token ก่อน"); return; }
+  toast("จำค่า cloud ไว้แล้ว กำลังซิงก์ครั้งแรก");
+  syncNow(true);
+};
+
 /* quick open from featured */
 document.querySelectorAll("[data-open]").forEach(b=>{ if(b.closest(".featured")) b.onclick=()=>openDetail(b.dataset.open) });
 
 render();
+try{ $("#syncUrl").value = cloud.url; $("#syncToken").value = cloud.token; }catch(e){}
+if(cloud.on){ setSyncStatus("☁ พร้อมซิงก์"); syncNow(false); }
+else setSyncStatus("☁ ยังไม่ตั้งค่า cloud");
 </script>
 </body>
 </html>

@@ -1,0 +1,9 @@
+name = "krua-baan"
+main = "worker.js"
+compatibility_date = "2025-01-01"
+workers_dev = true
+
+# ใส่ KV namespace id ที่ได้จากข้อ 2 (หรือผูกผ่าน Dashboard แล้วลบบล็อกนี้ทิ้งก็ได้)
+[[kv_namespaces]]
+binding = "KV"
+id = "PASTE_KV_NAMESPACE_ID_HERE"
